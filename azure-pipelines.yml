@@ -10,6 +10,7 @@ steps:
     inputs:
       versionSpec: '17'  # Specify JDK version
       jdkArchitectureOption: 'x64'  # Specify architecture
+      jdkSourceOption: 'adoptopenjdk'  # Use AdoptOpenJDK as the source
 
   # Maven build step
   - task: Maven@4
