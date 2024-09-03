@@ -1,9 +1,3 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
-
 trigger:
   - master  # Adjust this to your main branch name
 
@@ -11,47 +5,47 @@ pool:
   vmImage: 'ubuntu-latest'  # You can also use 'windows-latest' based on preference
 
 steps:
+  # Step to install Java 17
   - task: Bash@3
     inputs:
       targetType: 'inline'
       script: |
-        # Install OpenJDK 17
         sudo apt-get update
         sudo apt-get install -y openjdk-17-jdk
-  
-        # Verify Java version
         java -version
-
+  
+  # Maven build step
   - task: Maven@4
     inputs:
       mavenPomFile: 'pom.xml'  # Adjust the path if your pom.xml is in a subfolder
       mavenOptions: '-Xmx1024m'
-      javaHomeOption: 'JDKVersion' 
-      jdkVersionOption: '17'  # Or '11', '17', etc., based on your Java version
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '17'  # Specify Java 17 for the Maven build
       jdkArchitectureOption: 'x64'
       goals: 'clean package'
 
+  # Copy JAR files to the staging directory
   - task: CopyFiles@2
     inputs:
-      contents: '**/target/*.jar'  # Adjust based on the name of your JAR
+      contents: '**/target/*.jar'
       targetFolder: '$(Build.ArtifactStagingDirectory)'
   
+  # Publish build artifacts
   - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
   
+  # Run the Spring Boot application
   - task: Bash@3
     inputs:
       targetType: 'inline'
       script: |
+        # Ensure Java 17 is used to run the application
         java -version
-      
+        
         echo "Listing files in target directory:"
         ls -al $(Build.ArtifactStagingDirectory)/target
         
         echo "Running the Spring Boot application..."
         java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
-
-
-
