@@ -19,10 +19,6 @@ steps:
       jdkVersionOption: '17'  # Or '11', '17', etc., based on your Java version
       jdkArchitectureOption: 'x64'
       goals: 'clean package'
-  - task: UseJavaVersion@1
-    inputs:
-      versionSpec: '17'
-      jdkArchitectureOption: 'x64'
 
   - task: CopyFiles@2
     inputs:
