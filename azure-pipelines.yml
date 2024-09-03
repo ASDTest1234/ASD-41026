@@ -11,10 +11,16 @@ pool:
   vmImage: 'ubuntu-latest'  # You can also use 'windows-latest' based on preference
 
 steps:
-  - task: UseJavaVersion@1
+  - task: Bash@3
     inputs:
-      versionSpec: '17'  # Specify the Java version you need
-      jdkArchitecture: 'x64'  # Specify the architecture, typically 'x64'
+      targetType: 'inline'
+      script: |
+        # Install OpenJDK 17
+        sudo apt-get update
+        sudo apt-get install -y openjdk-17-jdk
+  
+        # Verify Java version
+        java -version
 
   - task: Maven@4
     inputs:
