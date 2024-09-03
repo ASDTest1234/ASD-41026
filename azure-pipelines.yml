@@ -6,13 +6,10 @@ pool:
 
 steps:
   # Step to install Java 17 and set it as default
-# Java tool installer v0
-# Acquire a specific version of Java from a user-supplied Azure blob or the tool cache and sets JAVA_HOME.
-- task: JavaToolInstaller@0
-  inputs:
-    versionSpec: '17' # string. Required. JDK version. Default: 8.
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 17
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '17'  # Specify JDK version
+      jdkArchitectureOption: 'x64'  # Specify architecture
 
   # Maven build step
   - task: Maven@4
