@@ -11,6 +11,11 @@ pool:
   vmImage: 'ubuntu-latest'  # You can also use 'windows-latest' based on preference
 
 steps:
+  - task: UseJavaVersion@1
+    inputs:
+      versionSpec: '17'  # Specify the Java version you need
+      jdkArchitecture: 'x64'  # Specify the architecture, typically 'x64'
+
   - task: Maven@4
     inputs:
       mavenPomFile: 'pom.xml'  # Adjust the path if your pom.xml is in a subfolder
@@ -34,10 +39,12 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        # Check Java version
         java -version
+      
+        echo "Listing files in target directory:"
+        ls -al $(Build.ArtifactStagingDirectory)/target
         
-        # Run the Spring Boot application
+        echo "Running the Spring Boot application..."
         java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
 
 
