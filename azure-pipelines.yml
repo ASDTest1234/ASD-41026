@@ -5,17 +5,24 @@ pool:
   vmImage: 'ubuntu-latest'  # You can also use 'windows-latest' based on preference
 
 steps:
-  # Step to install Java 17
+  # Step to install Java 17 and set it as default
   - task: Bash@3
     inputs:
       targetType: 'inline'
       script: |
+        # Update package index
         sudo apt-get update
+
+        # Install OpenJDK 17
         sudo apt-get install -y openjdk-17-jdk
-        # Set JAVA_HOME and PATH to use Java 17
-        echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" | sudo tee -a /etc/environment
-        echo "PATH=\$JAVA_HOME/bin:\$PATH" | sudo tee -a /etc/environment
-        source /etc/environment
+
+        # Update alternatives to set Java 17 as the default
+        sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-17-openjdk-amd64/bin/java 1
+        sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac 1
+        sudo update-alternatives --config java
+        sudo update-alternatives --config javac
+
+        # Verify Java version
         java -version
 
   # Maven build step
