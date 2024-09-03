@@ -12,8 +12,12 @@ steps:
       script: |
         sudo apt-get update
         sudo apt-get install -y openjdk-17-jdk
+        # Set JAVA_HOME and PATH to use Java 17
+        echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" | sudo tee -a /etc/environment
+        echo "PATH=\$JAVA_HOME/bin:\$PATH" | sudo tee -a /etc/environment
+        source /etc/environment
         java -version
-  
+
   # Maven build step
   - task: Maven@4
     inputs:
@@ -41,7 +45,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        # Ensure Java 17 is used to run the application
+        # Verify Java 17 is being used
         java -version
         
         echo "Listing files in target directory:"
