@@ -12,7 +12,7 @@ pool:
 steps:
 - task: Maven@4
   inputs:
-    versionSpec: '21.x'
+  versionSpec: '17'
   displayName: 'Install Node.js'
 
 - script: |
