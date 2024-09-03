@@ -34,10 +34,11 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        echo "Listing files in target directory:"
-        ls -al $(Build.ArtifactStagingDirectory)/target
-  
-        echo "Running the Spring Boot application..."
+        # Check Java version
+        java -version
+        
+        # Run the Spring Boot application
         java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
+
 
 
