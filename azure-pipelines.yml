@@ -3,19 +3,52 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+
 trigger:
-- master
+  - master  # Adjust this to your main branch name
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'  # You can also use 'windows-latest' based on preference
 
 steps:
-- task: Maven@4
-  inputs:
-  versionSpec: '17'
-  displayName: 'Install Node.js'
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Install OpenJDK 17
+        sudo apt-get update
+        sudo apt-get install -y openjdk-17-jdk
+  
+        # Verify Java version
+        java -version
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+  - task: Maven@4
+    inputs:
+      mavenPomFile: 'pom.xml'  # Adjust the path if your pom.xml is in a subfolder
+      mavenOptions: '-Xmx1024m'
+      javaHomeOption: 'JDKVersion' 
+      jdkVersionOption: '17'  # Or '11', '17', etc., based on your Java version
+      jdkArchitectureOption: 'x64'
+      goals: 'clean package'
+
+  - task: CopyFiles@2
+    inputs:
+      contents: '**/target/*.jar'  # Adjust based on the name of your JAR
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+  
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'drop'
+  
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        java -version
+      
+        echo "Listing files in target directory:"
+        ls -al $(Build.ArtifactStagingDirectory)/target
+        
+        echo "Running the Spring Boot application..."
+        java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
