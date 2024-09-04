@@ -26,7 +26,7 @@ public class SecurityConfig {
                 )
                 .logout(LogoutConfigurer::permitAll  // Allow logout for everyone
                 )
-                .httpBasic(Customizer.withDefaults());  // Replaces the deprecated httpBasic()
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

@@ -11,7 +11,7 @@ public class ContentController {
         return "home";
     }
 
-    @GetMapping("/admin/home")
+    @GetMapping("/home_admin")
     public String handleAdmin(){
         return "home_admin";
     }
@@ -24,7 +24,7 @@ public class ContentController {
     public String handleLogin(){
         return "login";
     }
-    // something something
+
 
 
 }
