@@ -15,7 +15,7 @@ public class ContentController {
     public String handleAdmin(){
         return "home_admin";
     }
-    @GetMapping("/user/home")
+    @GetMapping("/home_user")
     public String handleUser(){
         return "home_user";
     }
