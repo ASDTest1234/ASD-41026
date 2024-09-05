@@ -1,25 +1,27 @@
 trigger:
-  - master  # Adjust this to your main branch name
+  - master
 
 pool:
-  vmImage: 'ubuntu-latest'  # You can also use 'windows-latest' based on preference
+  vmImage: 'ubuntu-latest'
 
 steps:
-  # Step to install Java 17 and set it as default
-  - task: JavaToolInstaller@0
+  - task: Bash@3
     inputs:
-      versionSpec: '17'  # Specify JDK version
-      jdkArchitectureOption: 'x64'  # Specify architecture
-      jdkSourceOption: 'adoptopenjdk'  # Use AdoptOpenJDK as the source
+      targetType: 'inline'
+      script: |
+        # Install Java 17 manually
+        sudo apt-get update
+        sudo apt-get install -y openjdk-17-jdk
+        
+        # Verify Java version
+        java -version
 
-  # Maven build step
   - task: Maven@4
     inputs:
-      mavenPomFile: 'pom.xml'  # Adjust the path if your pom.xml is in a subfolder
+      mavenPomFile: 'pom.xml'
       mavenOptions: '-Xmx1024m'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '17'  # Specify Java 17 for the Maven build
-      jdkArchitectureOption: 'x64'
+      javaHomeOption: 'Path'
+      jdkDirectory: '/usr/lib/jvm/java-17-openjdk-amd64'
       goals: 'clean package'
 
   # Copy JAR files to the staging directory
@@ -27,13 +29,13 @@ steps:
     inputs:
       contents: '**/target/*.jar'
       targetFolder: '$(Build.ArtifactStagingDirectory)'
-  
+
   # Publish build artifacts
   - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
-  
+
   # Run the Spring Boot application
   - task: Bash@3
     inputs:
@@ -41,9 +43,9 @@ steps:
       script: |
         # Verify Java 17 is being used
         java -version
-        
+
         echo "Listing files in target directory:"
         ls -al $(Build.ArtifactStagingDirectory)/target
-        
+
         echo "Running the Spring Boot application..."
         java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
