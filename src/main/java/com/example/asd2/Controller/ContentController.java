@@ -11,14 +11,21 @@ public class ContentController {
         return "home";
     }
 
-    @GetMapping("/home_admin")
+    @GetMapping("/admin/home_admin")
     public String handleAdmin(){
         return "home_admin";
     }
-    @GetMapping("/home_user")
+
+    @GetMapping("/user/home_user")
     public String handleUser(){
         return "home_user";
     }
+
+    @GetMapping("/staff/home")
+    public String handleStaff(){
+        return "home";
+    }
+
 
     @GetMapping("/login")
     public String handleLogin(){
