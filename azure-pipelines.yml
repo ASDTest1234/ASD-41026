@@ -1,5 +1,3 @@
-
-
 trigger: none
 
 pool:
@@ -8,15 +6,7 @@ pool:
 steps:
   - checkout: self  # Ensure this step is included to checkout the code
 
-  - task: Maven@4
-    inputs:
-      mavenPomFile: 'pom.xml'  # Adjust the path to where your pom.xml is located
-      mavenOptions: '-Xmx1024m'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '17'
-      jdkArchitectureOption: 'x64'
-      goals: 'clean package'
-
+  # Install Java 17
   - task: JavaToolInstaller@0
     displayName: 'Install Java 17'
     inputs:
@@ -24,16 +14,19 @@ steps:
       jdkArchitectureOption: 'x64'
       jdkSourceOption: 'PreInstalled'
   
+  # Verify Java 17 version is installed
   - script: |
       java -version
     displayName: 'Check Java 17 version'
 
+  # Maven build step with Java 17
   - task: Maven@4
     inputs:
-      mavenPomFile: 'pom.xml'
+      mavenPomFile: 'pom.xml'  # Adjust the path to where your pom.xml is located
       mavenOptions: '-Xmx1024m'
-      javaHomeOption: 'Path'
-      jdkDirectory: '/usr/lib/jvm/java-17-openjdk-amd64'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '17'
+      jdkArchitectureOption: 'x64'
       goals: 'clean package'
 
   # Copy JAR files to the staging directory
@@ -48,21 +41,17 @@ steps:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
 
+  # Run the Spring Boot application with Java 17
   - task: Bash@3
     inputs:
       targetType: 'inline'
       script: |
-        # Install Java 17 manually
-        sudo apt-get update
-        sudo apt-get install -y openjdk-17-jdk
-        
-        # Verify Java version
+        # Verify Java 17 is being used
+        sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
         java -version
-
+        
         echo "Listing files in target directory:"
-        ls -al $(Build.ArtifactStagingDirectory)/target
+        ls -al $(Build.ArtifactStagingDirectory)
 
         echo "Running the Spring Boot application..."
-        java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
-
-
+        java -jar $(Build.ArtifactStagingDirectory)/ASD-0.0.1-SNAPSHOT.jar
