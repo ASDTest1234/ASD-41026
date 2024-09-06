@@ -28,34 +28,6 @@ steps:
       java -version
     displayName: 'Check Java 17 version'
 
-  - task: JavaToolInstaller@0
-    displayName: 'Install Java 11'
-    inputs:
-      versionSpec: '11'
-      jdkArchitectureOption: 'x64'
-      jdkSourceOption: 'PreInstalled'
-  
-  - script: |
-      java -version
-    displayName: 'Check Java 11 version'
-    
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        # Install Java 17 manually
-        sudo apt-get update
-        sudo apt-get install -y openjdk-17-jdk
-        
-        # Verify Java version
-        java -version
-
-        echo "Listing files in target directory:"
-        ls -al $(Build.ArtifactStagingDirectory)/target
-
-        echo "Running the Spring Boot application..."
-        java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
-
   - task: Maven@4
     inputs:
       mavenPomFile: 'pom.xml'
@@ -76,6 +48,21 @@ steps:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
 
-  # Run the Spring Boot application
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Install Java 17 manually
+        sudo apt-get update
+        sudo apt-get install -y openjdk-17-jdk
+        
+        # Verify Java version
+        java -version
+
+        echo "Listing files in target directory:"
+        ls -al $(Build.ArtifactStagingDirectory)/target
+
+        echo "Running the Spring Boot application..."
+        java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
 
 
