@@ -6,7 +6,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - checkout: none
+  - checkout: self  # Ensure this step is included to checkout the code
+
+  - task: Maven@4
+    inputs:
+      mavenPomFile: 'pom.xml'  # Adjust the path to where your pom.xml is located
+      mavenOptions: '-Xmx1024m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '17'
+      jdkArchitectureOption: 'x64'
+      goals: 'clean package'
 
   - task: JavaToolInstaller@0
     displayName: 'Install Java 17'
