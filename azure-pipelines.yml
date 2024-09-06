@@ -50,6 +50,12 @@ steps:
         # Verify Java version
         java -version
 
+        echo "Listing files in target directory:"
+        ls -al $(Build.ArtifactStagingDirectory)/target
+
+        echo "Running the Spring Boot application..."
+        java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
+
   - task: Maven@4
     inputs:
       mavenPomFile: 'pom.xml'
@@ -71,15 +77,5 @@ steps:
       artifactName: 'drop'
 
   # Run the Spring Boot application
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        # Verify Java 17 is being used
-        java -version
 
-        echo "Listing files in target directory:"
-        ls -al $(Build.ArtifactStagingDirectory)/target
 
-        echo "Running the Spring Boot application..."
-        java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
