@@ -41,16 +41,16 @@ steps:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
 
-  # Run the Spring Boot application with Java 17
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        # Verify Java 17 is being used
-        java -version
+  # # Run the Spring Boot application with Java 17
+  # - task: Bash@3
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |
+  #       # Verify Java 17 is being used
+  #       java -version
         
-        echo "Listing files in the Build Artifact Staging Directory:"
-        ls -al $(Build.ArtifactStagingDirectory)
+  #       echo "Listing files in the Build Artifact Staging Directory:"
+  #       ls -al $(Build.ArtifactStagingDirectory)
 
-        echo "Running the Spring Boot application..."
-        java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
+  #       echo "Running the Spring Boot application..."
+  #       java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
