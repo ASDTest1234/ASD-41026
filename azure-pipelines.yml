@@ -47,11 +47,10 @@ steps:
       targetType: 'inline'
       script: |
         # Verify Java 17 is being used
-        sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
         java -version
         
-        echo "Listing files in target directory:"
+        echo "Listing files in the Build Artifact Staging Directory:"
         ls -al $(Build.ArtifactStagingDirectory)
 
         echo "Running the Spring Boot application..."
-        java -jar $(Build.ArtifactStagingDirectory)/ASD-0.0.1-SNAPSHOT.jar
+        java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
