@@ -29,7 +29,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorise ->{
-                    authorise.requestMatchers("/home").permitAll();
                     authorise.requestMatchers("/login").permitAll();
                     authorise.requestMatchers("/admin/**").hasRole("ADMIN");
                     authorise.requestMatchers("/staff/**").hasRole("STAFF");
@@ -39,9 +38,15 @@ public class SecurityConfig {
                 })
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .successHandler(new AuthenticationSuccessfulHandler()))
+                        .successHandler(customerSuccessHandler())
+                        .permitAll()
+                )
 
-                .logout(logout -> logout.permitAll())
+                .logout((logout) -> logout
+                        .logoutUrl("/logout")
+                        .permitAll()
+
+                )
                 .build();
     }
 
@@ -72,8 +77,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public ProductService productService() {
-        return List::of;
+    public AuthenticationSuccessHandler customerSuccessHandler() {
+        return new CustomerAuthenticationSuccessHandler();
     }
 
 }

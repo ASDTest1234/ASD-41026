@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ContentController {
 
-    @GetMapping("/home")
-    public String handleWelcome(){
-        return "home";
-    }
+
 
     @GetMapping("/admin/home_admin")
     public String handleAdmin(){
@@ -21,12 +18,13 @@ public class ContentController {
         return "home_user";
     }
 
-    @GetMapping("/staff/home")
+    @GetMapping("/staff/home_staff")
     public String handleStaff(){
-        return "home";
+        return "home_staff";
     }
 
-
+    @GetMapping("logout")
+    public String handleLogout(){return "logout";}
     @GetMapping("/login")
     public String handleLogin(){
         return "login";
