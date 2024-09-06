@@ -1,9 +1,35 @@
-trigger:
-  - master
+
+
+trigger: master
 
 pool:
   vmImage: 'ubuntu-latest'
 
+steps:
+  - checkout: none
+
+  - task: JavaToolInstaller@0
+    displayName: 'Install Java 17'
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
+  
+  - script: |
+      java -version
+    displayName: 'Check Java 17 version'
+
+  - task: JavaToolInstaller@0
+    displayName: 'Install Java 11'
+    inputs:
+      versionSpec: '11'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
+  
+  - script: |
+      java -version
+    displayName: 'Check Java 11 version'
+    
 steps:
   - task: Bash@3
     inputs:
