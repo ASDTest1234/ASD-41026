@@ -1,24 +1,31 @@
-trigger:
-  - master  # Adjust this to your main branch name
+trigger: none
 
 pool:
-  vmImage: 'ubuntu-latest'  # You can also use 'windows-latest' based on preference
+  vmImage: 'ubuntu-latest'
 
 steps:
-  # Step to install Java 17 and set it as default
-  - task: JavaToolInstaller@0
-    inputs:
-      versionSpec: '17'  # Specify JDK version
-      jdkArchitectureOption: 'x64'  # Specify architecture
-      jdkSourceOption: 'adoptopenjdk'  # Use AdoptOpenJDK as the source
+  - checkout: self  # Ensure this step is included to checkout the code
 
-  # Maven build step
+  # Install Java 17
+  - task: JavaToolInstaller@0
+    displayName: 'Install Java 17'
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
+  
+  # Verify Java 17 version is installed
+  - script: |
+      java -version
+    displayName: 'Check Java 17 version'
+
+  # Maven build step with Java 17
   - task: Maven@4
     inputs:
-      mavenPomFile: 'pom.xml'  # Adjust the path if your pom.xml is in a subfolder
+      mavenPomFile: 'pom.xml'  # Adjust the path to where your pom.xml is located
       mavenOptions: '-Xmx1024m'
       javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '17'  # Specify Java 17 for the Maven build
+      jdkVersionOption: '17'
       jdkArchitectureOption: 'x64'
       goals: 'clean package'
 
@@ -27,14 +34,14 @@ steps:
     inputs:
       contents: '**/target/*.jar'
       targetFolder: '$(Build.ArtifactStagingDirectory)'
-  
+
   # Publish build artifacts
   - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
-  
-  # Run the Spring Boot application
+
+  # Run the Spring Boot application with Java 17
   - task: Bash@3
     inputs:
       targetType: 'inline'
@@ -42,8 +49,8 @@ steps:
         # Verify Java 17 is being used
         java -version
         
-        echo "Listing files in target directory:"
-        ls -al $(Build.ArtifactStagingDirectory)/target
-        
+        echo "Listing files in the Build Artifact Staging Directory:"
+        ls -al $(Build.ArtifactStagingDirectory)
+
         echo "Running the Spring Boot application..."
         java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
