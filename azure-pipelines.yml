@@ -30,7 +30,6 @@ steps:
       java -version
     displayName: 'Check Java 11 version'
     
-steps:
   - task: Bash@3
     inputs:
       targetType: 'inline'
