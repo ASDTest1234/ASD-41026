@@ -5,10 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class Error_pageController implements ErrorController {
+public class Error_pageController implements ErrorController {// tells us that this class is used to handle Errors
 
-    @GetMapping("/Error")
-    public String Error(){
-        return "Error";}
+    @GetMapping("/Error")// URL Path
+    public String ErrorHandle(){
+        return "Error";}// return HTML
 
 }

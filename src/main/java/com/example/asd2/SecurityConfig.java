@@ -21,24 +21,24 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { // is the security configuration and tells the system what to do.
+        return http// intercepts all URLS and filters them based on the configuration.
                 .authorizeHttpRequests(authorise ->{
-                    authorise.requestMatchers("/login").permitAll();
-                    authorise.requestMatchers("/admin/**").hasRole("ADMIN");
-                    authorise.requestMatchers("/staff/**").hasRole("STAFF");
-                    authorise.requestMatchers("/user/**").hasRole("USER");
-                    authorise.anyRequest().authenticated();
+                    authorise.requestMatchers("/login").permitAll();// allows anyone to access this page
+                    authorise.requestMatchers("/admin/**").hasRole("ADMIN");// allows Admin to enter into any URl with the /admin and has the role admin
+                    authorise.requestMatchers("/staff/**").hasRole("STAFF");// allows staff to enter into any URl with the /staff and has the role staff
+                    authorise.requestMatchers("/user/**").hasRole("USER");// allows user to enter into any URl with the /user and has the role user
+                    authorise.anyRequest().authenticated(); // makes sure that the users have to be authenticated before they can access other page.
 
                 })
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(customerSuccessHandler())
+                        .loginPage("/login")// tells springboot where the login.html is
+                        .successHandler(customerSuccessHandler())// tells springboot what to do when login is successful
                         .permitAll()
                 )
 
                 .logout((logout) -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/logout")// Log out URL
                         .permitAll()
 
                 )
@@ -46,7 +46,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService() {// basically in memory database, since not connected to database yet.
         UserDetails user = User.builder()
                 .username("user@gmail.com")
                 .password("$2a$12$QhW1s7GaY7sOSkSPoav4NO5YRwFVad.ae5u918MBm78mnOfw2KOia")
@@ -67,12 +67,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() { // password Enconder using BCRypt hashing so passwords aren't stored in plaintext
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationSuccessHandler customerSuccessHandler() {
+    public AuthenticationSuccessHandler customerSuccessHandler() { // Tells the where to redirect the users when they are logged in.
         return new CustomerAuthenticationSuccessHandler();
     }
 

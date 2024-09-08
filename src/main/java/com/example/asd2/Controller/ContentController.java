@@ -4,14 +4,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class ContentController {
+public class ContentController {// controller class that
 
 
 
-    @GetMapping("/admin/home_admin")
+    @GetMapping("/admin/home_admin")//Get Mapping means what the URL is to get into the HTMl
     public String handleAdmin(){
         return "home_admin";
-    }
+    }// returns the HTML when URL is entered.
 
     @GetMapping("/user/home_user")
     public String handleUser(){
