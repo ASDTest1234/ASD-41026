@@ -22,7 +22,7 @@ public class TicketController {
 
     @PostMapping
     public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) {
-        Ticket createdTicket = ticketRepository.save(ticket); // Save the ticket directly
+        Ticket createdTicket = ticketRepository.save(ticket);
         return ResponseEntity.ok(createdTicket);
     }
 }
