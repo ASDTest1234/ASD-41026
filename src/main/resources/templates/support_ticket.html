@@ -5,62 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Support Ticket Generator</title>
   <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f9;
-        }
-        .container {
-            text-align: center;
-            width: 100%;
-            padding: 10px;
-        }
-        table {
-            margin: 0 auto;
-            border-collapse: collapse;
-            width: 100%;
-            max-width: 1000px;
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            padding: 10px;
-            text-align: left;
-            position: relative;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        input[type="text"] {
-            width: calc(100% - 10px);
-            padding: 5px;
-            border: none;
-            background-color: transparent;
-            color: black;
-            caret-color: auto;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-        }
-        .display-text {
-            color: grey;
-            pointer-events: none;
-        }
-        .buttons {
-            margin-top: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 0 10px;
-            cursor: pointer;
-        }
-    </style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f9;
+    }
+    .container {
+      text-align: center;
+      width: 100%;
+      padding: 10px;
+    }
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 1000px;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    input[type="text"] {
+      width: calc(100% - 10px);
+      padding: 5px;
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
@@ -76,73 +62,65 @@
     </tr>
     <tr>
       <td>
-        <span class="display-text" id="ticket-id-display">Enter Ticket ID</span>
-        <input type="text" id="ticket-id">
+        <input type="text" id="ticket-id" placeholder="Enter Ticket ID" >
       </td>
       <td>
-        <span class="display-text" id="customer-id-display">Enter Customer ID</span>
-        <input type="text" id="customer-id">
+        <input type="text" id="customer-id" placeholder="Enter Customer ID">
       </td>
       <td>
-        <span class="display-text" id="issue-display">Enter Issue</span>
-        <input type="text" id="issue">
+        <input type="text" id="issue" placeholder="Enter Issue">
       </td>
       <td>
-        <span class="display-text" id="description-display">Enter Description</span>
-        <input type="text" id="description">
+        <input type="text" id="description" placeholder="Enter Description">
       </td>
       <td>
-        <span id="date-display"></span>
+        <input type="text" id="date-display" disabled>
       </td>
     </tr>
   </table>
 
   <div class="buttons">
-    <button>Cancel</button>
-    <button>Reset</button>
-    <button>Submit</button>
+    <button id="submit-button">Submit</button>
+    <button id="reset-button">Reset</button>
   </div>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const today = new Date().toLocaleDateString();
-    document.getElementById('date-display').textContent = today;
+    document.getElementById('date-display').value = today;
 
-    // Set input event listeners to toggle display text
-    function handleFocus(inputId, displayId) {
-      const input = document.getElementById(inputId);
-      const displayText = document.getElementById(displayId);
+    document.getElementById('submit-button').addEventListener('click', function() {
+      const ticketData = {
+        customerId: document.getElementById('customer-id').value,
+        issue: document.getElementById('issue').value,
+        description: document.getElementById('description').value,
+        date: today,
+      };
 
-      // Toggle display text based on input contents
-      function toggleDisplayText() {
-        if (input.value === '') {
-          displayText.style.visibility = 'visible';
-        } else {
-          displayText.style.visibility = 'hidden';
-        }
-      }
-
-      // Initial check
-      toggleDisplayText();
-
-      input.addEventListener('focus', function() {
-        toggleDisplayText();
+      fetch('http://localhost:8080/api/tickets', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(ticketData),
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Success:', data);
+          alert('Ticket submitted successfully!');
+          // Optionally reset the form or show a success message
+      })
+      .catch((error) => {
+          console.error('Error:', error);
       });
+    });
 
-      input.addEventListener('blur', function() {
-        toggleDisplayText();
-      });
-
-      input.addEventListener('input', function() {
-        toggleDisplayText();
-      });
-    }
-
-    handleFocus('ticket-id', 'ticket-id-display');
-    handleFocus('customer-id', 'customer-id-display');
-    handleFocus('issue', 'issue-display');
-    handleFocus('description', 'description-display');
+    document.getElementById('reset-button').addEventListener('click', function() {
+      document.getElementById('customer-id').value = '';
+      document.getElementById('issue').value = '';
+      document.getElementById('description').value = '';
+    });
   });
 </script>
 
