@@ -11,7 +11,7 @@ import java.io.IOException;
 public class CustomerAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String redirectURL = request.getContextPath();
+        String redirectURL;
 
         if(authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             redirectURL = "/admin/home_admin";
