@@ -49,17 +49,17 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {// basically like a in memory database, since not connected to database yet but will be used to authenticate the Users from database.
         UserDetails userss = User.builder()
                 .username("user@gmail.com")
-                .password("$2a$12$QhW1s7GaY7sOSkSPoav4NO5YRwFVad.ae5u918MBm78mnOfw2KOia")
+                .password("$2a$12$yyvUkzuxJBzElZGENNqGf.G9lmZMywxIX1VKf1/YhnR0W9bCVQO6S") //changed the password
                 .roles("USER")
                 .build();
         UserDetails staff = User.builder()
                 .username("staff@gmail.com")
-                .password("$2a$12$9JO7Og/uxLKiK0KAdQmgzOKLN.JNNHOQmhRvZP.Kwwxqp/dGMfRGy")
+                .password("$2a$12$yyvUkzuxJBzElZGENNqGf.G9lmZMywxIX1VKf1/YhnR0W9bCVQO6S")
                 .roles("STAFF", "USER")
                 .build();
         UserDetails admin = User.builder()
                 .username("admin@gmail.com")
-                .password("$2a$12$Zkl61eMGwmcILuvZbgvi5ODZLX.ClxOow0lqaPHlFYQFSS1/GLeDm")
+                .password("$2a$12$yyvUkzuxJBzElZGENNqGf.G9lmZMywxIX1VKf1/YhnR0W9bCVQO6S")
                 .roles("ADMIN", "USER", "STAFF")
                 .build();
         return new InMemoryUserDetailsManager(userss, staff, admin);
