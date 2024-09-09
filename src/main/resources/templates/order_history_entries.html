@@ -7,13 +7,17 @@
 <h1>Order History</h1>
 <br>
 <h2>Active Orders:</h2>
-<a th:href="@{/user/order_details}">$85 --- 05/09/2024 --- STATUS: Out For Delivery</a>
+<a th:href="@{/user/order_details}">05/09/2024 --- $85 --- STATUS: Out For Delivery</a>
 <br>
 <h2>Previous Orders:</h2>
-<a th:href="@{/user/order_details}">$55 --- 15/08/2024 --- STATUS: Delivered</a>
+<a th:href="@{/user/order_details}">23/08/2024 --- $110 --- STATUS: Delivered</a>
 <br>
-<a th:href="@{/user/order_details}">$110 --- 23/08/2024 --- STATUS: Delivered</a>
-
+<a th:href="@{/user/order_details}">15/08/2024 --- $55 --- STATUS: Delivered</a>
+<br>
+<br>
+<form th:action="@{/user/home_user}" method="get">
+  <input type="submit" value="Dashboard"/>
+</form>
 
 </body>
 </html>

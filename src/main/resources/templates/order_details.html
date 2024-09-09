@@ -4,7 +4,7 @@
     <title>Order Details</title>
 </head>
 <body>
-<h1>Order on /INSERT DATE/</h1>
+<h1>Ordered /INSERT DATE/</h1>
 <h1>-----------------------</h1>
 <h2>/INSERT CUSTOMER NAME/</h2>
 <h2>/INSERT CUSTOMER ADDRESS/</h2>
@@ -13,6 +13,14 @@
 <p>Product A --- Price: $1 --- Quantity: 1 --- Total Price: $1</p>
 <p>Product B --- Price: $5 --- Quantity: 2 --- Total Price: $10</p>
 <p>Product C --- Price: $10 --- Quantity:5 --- Total Price: $50</p>
+<br>
+<form th:action="@{/user/order_history_entries}" method="get">
+    <input type="submit" value="View All Orders"/>
+</form>
+<br>
+<form th:action="@{/user/home_user}" method="get">
+    <input type="submit" value="Dashboard"/>
+</form>
 
 </body>
 </html>
