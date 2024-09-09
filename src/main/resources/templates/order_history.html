@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en"><head>
+  <meta charset="UTF-8">
+  <title>Order History</title>
+</head>
+<body>
+<h1>Order History</h1>
+<h2>No Previous Orders</h2>
+<br>
+<br>
+<br>
+<form th:action="@{/user/order_history_entries}" method="get">
+  <input type="submit" value="PRESENTATION: VIEW WITH ENTRIES"/>
+</form>
+</body>
+</html>
