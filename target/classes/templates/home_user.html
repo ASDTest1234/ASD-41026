@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <form th:action="@{/login}" method="post">
+        <input type="submit" value="logout" />
+
+    </form>
+    <form th:action="@{/DashBoard}" method="post">
+        <input type="submit" value="DashBoard" />
+
+    </form>
+
+    <input type="submit" value="view Cart" />
+    <input type="submit" value="view details" />
+    <label>
+        <input type="search" name="search" placeholder="search"/>
+    </label>
+</head>
+
+<h1>Product Dashboard</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>Image</th>
+        <th>Cart</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Hardcoded rows -->
+    <tr>
+        <td>1</td>
+        <td>Product A</td>
+        <td><img src="https://via.placeholder.com/100" alt="Product A Image"/></td>
+        <td><button>Add to Cart</button></td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Product B</td>
+        <td><img src="https://via.placeholder.com/100" alt="Product B Image"/></td>
+        <td><button>Add to Cart</button></td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Product C</td>
+        <td><img src="https://via.placeholder.com/100" alt="Product C Image"/></td>
+        <td><button>Add to Cart</button></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

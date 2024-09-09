@@ -1,0 +1,63 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+
+trigger:
+  - '*'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - checkout: self  # Ensure this step is included to checkout the code
+
+  # Install Java 17
+  - task: JavaToolInstaller@0
+    displayName: 'Install Java 17'
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
+
+  # Verify Java 17 version is installed
+  - script: |
+      java -version
+    displayName: 'Check Java 17 version'
+
+  # Maven build step with Java 17
+  - task: Maven@4
+    inputs:
+      mavenPomFile: 'pom.xml'  # Adjust the path to where your pom.xml is located
+      mavenOptions: '-Xmx1024m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '17'
+      jdkArchitectureOption: 'x64'
+      goals: 'clean package'
+
+  # Copy JAR files to the staging directory
+  - task: CopyFiles@2
+    inputs:
+      contents: '**/target/*.jar'
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  # Publish build artifacts
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'drop'
+
+        # # Run the Spring Boot application with Java 17
+        # - task: Bash@3
+        #   inputs:
+        #     targetType: 'inline'
+        #     script: |
+        #       # Verify Java 17 is being used
+        #       java -version
+
+  #       echo "Listing files in the Build Artifact Staging Directory:"
+  #       ls -al $(Build.ArtifactStagingDirectory)
+
+  #       echo "Running the Spring Boot application..."
+  #       java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar

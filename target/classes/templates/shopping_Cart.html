@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shopping Cart</title>
+</head>
+<body>
+<h1>Products</h1>
+<div>
+    <table border="1">
+        <tr>
+            <th>Vendor</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+        <!-- Loop through products and display them -->
+        <tr th:each="product : ${products}">
+            <td th:text="${product.vendor}"></td>
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.description}"></td>
+            <td>
+                <button th:onclick="'addToCart(' + ${product.name} + ')'">Add to Cart</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<h2>Shopping Cart</h2>
+<ul id="cart">
+    <!-- Cart items will be listed here -->
+</ul>
+
+<button onclick="purchase()">Make Purchase</button>
+
+<script>
+    let cart = [];
+
+    function addToCart(productName) {
+        cart.push(productName);
+        document.getElementById('cart').innerHTML += '<li>' + productName + '</li>';
+    }
+
+    function purchase() {
+        alert("Purchase made with " + cart.length + " items.");
+    }
+</script>
+</body>
+</html>
