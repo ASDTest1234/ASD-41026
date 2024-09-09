@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .total-price {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Customer Cart</h1>
+
+    <table id="cartDetails">
+        <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody id="cartItems">
+        <!-- Cart items will be displayed here -->
+        </tbody>
+    </table>
+
+    <!-- Total Price -->
+    <div class="total-price" id="totalPrice">
+        Total Price: $0.00
+    </div>
+
+    <!-- Button to navigate to the credit card details page -->
+    <a href="creditcard.html" class="btn">Proceed to Payment</a>
+</div>
+
+<script>
+    // Sample static data simulating fetched cart products
+    const products = [
+        {
+            productName: "Sample Product 1",
+            productDescription: "Description for Sample Product 1",
+            productPrice: 10.00
+        },
+        {
+            productName: "Sample Product 2",
+            productDescription: "Description for Sample Product 2",
+            productPrice: 15.00
+        }
+    ];
+
+    // Function to render the product items in the table and calculate total price
+    function displayProducts(products) {
+        const cartItems = document.getElementById('cartItems');
+        const totalPriceElement = document.getElementById('totalPrice');
+        cartItems.innerHTML = ''; // Clear any existing items
+        let totalPrice = 0;
+
+        products.forEach(product => {
+            const row = `
+                <tr>
+                    <td>${product.productName}</td>
+                    <td>${product.productDescription}</td>
+                    <td>$${product.productPrice.toFixed(2)}</td>
+                </tr>
+            `;
+            cartItems.innerHTML += row;
+
+            // Accumulate the total price
+            totalPrice += product.productPrice;
+        });
+
+        // Display the total price
+        totalPriceElement.innerText = `Total Price: $${totalPrice.toFixed(2)}`;
+    }
+
+    // Display products when the page loads
+    window.onload = function() {
+        displayProducts(products);
+    };
+</script>
+
+</body>
+</html>

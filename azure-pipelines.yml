@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - checkout: self  # Ensure this step is included to checkout the code
+  - checkout: self  # Ensure this step is included to check out the code
 
   # Install Java 17
   - task: JavaToolInstaller@0
