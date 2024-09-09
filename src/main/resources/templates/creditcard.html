@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment - Enter Card Details</title>
+    <title>Payment - Prototype UI</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,69 +64,25 @@
     <form id="paymentForm">
         <div class="form-group">
             <label for="cardNumber">Credit Card Number:</label>
-            <input type="text" id="cardNumber" name="cardNumber" placeholder="Enter your card number">
+            <input type="text" id="cardNumber" placeholder="Enter your card number">
             <div id="cardNumberError" class="error"></div>
         </div>
 
         <div class="form-group">
             <label for="expiryDate">Expiry Date:</label>
-            <input type="date" id="expiryDate" name="expiryDate">
+            <input type="date" id="expiryDate">
             <div id="expiryDateError" class="error"></div>
         </div>
 
         <div class="form-group">
             <label for="securityCode">Security Code (CVV):</label>
-            <input type="text" id="securityCode" name="securityCode" placeholder="Enter 3-digit CVV">
+            <input type="text" id="securityCode" placeholder="Enter 3-digit CVV">
             <div id="securityCodeError" class="error"></div>
         </div>
 
         <button type="submit" class="btn">Submit Payment</button>
     </form>
 </div>
-
-<script>
-    document.getElementById('paymentForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent form submission
-
-        // Clear previous errors
-        document.getElementById('cardNumberError').innerText = '';
-        document.getElementById('expiryDateError').innerText = '';
-        document.getElementById('securityCodeError').innerText = '';
-
-        let isValid = true;
-
-        // Get input values
-        const cardNumber = document.getElementById('cardNumber').value;
-        const expiryDate = document.getElementById('expiryDate').value;
-        const securityCode = document.getElementById('securityCode').value;
-
-        // Validate credit card number (must be 16 digits)
-        if (!/^\d{16}$/.test(cardNumber)) {
-            document.getElementById('cardNumberError').innerText = 'Card number must be 16 digits';
-            isValid = false;
-        }
-
-        // Validate expiry date (must be a future date)
-        const currentDate = new Date();
-        const enteredDate = new Date(expiryDate);
-        if (enteredDate <= currentDate) {
-            document.getElementById('expiryDateError').innerText = 'Expiry date must be in the future';
-            isValid = false;
-        }
-
-        // Validate CVV (must be 3 digits)
-        if (!/^\d{3}$/.test(securityCode)) {
-            document.getElementById('securityCodeError').innerText = 'CVV must be 3 digits';
-            isValid = false;
-        }
-
-        // If all validations pass, proceed with form submission (e.g., API call)
-        if (isValid) {
-            alert('Payment processed successfully!');
-            // You can add API call logic here for backend processing
-        }
-    });
-</script>
 
 </body>
 </html>

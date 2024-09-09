@@ -12,5 +12,4 @@ public class Product {
     private String productDescription;  // Description of the product
     private double productPrice;        // Price of the product
 
-    // Lombok will automatically generate getter and setter methods
 }

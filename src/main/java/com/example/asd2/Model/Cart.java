@@ -17,6 +17,4 @@ public class Cart {
     private String customerId;          // Customer identifier associated with the cart
     private List<Product> products;     // List of products in the cart
     private double totalPrice;          // Total price of all products in the cart
-
-    // Lombok will automatically generate getter and setter methods
 }
