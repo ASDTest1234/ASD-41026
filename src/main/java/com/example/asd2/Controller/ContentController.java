@@ -35,6 +35,9 @@ public class ContentController {// controller class that
     @GetMapping("/user/order_history_entries")
     public String handleOrderHistoryEntries(){return "order_history_entries";}
 
+    @GetMapping("/user/order_details")
+    public String handleOrderDetails(){return "order_details";}
+
 
 
 }
