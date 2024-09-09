@@ -46,8 +46,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {// basically in memory database, since not connected to database yet.
-        UserDetails user = User.builder()
+    public UserDetailsService userDetailsService() {// basically like a in memory database, since not connected to database yet but will be used to authenticate the Users from database.
+        UserDetails userss = User.builder()
                 .username("user@gmail.com")
                 .password("$2a$12$QhW1s7GaY7sOSkSPoav4NO5YRwFVad.ae5u918MBm78mnOfw2KOia")
                 .roles("USER")
@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .password("$2a$12$Zkl61eMGwmcILuvZbgvi5ODZLX.ClxOow0lqaPHlFYQFSS1/GLeDm")
                 .roles("ADMIN", "USER", "STAFF")
                 .build();
-        return new InMemoryUserDetailsManager(user, staff, admin);
+        return new InMemoryUserDetailsManager(userss, staff, admin);
 
     }
 
