@@ -5,48 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Support Ticket Generator</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f4f4f9;
-    }
-    .container {
-      text-align: center;
-      width: 100%;
-      padding: 10px;
-    }
-    table {
-      margin: 0 auto;
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 1000px;
-    }
-    th, td {
-      border: 1px solid #dddddd;
-      padding: 10px;
-      text-align: left;
-    }
-    th {
-      background-color: #4CAF50;
-      color: white;
-    }
-    input[type="text"] {
-      width: calc(100% - 10px);
-      padding: 5px;
-    }
-    .buttons {
-      margin-top: 20px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 0 10px;
-      cursor: pointer;
-    }
-  </style>
+        /* CSS styles as previously defined */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            text-align: center;
+            width: 100%;
+            padding: 10px;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 1000px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 10px;
+            text-align: left;
+            position: relative;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        input[type="text"] {
+            width: calc(100% - 10px);
+            padding: 5px;
+            border: none;
+            background-color: transparent;
+            color: black;
+            caret-color: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+        .display-text {
+            color: grey;
+            pointer-events: none;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        #message {
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
@@ -62,67 +82,37 @@
     </tr>
     <tr>
       <td>
-        <input type="text" id="ticket-id" placeholder="Enter Ticket ID" >
+        <span class="display-text" id="ticket-id-display">Enter Ticket ID</span>
+        <input type="text" id="ticket-id">
       </td>
       <td>
-        <input type="text" id="customer-id" placeholder="Enter Customer ID">
+        <span class="display-text" id="customer-id-display">Enter Customer ID</span>
+        <input type="text" id="customer-id">
       </td>
       <td>
-        <input type="text" id="issue" placeholder="Enter Issue">
+        <span class="display-text" id="issue-display">Enter Issue</span>
+        <input type="text" id="issue">
       </td>
       <td>
-        <input type="text" id="description" placeholder="Enter Description">
+        <span class="display-text" id="description-display">Enter Description</span>
+        <input type="text" id="description">
       </td>
       <td>
-        <input type="text" id="date-display" disabled>
+        <span id="date-display"></span>
       </td>
     </tr>
   </table>
 
   <div class="buttons">
-    <button id="submit-button">Submit</button>
+    <button id="cancel-button">Cancel</button>
     <button id="reset-button">Reset</button>
+    <button id="submit-button">Submit</button>
   </div>
+
+  <div id="message"></div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const today = new Date().toLocaleDateString();
-    document.getElementById('date-display').value = today;
-
-    document.getElementById('submit-button').addEventListener('click', function() {
-      const ticketData = {
-        customerId: document.getElementById('customer-id').value,
-        issue: document.getElementById('issue').value,
-        description: document.getElementById('description').value,
-        date: today,
-      };
-
-      fetch('http://localhost:8080/api/tickets', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(ticketData),
-      })
-      .then(response => response.json())
-      .then(data => {
-          console.log('Success:', data);
-          alert('Ticket submitted successfully!');
-          // Optionally reset the form or show a success message
-      })
-      .catch((error) => {
-          console.error('Error:', error);
-      });
-    });
-
-    document.getElementById('reset-button').addEventListener('click', function() {
-      document.getElementById('customer-id').value = '';
-      document.getElementById('issue').value = '';
-      document.getElementById('description').value = '';
-    });
-  });
-</script>
+<script src="TicketController.js"></script>
 
 </body>
 </html>
