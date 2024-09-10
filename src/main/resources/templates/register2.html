@@ -5,6 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Address Details</title>
     <link rel="stylesheet" href="registerstyles.css">
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); 
+
+            const formData = new FormData(event.target);
+
+            fetch('/api/users/step2', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to login.html on success
+                    window.location.href = 'login.html';
+                } else {
+                    alert("Registration failed. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred. Please try again.");
+            });
+        }
+    </script>
 </head>
 <body>
     <div class="container">
