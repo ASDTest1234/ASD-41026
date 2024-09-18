@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/responses")
+@RequestMapping("minh/responses")
 public class ResponseController {
 
     @Autowired
