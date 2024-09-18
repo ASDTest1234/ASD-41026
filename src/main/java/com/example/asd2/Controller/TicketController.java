@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/tickets")
+@RequestMapping("/minh/tickets")
 public class TicketController {
     @Autowired
     private TicketService ticketService;
