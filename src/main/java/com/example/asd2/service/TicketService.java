@@ -1,17 +1,22 @@
 package com.example.asd2.service;
+
 import com.example.asd2.Model.Ticket;
-
+import com.example.asd2.repository.TicketRepository;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
-public interface TicketService {
+@Service
+public class TicketService {
+    @Autowired
+    private TicketRepository ticketRepository;
+    public List<Ticket> allTickets(){
+        return  ticketRepository.findAll();
+    }
 
-    public List<Ticket> getTicket();
-
-    public Ticket addTicket(Ticket ticket);
-
-    public Ticket deleteTicket(String id);
-
-    public Ticket updateTicket(String id, Ticket ticket);
-
-
+    public Optional<Ticket> aTicket(ObjectId id){
+        return ticketRepository.findById(id);
+    }
 }
