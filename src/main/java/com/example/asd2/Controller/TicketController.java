@@ -22,9 +22,9 @@ public class TicketController {
     public ResponseEntity<List<Ticket>> getAllTickets(){
         return new ResponseEntity<List<Ticket>>(ticketService.allTickets(), HttpStatus.OK);
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<Ticket>> searchATicket(@PathVariable ObjectId id){
-        return new ResponseEntity<Optional<Ticket>>(ticketService.aTicket(id), HttpStatus.OK);
+    @GetMapping("/{ticket_id}")
+    public ResponseEntity<Optional<Ticket>> searchATicket(@PathVariable String ticket_id){
+        return new ResponseEntity<Optional<Ticket>>(ticketService.aTicket(ticket_id), HttpStatus.OK);
     }
 
 }

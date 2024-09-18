@@ -16,7 +16,7 @@ public class TicketService {
         return  ticketRepository.findAll();
     }
 
-    public Optional<Ticket> aTicket(ObjectId id){
-        return ticketRepository.findById(id);
+    public Optional<Ticket> aTicket(String ticket_id){
+        return ticketRepository.findTicketByTicketId(ticket_id);
     }
 }
