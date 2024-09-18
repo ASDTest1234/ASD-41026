@@ -28,22 +28,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(authorise ->{
-                    authorise.requestMatchers("/home").permitAll();
-                    authorise.requestMatchers("/login").permitAll();
-                    authorise.requestMatchers("/admin/**").hasRole("ADMIN");
-                    authorise.requestMatchers("/staff/**").hasRole("STAFF");
-                    authorise.requestMatchers("/user/**").hasRole("USER");
-                    authorise.anyRequest().authenticated();
-
+                .authorizeHttpRequests(authorize -> {
+                    // Allow all requests temporarily
+                    authorize.anyRequest().permitAll();
                 })
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(new AuthenticationSuccessfulHandler()))
-
                 .logout(logout -> logout.permitAll())
                 .build();
     }
+
 
     @Bean
     public UserDetailsService userDetailsService() {
