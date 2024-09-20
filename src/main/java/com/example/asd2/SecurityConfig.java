@@ -28,13 +28,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(authorize -> {
-                    // Allow all requests temporarily
-                    authorize.anyRequest().permitAll();
-                })
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for debugging
                 .logout(logout -> logout.permitAll())
                 .build();
     }
+
 
 
     @Bean
