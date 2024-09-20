@@ -17,8 +17,8 @@ public class ResponseService {
     private ResponseRepository responseRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
-    public Response createResponse(String response1, String ticket_id){
-        Response response = responseRepository.insert(new Response(response1));
+    public Response createResponse(String response_id, String responseBody, String ticket_id){
+        Response response = responseRepository.insert(new Response(response_id, responseBody));
 
 
         mongoTemplate.update(Ticket.class)

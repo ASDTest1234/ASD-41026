@@ -21,6 +21,6 @@ public class ResponseController {
 
     @PostMapping
     public ResponseEntity<Response> createResponse(@RequestBody Map<String, String> payload){
-        return new ResponseEntity<Response>(responseService.createResponse(payload.get("responseBody"), payload.get("ticket_id")), HttpStatus.CREATED);
+        return new ResponseEntity<Response>(responseService.createResponse(payload.get("response_id"), payload.get("responseBody"), payload.get("ticket_id")), HttpStatus.CREATED);
     }
 }

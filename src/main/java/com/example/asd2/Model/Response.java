@@ -15,9 +15,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Response {
     @Id
     private ObjectId id;
+    private String response_id;
     private String response;
 
-    public Response(String response) {
+    public Response(String response_id, String response) {
+        this.response_id = response_id;
         this.response = response;
     }
 }
