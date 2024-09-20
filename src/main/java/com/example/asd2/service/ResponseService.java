@@ -3,6 +3,7 @@ package com.example.asd2.service;
 import com.example.asd2.Model.Response;
 import com.example.asd2.Model.Ticket;
 import com.example.asd2.repository.ResponseRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,4 +29,14 @@ public class ResponseService {
 
                 return response;
     }
+    public Response updateResponse(String Id, String newResponseBody) {
+        // Find the existing response by OBJECTID (_id found in database)
+        Response existingResponse = responseRepository.findById(new ObjectId(Id)).orElseThrow(() ->
+                new RuntimeException("Response not found with id: " + Id));
+
+        existingResponse.setResponse(newResponseBody);
+
+        return responseRepository.save(existingResponse);
+    }
+
 }
