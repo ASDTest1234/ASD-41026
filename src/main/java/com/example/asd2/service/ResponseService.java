@@ -38,5 +38,11 @@ public class ResponseService {
 
         return responseRepository.save(existingResponse);
     }
-
+    public void deleteResponse(String responseId) {
+        // Delete response using OBJECTID (_id found in database)
+            if (!responseRepository.existsById(new ObjectId(responseId))) {
+                throw new RuntimeException("Response not found with id: " + responseId);
+            }
+            responseRepository.deleteById(new ObjectId(responseId));
+    }
 }

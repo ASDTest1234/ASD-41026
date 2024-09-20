@@ -26,4 +26,13 @@ public class ResponseController {
         Response updatedResponse = responseService.updateResponse(id, newResponseBody);
         return ResponseEntity.ok(updatedResponse);
     }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteResponse(@PathVariable String id) {
+        try {
+            responseService.deleteResponse(id);
+            return ResponseEntity.noContent().build(); // Return 204 No Content on successful deletion
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 }
