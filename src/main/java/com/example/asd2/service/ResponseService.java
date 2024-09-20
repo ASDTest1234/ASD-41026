@@ -22,7 +22,7 @@ public class ResponseService {
 
 
         mongoTemplate.update(Ticket.class)
-                .matching(Criteria.where("ticket_id").is(ticket_id))
+                .matching(Criteria.where("ticketId").is(ticket_id))
                 .apply(new Update().push("responseIds").value(response))
                 .first();
 
