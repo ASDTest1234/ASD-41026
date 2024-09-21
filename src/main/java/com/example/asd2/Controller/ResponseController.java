@@ -7,10 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("minh/responses")
+@RequestMapping("minh/response")
 public class ResponseController {
 
     @Autowired
@@ -28,6 +29,10 @@ public class ResponseController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    @GetMapping("/allresponses")
+    public ResponseEntity<List<Response>> getAllResponses(){
+        return new ResponseEntity<List<Response>>(responseService.allResponses(), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")

@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static org.springframework.data.mongodb.core.aggregation.SelectionOperators.First.first;
 
 @Service
@@ -33,7 +35,11 @@ public class ResponseService {
         return responseRepository.findById(new ObjectId(Id)).orElseThrow(() ->
                 new RuntimeException("Response not found with id: " + Id));
     }
-    
+
+    public List<Response> allResponses(){
+        return  responseRepository.findAll();
+    }
+
     public Response updateResponse(String Id, String newResponseBody) {
         // Find the existing response by OBJECTID (_id found in database)
         Response existingResponse = responseRepository.findById(new ObjectId(Id)).orElseThrow(() ->
