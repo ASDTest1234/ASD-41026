@@ -28,5 +28,20 @@ public class TicketController {
     public ResponseEntity<Optional<Ticket>> searchATicket(@PathVariable String ticket_id){
         return new ResponseEntity<Optional<Ticket>>(ticketService.aTicket(ticket_id), HttpStatus.OK);
     }
+    @PutMapping("/{ticket_id}")
+    public ResponseEntity<Ticket> updateTicket(@PathVariable String ticket_id, @RequestBody Map<String, String> updates) {
+        Optional<Ticket> updatedTicket = ticketService.updateTicket(ticket_id, updates);
+        return updatedTicket.map(ticket -> new ResponseEntity<>(ticket, HttpStatus.OK))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+    @DeleteMapping("/{ticket_id}")
+    public ResponseEntity<Void> deleteTicket(@PathVariable String ticket_id) {
+        boolean isDeleted = ticketService.deleteTicket(ticket_id);
+        if (isDeleted) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
 }
