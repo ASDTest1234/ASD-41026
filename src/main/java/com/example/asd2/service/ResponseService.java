@@ -29,6 +29,11 @@ public class ResponseService {
 
                 return response;
     }
+    public Response getResponseById(String Id) {
+        return responseRepository.findById(new ObjectId(Id)).orElseThrow(() ->
+                new RuntimeException("Response not found with id: " + Id));
+    }
+    
     public Response updateResponse(String Id, String newResponseBody) {
         // Find the existing response by OBJECTID (_id found in database)
         Response existingResponse = responseRepository.findById(new ObjectId(Id)).orElseThrow(() ->

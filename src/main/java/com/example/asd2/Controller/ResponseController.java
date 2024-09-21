@@ -20,6 +20,16 @@ public class ResponseController {
     public ResponseEntity<Response> createResponse(@RequestBody Map<String, String> payload){
         return new ResponseEntity<Response>(responseService.createResponse(payload.get("response_id"), payload.get("responseBody"), payload.get("ticket_id")), HttpStatus.CREATED);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<Response> getResponse(@PathVariable String id) {
+        try {
+            Response response = responseService.getResponseById(id);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<Response> updateResponse(@PathVariable String id, @RequestBody Map<String, String> payload) {
         String newResponseBody = payload.get("response");
