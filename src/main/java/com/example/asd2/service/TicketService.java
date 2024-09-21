@@ -25,16 +25,15 @@ public class TicketService {
         String date = payload.get("date");
 
         // Create a new Ticket object
-        Ticket ticket = new Ticket(); // Assuming default constructor is available
+        Ticket ticket = new Ticket();
         ticket.setTicketId(ticketId);
         ticket.setCustomerId(customerId);
         ticket.setIssue(issue);
         ticket.setDescription(description);
         ticket.setDate(date);
 
-        // Save the ticket in the repository
         Ticket newTicket = ticketRepository.insert(ticket);
-        return newTicket; 
+        return newTicket;
     }
     public List<Ticket> allTickets(){
         return  ticketRepository.findAll();
