@@ -42,6 +42,11 @@ public class TicketService {
     public Optional<Ticket> aTicket(String ticket_id){
         return ticketRepository.findTicketByTicketId(ticket_id);
     }
+
+    public List<Ticket> myTickets(String customerId) {
+        return ticketRepository.findTicketsByCustomerId(customerId);
+    }
+
     public Optional<Ticket> updateTicket(String ticketId, Map<String, String> updates) {
         Optional<Ticket> optionalTicket = ticketRepository.findTicketByTicketId(ticketId);
 
@@ -66,7 +71,7 @@ public class TicketService {
             ticketRepository.save(ticket);
             return Optional.of(ticket);
         }
-        return Optional.empty(); // Ticket with the specified ID not found
+        return Optional.empty();
     }
 
     public boolean deleteTicket(String ticketId) {

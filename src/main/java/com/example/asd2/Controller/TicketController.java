@@ -28,6 +28,14 @@ public class TicketController {
     public ResponseEntity<Optional<Ticket>> searchATicket(@PathVariable String ticket_id){
         return new ResponseEntity<Optional<Ticket>>(ticketService.aTicket(ticket_id), HttpStatus.OK);
     }
+    @GetMapping("/mytickets/{customer_id}")
+    public ResponseEntity<List<Ticket>> getTicketsByCustomerId(@PathVariable("customer_id") String customerId) {
+        List<Ticket> tickets = ticketService.myTickets(customerId);
+        if (tickets.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
     @PutMapping("/{ticket_id}")
     public ResponseEntity<Ticket> updateTicket(@PathVariable String ticket_id, @RequestBody Map<String, String> updates) {
         Optional<Ticket> updatedTicket = ticketService.updateTicket(ticket_id, updates);
