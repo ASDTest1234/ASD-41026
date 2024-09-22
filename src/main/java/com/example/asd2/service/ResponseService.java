@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.SelectionOperators.First.first;
 
@@ -39,6 +40,14 @@ public class ResponseService {
     public List<Response> allResponses(){
         return  responseRepository.findAll();
     }
+    public List<Response> getResponsesByIds(List<String> responseIds) {
+        List<ObjectId> objectIds = responseIds.stream()
+                .map(ObjectId::new)
+                .collect(Collectors.toList());
+
+        return responseRepository.findAllById(objectIds);
+    }
+
 
     public Response updateResponse(String Id, String newResponseBody) {
         // Find the existing response by OBJECTID (_id found in database)
