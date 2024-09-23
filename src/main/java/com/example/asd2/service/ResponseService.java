@@ -40,6 +40,8 @@ public class ResponseService {
     public List<Response> allResponses(){
         return  responseRepository.findAll();
     }
+
+
     public List<Response> getResponsesByIds(List<String> responseIds) {
         List<ObjectId> objectIds = responseIds.stream()
                 .map(ObjectId::new)
