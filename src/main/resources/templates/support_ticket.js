@@ -1,5 +1,4 @@
-// TicketController.js
-class TicketController {
+class support_ticket {
     constructor() {
         this.ticketData = {
             ticketId: '',
@@ -69,22 +68,38 @@ class TicketController {
         displayText.style.visibility = input.value === '' ? 'visible' : 'hidden';
     }
 
-    submit() {
-        this.ticketData.ticketId = this.ticketIdInput.value;
-        this.ticketData.customerId = this.customerIdInput.value;
-        this.ticketData.issue = this.issueInput.value;
-        this.ticketData.description = this.descriptionInput.value;
+    async submit() {
+            this.ticketData.ticketId = this.ticketIdInput.value;
+            this.ticketData.customerId = this.customerIdInput.value;
+            this.ticketData.issue = this.issueInput.value;
+            this.ticketData.description = this.descriptionInput.value;
 
-        // Debug logs for ticket data
-        console.log(`Submitting ticket data:`, this.ticketData);
+            // Debug logs for ticket data
+            console.log(`Submitting ticket data:`, this.ticketData);
 
-        if (this.ticketData.ticketId && this.ticketData.customerId && this.ticketData.issue && this.ticketData.description) {
-            this.messageDisplay.textContent = 'Successfully submitted';
-            console.log('Successfully submitted ticket:', this.ticketData); // Log the data to the console
-        } else {
-            this.messageDisplay.textContent = 'Please fill in all fields.';
-            console.log('Submission failed: All fields must be filled.'); // Debug log
-        }
+            if (this.ticketData.ticketId && this.ticketData.customerId && this.ticketData.issue && this.ticketData.description) {
+                try {
+                    const response = await fetch('http://localhost:8080/minh/tickets', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.ticketData)
+                    });
+
+                    if (!response.ok) throw new Error('Network response was not ok');
+
+                    const data = await response.json();
+                    this.messageDisplay.textContent = 'Ticket created successfully: ' + JSON.stringify(data);
+                    console.log('Successfully created ticket:', data); // Log the response data
+                } catch (error) {
+                    this.messageDisplay.textContent = 'Error: ' + error.message;
+                    console.log('Submission failed:', error); // Debug log
+                }
+            } else {
+                this.messageDisplay.textContent = 'Please fill in all fields.';
+                console.log('Submission failed: All fields must be filled.'); // Debug log
+            }
     }
 
     reset() {
@@ -110,7 +125,6 @@ class TicketController {
     }
 }
 
-// Initialize the Ticket Controller
 document.addEventListener('DOMContentLoaded', () => {
-    new TicketController();
+    new support_ticket();
 });
