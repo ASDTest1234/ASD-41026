@@ -1,27 +1,158 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="https://www.thymeleaf.org" lang="en">-->
+<!--<head>-->
+<!--  <title>Please Log In</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Please Log In</h1>-->
+<!--<div th:if="${param.error}">-->
+<!--  Invalid email and password.-->
+<!--</div>-->
+<!--<div th:if="${param.logout}">-->
+<!--  You have been logged out.-->
+<!--</div>-->
+<!--<form th:action="@{/login}" method="post">-->
+<!--  <div>-->
+<!--    <label>-->
+<!--      <input type="username" name="username" placeholder="username" required />-->
+<!--    </label>-->
+<!--  </div>-->
+<!--  <div>-->
+<!--    <label>-->
+<!--      <input type="password" name="password" placeholder="Password" required />-->
+<!--    </label>-->
+<!--  </div>-->
+<!--  <input type="submit" value="Log in" />-->
+<!--</form>-->
+<!--<a href="/register">Register</a>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <title>Login</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Login</h2>-->
+<!--<form th:action="@{/login}" method="post">-->
+<!--  <div>-->
+<!--    <label for="email">Email:</label>-->
+<!--    <input type="text" id="email" name="username" />-->
+<!--  </div>-->
+<!--  <div>-->
+<!--    <label for="password">Password:</label>-->
+<!--    <input type="password" id="password" name="password" />-->
+<!--  </div>-->
+<!--  <div>-->
+<!--    <button type="submit">Login</button>-->
+<!--  </div>-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
-  <title>Please Log In</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .alert {
+      color: red;
+      margin-bottom: 10px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+    .register-link {
+      text-align: center;
+      display: block;
+      margin-top: 20px;
+      color: #007bff;
+    }
+    .register-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-<h1>Please Log In</h1>
-<div th:if="${param.error}">
-  Invalid username and password.</div>
-<div th:if="${param.logout}">
-  You have been logged out.</div>
-<form th:action="@{/login}" method="post">
-  <div>
-    <label>
-      <input type="text" name="username" placeholder="Username"/>
-    </label>
+
+<div class="login-container">
+  <h1>Please Log In</h1>
+
+  <!-- Error messages -->
+  <div th:if="${param.error}" class="alert">
+    Invalid email or password.
   </div>
-  <div>
-    <label>
-      <input type="password" name="password" placeholder="Password"/>
-    </label>
+  <div th:if="${param.logout}" class="alert" style="color: green;">
+    You have been logged out successfully.
   </div>
-  <input type="submit" value="Log in" />
-  <input type="submit" value="Register" />
-</form>
+
+  <!-- Login form -->
+  <form th:action="@{/login}" method="post">
+    <div class="form-group">
+      <label for="username">Email:</label>
+      <input type="text" id="username" name="username" placeholder="Enter your email" required />
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required />
+    </div>
+    <input type="submit" value="Log In" />
+  </form>
+
+  <!-- Register link -->
+  <a href="/register" class="register-link">Don't have an account? Register here</a>
+</div>
+
 </body>
 </html>

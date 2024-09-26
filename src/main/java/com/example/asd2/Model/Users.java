@@ -1,27 +1,23 @@
 package com.example.asd2.Model;
 
-import com.example.asd2.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.lang.annotation.Documented;
-
-@Setter // lombok to reduce boilerplate code
-@Getter
-@Document(collection = "users") // specifying which collection to get from.
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Document(collection = "users")
 public class Users {
 
     @Id
-    private String username;
-    private String password;
-    private String email;
-    private String role;
-
-
-
-
+    private String id;
+    private String userID;
+    private String username;  // Map to the "username" field
+    private String email;     // Map to the "email" field
+    private String password;  // Map to the "password" field
+    private String role;      // Map to the "role" field
 }

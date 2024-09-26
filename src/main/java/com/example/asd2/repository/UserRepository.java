@@ -1,17 +1,13 @@
 package com.example.asd2.repository;
 
-
 import com.example.asd2.Model.Users;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends MongoRepository<Users, String> { // to interact with the mongoDB
+import java.util.Optional;
 
-
-    Users findByEmail(String email);
-
-    Users findByPassword(String password);
-
-    Users findByRole(String role);
+@Repository
+public interface UserRepository extends MongoRepository<Users, String> {
+   Users findByEmail(String email);
+    Optional<Users> findByUserID(String userID);
 }
