@@ -29,6 +29,14 @@ public class ContentController {// controller class that
     public String handleLogin(){
         return "login";
     }
+    @GetMapping("/user/order_history")
+    public String handleOrderHistory(){return "order_history";}
+
+    @GetMapping("/user/order_history_entries")
+    public String handleOrderHistoryEntries(){return "order_history_entries";}
+
+    @GetMapping("/user/order_details")
+    public String handleOrderDetails(){return "order_details";}
 
 
 
