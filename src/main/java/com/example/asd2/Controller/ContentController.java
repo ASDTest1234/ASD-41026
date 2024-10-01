@@ -38,6 +38,7 @@ public class ContentController {// controller class that
     @GetMapping("/user/order_details")
     public String handleOrderDetails(){return "order_details";}
 
-
+    @GetMapping("/staff/inventory")
+    public String handleProductList(){return "inventory";}
 
 }
