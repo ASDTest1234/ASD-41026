@@ -75,8 +75,7 @@ class MyTickets {
 
         // Create an internal table within the ticket info cell
         const table = document.createElement('table');
-        table.style.width = '100%';
-        table.style.borderCollapse = 'collapse';
+        table.className = 'table2';
 
         const headerRow = document.createElement('tr');
         ['Ticket ID', 'Issue', 'Description', 'Date'].forEach(headerText => {
