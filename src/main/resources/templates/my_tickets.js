@@ -71,16 +71,39 @@ class MyTickets {
 
     displayTickets(tickets) {
         // Clear previous ticket information
-        this.ticketInfoCell.textContent = ''; // Reset cell
+        this.ticketInfoCell.innerHTML = ''; // Reset cell
 
-        // Generate HTML for tickets
-        tickets.forEach(ticket => {
-            const ticketRow = document.createElement('div'); // Create a new div for each ticket
-            ticketRow.textContent = `Ticket ID: ${ticket.ticketId}, Issue: ${ticket.issue}, Description: ${ticket.description}, Date: ${ticket.date}`;
-            ticketRow.classList.add('ticket_info'); // Optional: Add a class for further styling if needed
+        // Create an internal table within the ticket info cell
+        const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
 
-            this.ticketInfoCell.appendChild(ticketRow); // Append the ticket info to the cell
+        const headerRow = document.createElement('tr');
+        ['Ticket ID', 'Issue', 'Description', 'Date'].forEach(headerText => {
+            const th = document.createElement('th');
+            th.textContent = headerText;
+            th.style.border = '1px solid #dddddd';
+            th.style.padding = '8px';
+            th.style.backgroundColor = '#f4f4f9';
+            th.style.color = 'black';
+            headerRow.appendChild(th);
         });
+        table.appendChild(headerRow);
+
+        tickets.forEach(ticket => {
+            const row = document.createElement('tr');
+            ['ticketId', 'issue', 'description', 'date'].forEach(key => {
+                const td = document.createElement('td');
+                td.textContent = ticket[key];
+                td.style.border = '1px solid #dddddd';
+                td.style.padding = '8px';
+                td.style.textAlign = 'center';
+                row.appendChild(td);
+            });
+            table.appendChild(row);
+        });
+
+        this.ticketInfoCell.appendChild(table); // Append the table to the ticket info cell
     }
 }
 
