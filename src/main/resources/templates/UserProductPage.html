@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>User Product Page</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body>
+    <p>
+        <span th:text="'List of products'"></span> <!-- Fixed the text expression -->
+    </p>
+<body>
+
+
+    <div th:if="${ not #lists.isEmpty(products) }">
+        <table class="center">
+            <thead>
+            <tr>
+                <th>Price</th>
+                <th>Product Name</th>
+                <th>Description</th>
+                <th>Description</th>
+                <th>Description</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.productPrice}"></td> <!-- Use "product" instead of "products" -->
+                <td th:text="${product.productName}"></td>
+                <td th:text="${product.productDescription}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</body>
+</html>

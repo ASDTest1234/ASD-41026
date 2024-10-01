@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
@@ -65,7 +65,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -107,6 +106,19 @@ public class LoginControllerTest {
                 .andExpect(redirectedUrl("/staff/home_staff"));
     }
 
+//    @Test
+//    public void testInvalidPerms() throws Exception {
+//        mockMvc.perform(post("/login")
+//                        .param("username", "test@gmail.com")
+//                        .param("password", "123"))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(redirectedUrl("/staff/home_staff"));
+//
+//        mockMvc.perform(get("/admin/home_admin"))
+//                .andExpect(status().isForbidden())
+//                .andExpect(redirectedUrl("/staff/home_staff"));
+//    }
+
     @Test
     public void InvalidLogin() throws Exception {
         mockMvc.perform(post("/login")
@@ -115,4 +127,39 @@ public class LoginControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"));
     }
+
+    @Test
+    public void testLoginLogout() throws Exception {
+        mockMvc.perform(post("/login")
+                        .param("username", "test@gmail.com")
+                        .param("password", "123"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/staff/home_staff"));
+
+        mockMvc.perform(post("/logout"))
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?logout"));
+    }
+
+    @Test
+    public void testLoginLogoutInvalidPerms() throws Exception {
+        mockMvc.perform(post("/login")
+                        .param("username", "test@gmail.com")
+                        .param("password", "123"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/staff/home_staff"));
+
+        mockMvc.perform(post("/logout"))
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?logout"));
+
+        mockMvc.perform(get("/staff/home_staff"))
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+
+
 }
