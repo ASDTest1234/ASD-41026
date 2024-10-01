@@ -1,51 +1,286 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+
+<!--    <form th:action="@{/logout}" method="post">-->
+<!--        <input type="submit" value="logout" />-->
+
+<!--    </form>-->
+
+
+<!--    <input type="submit" value="view Cart" />-->
+<!--    <input type="submit" value="view details" />-->
+<!--    <label>-->
+<!--        <input type="search" name="search" placeholder="search"/>-->
+<!--    </label>-->
+<!--</head>-->
+
+<!--<h1>Product Dashboard</h1>-->
+<!--<table border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>ID</th>-->
+<!--        <th>Product</th>-->
+<!--        <th>Image</th>-->
+<!--        <th>Cart</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    &lt;!&ndash; Hardcoded rows &ndash;&gt;-->
+<!--    <tr>-->
+<!--        <td>1</td>-->
+<!--        <td>Product A</td>-->
+<!--        <td><img src="https://via.placeholder.com/100" alt="Product A Image"/></td>-->
+<!--        <td><button>Add to Cart</button></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td>2</td>-->
+<!--        <td>Product B</td>-->
+<!--        <td><img src="https://via.placeholder.com/100" alt="Product B Image"/></td>-->
+<!--        <td><button>Add to Cart</button></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td>3</td>-->
+<!--        <td>Product C</td>-->
+<!--        <td><img src="https://via.placeholder.com/100" alt="Product C Image"/></td>-->
+<!--        <td><button>Add to Cart</button></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Page with Navbar</title>-->
+<!--    <style>-->
+<!--        /* Style for the navbar */-->
+<!--        .navbar {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            background-color: #333;-->
+<!--            padding: 14px 20px;-->
+<!--        }-->
+
+<!--        .navbar form, .navbar div {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        /* Style for the buttons and inputs */-->
+<!--        .navbar input[type="submit"], .navbar input[type="search"] {-->
+<!--            padding: 8px 16px;-->
+<!--            margin-right: 10px;-->
+<!--            border: none;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .navbar input[type="submit"] {-->
+<!--            background-color: #4CAF50;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .navbar input[type="search"] {-->
+<!--            border: 1px solid #ccc;-->
+<!--            border-radius: 4px;-->
+<!--        }-->
+
+<!--        /* Style for the logout button */-->
+<!--        .navbar input[type="submit"].logout {-->
+<!--            background-color: #f44336;-->
+<!--        }-->
+
+<!--        /* Change background on hover */-->
+<!--        .navbar input[type="submit"]:hover {-->
+<!--            background-color: #45a049;-->
+<!--        }-->
+
+<!--        .navbar input[type="submit"].logout:hover {-->
+<!--            background-color: #e53935;-->
+<!--        }-->
+
+
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--&lt;!&ndash; Top Navigation Bar &ndash;&gt;-->
+<!--<div class="navbar">-->
+<!--    &lt;!&ndash; Left side of the navbar &ndash;&gt;-->
+<!--    <div>-->
+<!--        <input type="submit" value="View Cart" />-->
+<!--        <input type="submit" value="View Details" />-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Center: Search bar &ndash;&gt;-->
+<!--    <label>-->
+<!--        <input type="search" name="search" placeholder="Search..."/>-->
+<!--    </label>-->
+
+<!--    &lt;!&ndash; Right side: Logout form &ndash;&gt;-->
+<!--    <form th:action="@{/logout}" method="post">-->
+<!--        <input class="logout" type="submit" value="Logout"/>-->
+<!--    </form>-->
+<!--</div>-->
+
+
+<!--</body>-->
+<!--</html>-->
+
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
+    <title>User Product Page</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        /* Styles for the navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 14px 20px;
+        }
 
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="logout" />
+        .navbar form, .navbar div {
+            margin: 0;
+            padding: 0;
+        }
 
-    </form>
+        /* Style for the buttons and inputs */
+        .navbar input[type="submit"], .navbar input[type="search"] {
+            padding: 8px 16px;
+            margin-right: 10px;
+            border: none;
+            cursor: pointer;
+        }
 
+        .navbar input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+        }
 
-    <input type="submit" value="view Cart" />
-    <input type="submit" value="view details" />
-    <label>
-        <input type="search" name="search" placeholder="search"/>
-    </label>
+        .navbar input[type="search"] {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Style for the logout button */
+        .navbar input[type="submit"].logout {
+            background-color: #f44336;
+        }
+
+        /* Change background on hover */
+        .navbar input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .navbar input[type="submit"].logout:hover {
+            background-color: #e53935;
+        }
+
+        /* Center the table within the page */
+        .TableDiv {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Style for the table */
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        p {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
-<h1>Product Dashboard</h1>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Product</th>
-        <th>Image</th>
-        <th>Cart</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Hardcoded rows -->
-    <tr>
-        <td>1</td>
-        <td>Product A</td>
-        <td><img src="https://via.placeholder.com/100" alt="Product A Image"/></td>
-        <td><button>Add to Cart</button></td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>Product B</td>
-        <td><img src="https://via.placeholder.com/100" alt="Product B Image"/></td>
-        <td><button>Add to Cart</button></td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>Product C</td>
-        <td><img src="https://via.placeholder.com/100" alt="Product C Image"/></td>
-        <td><button>Add to Cart</button></td>
-    </tr>
-    </tbody>
-</table>
+<body>
+
+<!-- Top Navigation Bar -->
+<div class="navbar">
+    <!-- Left side of the navbar -->
+    <div>
+        <input type="submit" value="View Cart" />
+        <input type="submit" value="View Details" />
+    </div>
+
+    <!-- Center: Search bar -->
+    <label>
+        <input type="search" name="search" placeholder="Search..."/>
+    </label>
+
+    <!-- Right side: Logout form -->
+    <form th:action="@{/logout}" method="post">
+        <input class="logout" type="submit" value="Logout"/>
+    </form>
+</div>
+
+<!-- Product List Section -->
+<p th:text="'List of products'"></p>
+
+<div class="TableDiv" th:if="${ not #lists.isEmpty(products) }">
+    <table>
+        <thead>
+        <tr>
+
+            <th>Product Name</th>
+            <th>Type</th>
+            <th>Stock</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Add to Cart</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+
+            <td th:text="${product.productName}"></td>
+            <td th:text="${product.productType}"></td>
+            <td th:text="${product.productStock}"></td>
+            <td th:text="@{ '$ ' + ${product.productPrice}}"></td>
+            <td th:text="${product.productDescription}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>
+

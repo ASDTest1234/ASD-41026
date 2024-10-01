@@ -41,4 +41,12 @@ public class ProductController {
         model.addAttribute("products", productService.getAllProducts());
         return "UserProductPage";
     }
+
+//    @RequestMapping("/user/home_user")
+//    public String listProducts(Model model){
+//        List<Products> product = productService.getAllProducts();
+//        System.out.println("products " + product);
+//        model.addAttribute("products", productService.getAllProducts());
+//        return "UserProductPage";
+//    }
 }
