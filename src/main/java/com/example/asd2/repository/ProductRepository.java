@@ -1,7 +1,6 @@
 package com.example.asd2.repository;
 
 import com.example.asd2.Model.Products;
-import com.example.asd2.Model.Users;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

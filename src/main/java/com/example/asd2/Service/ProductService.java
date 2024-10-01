@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class ProductService {
@@ -20,5 +21,9 @@ public class ProductService {
 
     public List<Products> getAllProducts(){
         return productRepository.findAll();
+    }
+
+    public Products addProduct(Products product) {
+        return productRepository.save(product);
     }
 }

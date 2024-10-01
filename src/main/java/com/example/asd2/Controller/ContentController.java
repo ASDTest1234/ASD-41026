@@ -41,7 +41,4 @@ public class ContentController {// controller class that
     @GetMapping("/staff/inventory")
     public String handleProductList(){return "inventory";}
 
-    @GetMapping("/staff/get_product")
-    public String handleGetProduct(){return "get_product";}
-
 }
