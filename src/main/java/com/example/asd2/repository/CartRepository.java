@@ -7,11 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CartRepository extends MongoRepository<Cart, String> {
 
-    /**
-     * Finds the cart for a given customer by customer ID.
-     *
-     * @param customerId The ID of the customer.
-     * @return Cart object associated with the customer.
-     */
+    // 查找指定customerId的购物车
     Cart findByCustomerId(String customerId);
 }

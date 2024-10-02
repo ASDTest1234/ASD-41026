@@ -30,6 +30,16 @@ public class ContentController {// controller class that
         return "login";
     }
 
+    @GetMapping("/cart")
+    public String handleCart() {
+        return "cart";
+    }
+
+
+
+
+
+
 
 
 }
