@@ -99,10 +99,15 @@ class MyTickets {
                 td.style.textAlign = 'center';
                 row.appendChild(td);
             });
+            row.addEventListener('click', () => {
+                // Use the ticket ID to generate the appropriate URL
+                window.location.href = `ticket_detail.html?ticketId=${ticket.ticketId}`;
+            });
+
             table.appendChild(row);
         });
 
-        this.ticketInfoCell.appendChild(table); // Append the table to the ticket info cell
+        this.ticketInfoCell.appendChild(table);
     }
 }
 
