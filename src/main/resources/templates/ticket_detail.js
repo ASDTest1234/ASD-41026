@@ -4,21 +4,31 @@ class TicketDetails {
     }
 
     bindElements() {
-        const urlParams = new URLSearchParams(window.location.search);
-        this.ticketId = urlParams.get('ticketId');
+            const urlParams = new URLSearchParams(window.location.search);
+            this.ticketId = urlParams.get('ticketId');
 
-        if (!this.ticketId) {
-            alert('No Ticket ID provided in the URL.');
-            return;
+            if (!this.ticketId) {
+                alert('No Ticket ID provided in the URL.');
+                return;
+            }
+
+            this.ticketDetailsBody = document.getElementById('ticket-details-body');
+            this.responsesBody = document.querySelector('.table-container tbody');
+            this.messageDisplay = document.getElementById('message');
+
+            // Button elements
+            this.backButton = document.getElementById('back-button');
+            this.editButton = document.getElementById('edit-button');
+            this.deleteButton = document.getElementById('delete-button');
+
+            // Add event listeners for buttons
+            this.backButton.addEventListener('click', () => this.goBack());
+            this.editButton.addEventListener('click', () => this.editTicket());
+            this.deleteButton.addEventListener('click', () => this.deleteTicket());
+
+            // Fetch and display the ticket details and responses
+            this.getTicketDetail();
         }
-
-        this.ticketDetailsBody = document.getElementById('ticket-details-body');
-        this.responsesBody = document.querySelector('.table-container tbody');
-        this.messageDisplay = document.getElementById('message');
-
-        // Fetch and display the ticket details and responses
-        this.getTicketDetail();
-    }
 
     async getTicketDetail() {
         try {
@@ -94,6 +104,44 @@ class TicketDetails {
             cellContent.textContent = 'No responses found for this ticket.';
             row.appendChild(cellContent);
             this.responsesBody.appendChild(row);
+        }
+    }
+    goBack() {
+            // Navigate to the previous page or a specific URL
+        window.location.href = 'my_tickets.html'; // Change to desired page URL
+    }
+
+    editTicket() {
+            // Navigate to the edit page for the ticket
+        window.location.href = `edit_ticket.html?ticketId=${this.ticketId}`; // Assuming you have an edit page
+    }
+    async deleteTicket() {
+        const confirmDelete = confirm("Are you sure you want to delete this ticket?");
+        if (!confirmDelete) {
+            return; // User canceled, do nothing
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/minh/tickets/${this.ticketId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete the ticket.');
+            }
+
+            // Optionally show a success message and redirect or perform an action
+            alert('Ticket deleted successfully.');
+
+            // Redirect to a specific page after deletion
+            window.location.href = 'my_tickets.html'; // Change to the desired page URL
+
+        } catch (error) {
+            console.error('Error deleting the ticket:', error);
+            alert('An error occurred while deleting the ticket.'); // Inform the user about the error
         }
     }
 }
