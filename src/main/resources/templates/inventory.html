@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Product List</title>
+    <style>
+        .highlighted {
+            background-color: lightskyblue;
+        }
+    </style>
 </head>
 <body>
-<h1>Inventory</h1>
-
+<h1>Product List</h1>
 <form th:action="@{/staff/product/new}" method="get">
     <input type="submit" value="Add Product"/>
 </form>
@@ -16,6 +19,41 @@
         <input type="submit" value="Back"/>
     </form>
 </div>
+<br>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Stock</th>
+        <th>Price</th>
+        <th>Type</th>
+        <th>Admin ID</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}" th:class="${product.product_Id == selectedProductId ? 'highlighted' : ''}">
+        <td th:text="${product.product_Id}">ID</td>
+        <td th:text="${product.productName}">Name</td>
+        <td th:text="${product.productDescription}">Description</td>
+        <td th:text="${product.productStock}">Stock</td>
+        <td th:text="${product.productPrice}">Price</td>
+        <td th:text="${product.productType}">Type</td>
+        <td th:text="${product.adminID}">Admin ID</td>
+        <td>
+            <form th:action="@{/staff/product/edit/{productId}(productId=${product.product_Id})}" method="get">
+                <button type="submit">Edit</button>
+            </form>
+            <!-- Add a select link to highlight the product -->
+            <form th:action="@{/staff/product/inventory/{productId}(productId=${product.product_Id})}" method="get">
+                <button type="submit">Select</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 </body>
 </html>

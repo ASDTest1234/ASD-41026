@@ -26,6 +26,14 @@ public class StaffProductController {
     @Autowired
     private ProductService productService;
 
+    @GetMapping("/inventory")
+    public String showInventory(Model model) {
+        List<Products> productsList = productService.getAllProducts();
+        model.addAttribute("products", productsList);
+        model.addAttribute("selectedProductId", ""); // No product selected initially
+        return "inventory";
+    }
+
     @GetMapping("/new")
     public String showAddProductForm(Model model) {
         model.addAttribute("product", new Products());
@@ -36,6 +44,31 @@ public class StaffProductController {
     public String addProduct(Products product) {
         productService.addProduct(product);
         return "redirect:/staff/product/new";
+    }
+
+    @GetMapping("/edit/{productId}")
+    public String showEditProductForm(@PathVariable("productId") String productId, Model model) {
+        Optional<Products> product = productService.getProductById(productId);
+        if (product.isPresent()) {
+            model.addAttribute("product", product.get());
+            return "editProduct";
+        } else {
+            return "redirect:/staff/product/inventory";
+        }
+    }
+
+    @PostMapping("/update")
+    public String updateProduct(Products product) {
+        productService.updateProduct(product);
+        return "redirect:/staff/product/inventory";
+    }
+
+    @GetMapping("/inventory/{selectedProductId}")
+    public String showInventory(@PathVariable("selectedProductId") String selectedProductId, Model model) {
+        List<Products> productsList = productService.getAllProducts();
+        model.addAttribute("products", productsList);
+        model.addAttribute("selectedProductId", selectedProductId);
+        return "inventory";
     }
 
 }
