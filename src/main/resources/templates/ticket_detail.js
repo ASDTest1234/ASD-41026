@@ -96,8 +96,13 @@ class TicketDetails {
 
                 row.appendChild(cellContent);
                 this.responsesBody.appendChild(row);
+
+                this.editButton.disabled = true;
+                this.deleteButton.disabled = true;
             });
         } else {
+            this.editButton.disabled = false;
+            this.deleteButton.disabled = false;
             // If no responses found, display a message
             const row = document.createElement('tr');
             const cellContent = document.createElement('td');
@@ -112,10 +117,22 @@ class TicketDetails {
     }
 
     editTicket() {
+            // Check if the ticket can be edited
+            if (this.editButton.disabled) {
+                alert('You cannot edit this ticket because there are responses.');
+                return;
+            }
             // Navigate to the edit page for the ticket
-        window.location.href = `edit_ticket.html?ticketId=${this.ticketId}`; // Assuming you have an edit page
+            window.location.href = `edit_ticket.html?ticketId=${this.ticketId}`; // Assuming you have an edit page
     }
+
     async deleteTicket() {
+        // Check if the ticket can be deleted
+        if (this.deleteButton.disabled) {
+            alert('You cannot delete this ticket because there are responses.');
+            return; // Prevent deletion if the button is disabled
+        }
+
         const confirmDelete = confirm("Are you sure you want to delete this ticket?");
         if (!confirmDelete) {
             return; // User canceled, do nothing
@@ -144,6 +161,7 @@ class TicketDetails {
             alert('An error occurred while deleting the ticket.'); // Inform the user about the error
         }
     }
+
 }
 
 // Run when the page loads
