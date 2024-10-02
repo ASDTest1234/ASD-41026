@@ -8,37 +8,53 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #f4f4f9;
         }
         .container {
             text-align: center;
-            max-width: 600px;
+            max-width: 500px;
             padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            flex: 1; /* Takes 1 part of the flex space */
+            overflow: hidden;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            padding: 8px;
-            text-align: left;
         }
         th {
+            border: 1px solid #dddddd;
+            padding: 8px;
             background-color: #4CAF50;
             color: white;
+            text-align: center;
         }
-    </style>
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .table-container {
+            flex: 2; /* Takes 2 parts of the flex space */
+            padding: 20px;
+        }
+        .table2 {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table2 th, .table2 td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .table2 tr:hover {
+            background-color: #e2e6e9;
+        }
+  </style>
 </head>
 <body>
+
 <div class="container">
   <h1>Ticket Detail</h1>
   <table id="ticket-details-table">
@@ -50,6 +66,21 @@
     </thead>
     <tbody id="ticket-details-body">
     <!-- Ticket details will be populated here -->
+    </tbody>
+  </table>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+    <tr>
+      <th>All Responses</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td id="response_info">The responses assigned to this ticket will be displayed here.</td>
+    </tr>
     </tbody>
   </table>
 </div>
