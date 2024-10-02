@@ -16,6 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Optional;
 
+//TODO: Allocate product id by number of items already in database ie 5th item id = 005
+//TODO: Set admin id to the id of the staff adding the product automatically
+//TODO: Field validation for invalid inputs
+
 @Controller
 @RequestMapping("/staff/product")
 public class StaffProductController {
@@ -29,10 +33,9 @@ public class StaffProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(Products product, RedirectAttributes redirectAttributes) {
+    public String addProduct(Products product) {
         productService.addProduct(product);
-        redirectAttributes.addFlashAttribute("message", "Product added successfully!");
-        return "redirect:/new";
+        return "redirect:/staff/product/new";
     }
 
 }
