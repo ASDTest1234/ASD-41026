@@ -9,12 +9,22 @@ import java.util.List;
 
 @Getter
 @Setter
-@Document(collection = "cart")
+@Document(collection = "Cart")
 public class Cart {
 
     @Id
     private String id;
     private String customerId;
-    private List<Product> products;
+    private List<CartItem> items;
     private double totalPrice;
+
+    @Getter
+    @Setter
+    public static class CartItem {
+        private String productId;
+        private String productName;
+        private String productDescription;
+        private double productPrice;
+        private int quantity;  // 这里记录商品数量
+    }
 }

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CartRepository extends MongoRepository<Cart, String> {
-
-    // 查找指定customerId的购物车
+    // Custom query to find a cart by customerId
     Cart findByCustomerId(String customerId);
 }

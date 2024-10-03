@@ -21,26 +21,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { // is the security configuration and tells the system what to do.
-        return http// intercepts all URLS and filters them based on the configuration.
-                .authorizeHttpRequests(authorise ->{
-                    authorise.requestMatchers("/login").permitAll();// allows anyone to access this page
-                    authorise.requestMatchers("/admin/**").hasRole("ADMIN");// allows Admin to enter into any URl with the /admin and has the role admin
-                    authorise.requestMatchers("/staff/**").hasRole("STAFF");// allows staff to enter into any URl with the /staff and has the role staff
-                    authorise.requestMatchers("/user/**").hasRole("USER");// allows user to enter into any URl with the /user and has the role user
-                    authorise.anyRequest().authenticated(); // makes sure that the users have to be authenticated before they can access other page.
-
-                })
-                .formLogin(form -> form
-                        .loginPage("/login")// tells springboot where the login.html is
-                        .successHandler(customerSuccessHandler())// tells springboot what to do when login is successful
-                        .permitAll()
-                )
-
-                .logout((logout) -> logout
-                        .logoutUrl("/logout")// Log out URL
-                        .permitAll()
-
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())  // 使用新的方式禁用 CSRF
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll()  // 允许所有请求通过
                 )
                 .build();
     }

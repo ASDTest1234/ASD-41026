@@ -35,14 +35,13 @@
             background-color: #f2f2f2;
         }
         .btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 5px;
             background-color: #4CAF50;
             color: white;
             text-align: center;
             text-decoration: none;
-            margin-top: 20px;
             border-radius: 4px;
         }
         .btn:hover {
@@ -50,6 +49,12 @@
         }
         .total-price {
             font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
             font-weight: bold;
             margin-top: 20px;
         }
@@ -66,6 +71,8 @@
             <th>Product Name</th>
             <th>Description</th>
             <th>Price</th>
+            <th>Quantity</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody id="cartItems">
@@ -77,44 +84,64 @@
         <!-- Total price will be displayed here -->
     </div>
 
+    <div class="error-message" id="errorMessage">
+        <!-- Error message will be displayed here -->
+    </div>
+
     <a href="payment.html" class="btn">Proceed to Payment</a>
 </div>
 
 <script>
-    // Fetch the cart for customer123 and populate the table
-    function fetchCartForCustomer123() {
-        fetch("http://localhost:8080/api/cart/customer123")
+    // Fetch the cart for a given userId, or fallback to the default userId handled by the backend
+    function fetchCartForCustomer(userId = '') {
+        const url = userId ? `http://localhost:8080/api/cart?customerId=${userId}` : `http://localhost:8080/api/cart`;
+
+        console.log(`Fetching cart from URL: ${url}`);  // Log the request URL
+
+        fetch(url)
             .then(response => {
+                console.log(`Received response with status: ${response.status}`);  // Log the response status
+
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error(`Error fetching cart. Status code: ${response.status}`);
                 }
+
                 return response.json();
             })
             .then(cart => {
-                if (cart) {
+                console.log("Received cart data:", cart);  // Log the received cart data
+                if (cart && cart.items && cart.items.length > 0) {
                     populateCart(cart);
                 } else {
-                    document.getElementById('cartItems').innerHTML = '<tr><td colspan="3">No items in the cart</td></tr>';
+                    document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
+                    document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
                 }
             })
             .catch(error => {
-                console.error('Error fetching cart:', error);
-                document.getElementById('cartItems').innerHTML = '<tr><td colspan="3">Error loading cart</td></tr>';
+                console.error("Error fetching cart:", error);  // Log the error details
+                document.getElementById('errorMessage').innerText = 'Error loading cart.';
+                document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Error loading cart</td></tr>';
+                document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
             });
     }
 
     // Populate the cart table with data
     function populateCart(cart) {
-        const cartItems = cart.products;
+        const cartItems = cart.items;
         const cartItemsContainer = document.getElementById('cartItems');
         let cartHtml = '';
 
-        cartItems.forEach(product => {
+        cartItems.forEach((item, index) => {
             cartHtml += `
                 <tr>
-                    <td>${product.productName}</td>
-                    <td>${product.productDescription}</td>
-                    <td>$${product.productPrice.toFixed(2)}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.productDescription}</td>
+                    <td>$${item.productPrice.toFixed(2)}</td>
+                    <td>${item.quantity}</td>
+                    <td>
+                        <button class="btn" onclick="updateQuantity('${item.productId}', ${item.quantity - 1}, '${cart.customerId}')">-</button>
+                        <button class="btn" onclick="updateQuantity('${item.productId}', ${item.quantity + 1}, '${cart.customerId}')">+</button>
+                    </td>
                 </tr>
             `;
         });
@@ -123,8 +150,42 @@
         document.getElementById('totalPrice').innerText = 'Total Price: $' + cart.totalPrice.toFixed(2);
     }
 
-    // Call fetchCartForCustomer123 when the page loads
-    window.onload = fetchCartForCustomer123;
+    // Function to update product quantity
+    function updateQuantity(productId, newQuantity, userId = '') {
+        if (newQuantity < 1) {
+            alert("Quantity cannot be less than 1.");
+            return;
+        }
+
+        const url = `http://localhost:8080/api/cart/updateQuantity`;
+        const body = `customerId=${userId || 'testUser123'}&productId=${productId}&quantity=${newQuantity}`;
+
+        console.log(`Updating quantity for productId=${productId} to ${newQuantity}`);  // Log quantity update request
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: body
+        })
+            .then(response => {
+                if (response.ok) {
+                    fetchCartForCustomer(userId);  // Refresh the cart after updating quantity
+                } else {
+                    alert('Error updating quantity');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating quantity:', error);  // Log errors during quantity update
+            });
+    }
+
+    // Call fetchCartForCustomer on page load with optional userId (it will default to backend's default)
+    window.onload = () => {
+        const userId = '';  // Or get this from user input/session/authentication
+        fetchCartForCustomer(userId);
+    };
 </script>
 
 </body>
