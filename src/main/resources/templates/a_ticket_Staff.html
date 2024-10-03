@@ -52,6 +52,16 @@
         button:hover {
             background-color: #45a049;
         }
+        .input-container {
+            margin-top: 20px;
+        }
+        .input-field {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0; 
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+        }
   </style>
 </head>
 <body>
@@ -72,7 +82,6 @@
 
   <!-- Buttons added below the ticket details table -->
   <button id="back-button">Back</button>
-
   <button id="delete-button">Delete</button>
 </div>
 
@@ -89,6 +98,14 @@
     </tr>
     </tbody>
   </table>
+
+  <!-- Input fields and submit button -->
+  <div class="input-container">
+    <input type="text" class="input-field" id="inputField1" placeholder="Auto generated ID" />
+    <input type="text" class="input-field" id="inputField2" placeholder="Enter Response" />
+    <button id="submit-button">Submit</button>
+  </div>
+
 </div>
 
 <script src="a_ticket_Staff.js"></script>
