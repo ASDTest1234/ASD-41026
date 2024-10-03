@@ -32,6 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 dateCell.textContent = ticket.date;
                 row.appendChild(dateCell);
 
+                // Add click event to the row
+                row.addEventListener('click', function() {
+                    window.location.href = `a_ticket_Staff.html?ticketId=${ticket.ticketId}`;
+                });
+
                 tableBody.appendChild(row);
             });
 
