@@ -19,13 +19,51 @@ class TicketDetails {
         // Button elements
         this.backButton = document.getElementById('back-button');
         this.deleteButton = document.getElementById('delete-button');
+        this.submitButton = document.getElementById('submit-button');
 
         // Add event listeners for buttons
         this.backButton.addEventListener('click', () => this.goBack());
         this.deleteButton.addEventListener('click', () => this.deleteTicket());
+        this.submitButton.addEventListener('click', () => this.handleSubmit()); // Add event listener for submit
 
         // Fetch and display the ticket details and responses
         this.getTicketDetail();
+    }
+
+    async handleSubmit() {
+        const inputField1 = document.getElementById('inputField1');
+        const inputField2 = document.getElementById('inputField2');
+
+        const payload = {
+            response_id: inputField1.value,  // Assuming this is what your API requires
+            responseBody: inputField2.value,
+            ticket_id: this.ticketId // Include the ticket ID in the payload
+        };
+        console.log('Payload being sent:', payload);
+        try {
+            const response = await fetch('http://localhost:8080/minh/response', { // Update the URL as needed
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create response.');
+            }
+
+            const responseData = await response.json();
+            alert('Response created successfully.');
+            // Optionally refresh or update UI here as needed
+            inputField1.value = ''; // Clear the input fields
+            inputField2.value = '';
+            await this.getResponses(this.ticketId); // Optionally refresh responses
+
+        } catch (error) {
+            console.error('Error creating response:', error);
+            alert('An error occurred while creating the response.');
+        }
     }
 
     async getTicketDetail() {
