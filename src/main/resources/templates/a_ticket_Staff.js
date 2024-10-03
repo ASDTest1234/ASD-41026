@@ -154,7 +154,7 @@ class TicketDetails {
             alert('Ticket deleted successfully.');
 
             // Redirect to a specific page after deletion
-            window.location.href = 'my_tickets.html'; // Change to the desired page URL
+            window.location.href = 'all_tickets_Staff.html'; // Change to the desired page URL
 
         } catch (error) {
             console.error('Error deleting the ticket:', error);
