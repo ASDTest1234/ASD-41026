@@ -4,31 +4,29 @@ class TicketDetails {
     }
 
     bindElements() {
-            const urlParams = new URLSearchParams(window.location.search);
-            this.ticketId = urlParams.get('ticketId');
+        const urlParams = new URLSearchParams(window.location.search);
+        this.ticketId = urlParams.get('ticketId');
 
-            if (!this.ticketId) {
-                alert('No Ticket ID provided in the URL.');
-                return;
-            }
-
-            this.ticketDetailsBody = document.getElementById('ticket-details-body');
-            this.responsesBody = document.querySelector('.table-container tbody');
-            this.messageDisplay = document.getElementById('message');
-
-            // Button elements
-            this.backButton = document.getElementById('back-button');
-            this.editButton = document.getElementById('edit-button');
-            this.deleteButton = document.getElementById('delete-button');
-
-            // Add event listeners for buttons
-            this.backButton.addEventListener('click', () => this.goBack());
-            this.editButton.addEventListener('click', () => this.editTicket());
-            this.deleteButton.addEventListener('click', () => this.deleteTicket());
-
-            // Fetch and display the ticket details and responses
-            this.getTicketDetail();
+        if (!this.ticketId) {
+            alert('No Ticket ID provided in the URL.');
+            return;
         }
+
+        this.ticketDetailsBody = document.getElementById('ticket-details-body');
+        this.responsesBody = document.querySelector('.table-container tbody');
+        this.messageDisplay = document.getElementById('message');
+
+        // Button elements
+        this.backButton = document.getElementById('back-button');
+        this.deleteButton = document.getElementById('delete-button');
+
+        // Add event listeners for buttons
+        this.backButton.addEventListener('click', () => this.goBack());
+        this.deleteButton.addEventListener('click', () => this.deleteTicket());
+
+        // Fetch and display the ticket details and responses
+        this.getTicketDetail();
+    }
 
     async getTicketDetail() {
         try {
@@ -96,12 +94,9 @@ class TicketDetails {
 
                 row.appendChild(cellContent);
                 this.responsesBody.appendChild(row);
-
-                this.editButton.disabled = true;
-                this.deleteButton.disabled = true;
+                this.deleteButton.disabled = true; // Keep the delete button disabled if there are responses
             });
         } else {
-            this.editButton.disabled = false;
             this.deleteButton.disabled = false;
             // If no responses found, display a message
             const row = document.createElement('tr');
@@ -111,19 +106,10 @@ class TicketDetails {
             this.responsesBody.appendChild(row);
         }
     }
-    goBack() {
-            // Navigate to the previous page or a specific URL
-        window.location.href = 'all_tickets_Staff.html'; // Change to desired page URL
-    }
 
-    editTicket() {
-            // Check if the ticket can be edited
-            if (this.editButton.disabled) {
-                alert('You cannot edit this ticket because there are responses.');
-                return;
-            }
-            // Navigate to the edit page for the ticket
-            window.location.href = `edit_ticket.html?ticketId=${this.ticketId}`; // Assuming you have an edit page
+    goBack() {
+        // Navigate to the previous page or a specific URL
+        window.location.href = 'all_tickets_Staff.html'; // Change to desired page URL
     }
 
     async deleteTicket() {
