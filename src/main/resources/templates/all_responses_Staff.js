@@ -61,28 +61,33 @@ document.addEventListener('DOMContentLoaded', function() {
             const deleteButton = document.getElementById('delete-button');
             deleteButton.addEventListener('click', function() {
                 if (selectedResponseId) {
-                    // Make a DELETE request to delete the response
-                    fetch(`http://localhost:8080/minh/response/delete/${selectedResponseId}`, {
-                        method: 'DELETE'
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            // Remove the selected row from the table
-                            tableBody.removeChild(selectedRow);
-                            selectedRow = null; // Deselect after deletion
-                            selectedResponseId = ''; // Reset selectedResponseId
-                        } else {
-                            alert('Failed to delete the response.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error during deletion:', error);
-                        alert('Error during deletion.');
-                    });
+                    // Show confirmation dialog
+                    const userConfirmed = confirm('Are you sure you want to delete this response? This action cannot be undone.');
+                    if (userConfirmed) {
+                        // Make a DELETE request to delete the response
+                        fetch(`http://localhost:8080/minh/response/delete/${selectedResponseId}`, {
+                            method: 'DELETE'
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Remove the selected row from the table
+                                tableBody.removeChild(selectedRow);
+                                selectedRow = null; // Deselect after deletion
+                                selectedResponseId = ''; // Reset selectedResponseId
+                            } else {
+                                alert('Failed to delete the response.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error during deletion:', error);
+                            alert('Error during deletion.');
+                        });
+                    }
                 } else {
                     alert('Please select a row to delete.');
                 }
             });
+
         })
         .catch(error => {
             console.error('Error fetching responses:', error);
