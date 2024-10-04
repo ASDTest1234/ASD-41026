@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
             editButton.addEventListener('click', function() {
                 if (selectedResponseId) {
                     // Redirect to the edit page and pass the response_id as a query parameter
-                    window.location.href = `a_response_Staff.html?response_id=${selectedResponseId}`;
+                    window.location.href = `edit_response_Staff.html?response_id=${selectedResponseId}`;
                 } else {
                     alert('Please select a row to edit.');
                 }
