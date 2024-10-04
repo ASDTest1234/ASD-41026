@@ -2,10 +2,10 @@ package com.example.asd2.Model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -17,14 +17,16 @@ public class Cart {
     private String customerId;
     private List<CartItem> items;
     private double totalPrice;
+    private boolean stockSufficient; // Indicates if all items have sufficient stock
 
     @Getter
     @Setter
     public static class CartItem {
-        private String productId;
         private String productName;
         private String productDescription;
         private double productPrice;
-        private int quantity;  // 这里记录商品数量
+        private int quantity;
+        private String productType;
+        private boolean stockSufficient; // Indicates if this item has sufficient stock
     }
 }
