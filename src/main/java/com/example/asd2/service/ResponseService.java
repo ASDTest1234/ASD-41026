@@ -32,9 +32,9 @@ public class ResponseService {
 
                 return response;
     }
-    public Response getResponseById(String Id) {
-        return responseRepository.findById(new ObjectId(Id)).orElseThrow(() ->
-                new RuntimeException("Response not found with id: " + Id));
+    public Response getResponseById(String response_id) {
+        return responseRepository.findByResponseId(response_id).orElseThrow(() ->
+                new RuntimeException("Response not found with response_id: " + response_id));
     }
 
     public List<Response> allResponses(){
@@ -51,20 +51,17 @@ public class ResponseService {
     }
 
 
-    public Response updateResponse(String Id, String newResponseBody) {
-        // Find the existing response by OBJECTID (_id found in database)
-        Response existingResponse = responseRepository.findById(new ObjectId(Id)).orElseThrow(() ->
-                new RuntimeException("Response not found with id: " + Id));
+    public Response updateResponse(String response_id, String newResponseBody) {
+        Response existingResponse = responseRepository.findByResponseId(response_id).orElseThrow(() ->
+                new RuntimeException("Response not found with response_id: " + response_id));
 
         existingResponse.setResponse(newResponseBody);
-
         return responseRepository.save(existingResponse);
     }
-    public void deleteResponse(String Id) {
-        // Delete response using OBJECTID (_id found in database)
-            if (!responseRepository.existsById(new ObjectId(Id))) {
-                throw new RuntimeException("Response not found with id: " + Id);
-            }
-            responseRepository.deleteById(new ObjectId(Id));
+    public void deleteResponse(String response_id) {
+        Response existingResponse = responseRepository.findByResponseId(response_id).orElseThrow(() ->
+                new RuntimeException("Response not found with response_id: " + response_id));
+
+        responseRepository.delete(existingResponse); // Use the default delete
     }
 }

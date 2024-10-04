@@ -21,10 +21,10 @@ public class ResponseController {
     public ResponseEntity<Response> createResponse(@RequestBody Map<String, String> payload){
         return new ResponseEntity<Response>(responseService.createResponse(payload.get("response_id"), payload.get("responseBody"), payload.get("ticket_id")), HttpStatus.CREATED);
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<Response> getResponse(@PathVariable String id) {
+    @GetMapping("/{responseId}")
+    public ResponseEntity<Response> getResponse(@PathVariable String responseId) {
         try {
-            Response response = responseService.getResponseById(id);
+            Response response = responseService.getResponseById(responseId);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -35,16 +35,16 @@ public class ResponseController {
         return new ResponseEntity<List<Response>>(responseService.allResponses(), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Response> updateResponse(@PathVariable String id, @RequestBody Map<String, String> payload) {
+    @PutMapping("/update/{responseId}")
+    public ResponseEntity<Response> updateResponse(@PathVariable String responseId, @RequestBody Map<String, String> payload) {
         String newResponseBody = payload.get("response");
-        Response updatedResponse = responseService.updateResponse(id, newResponseBody);
+        Response updatedResponse = responseService.updateResponse(responseId, newResponseBody);
         return ResponseEntity.ok(updatedResponse);
     }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteResponse(@PathVariable String id) {
+    @DeleteMapping("/delete/{responseId}")
+    public ResponseEntity<Void> deleteResponse(@PathVariable String responseId) {
         try {
-            responseService.deleteResponse(id);
+            responseService.deleteResponse(responseId);
             return ResponseEntity.noContent().build(); // Return 204 No Content on successful deletion
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

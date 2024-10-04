@@ -5,11 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>All Responses</title>
   <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            margin: 20px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
         }
         th, td {
+            width: 150px;
+            height: 50px;
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
@@ -17,13 +33,31 @@
         th {
             background-color: #f2f2f2;
         }
-        tr:hover {
-            background-color: #f1f1f1;
+        tr {
             cursor: pointer;
+        }
+        tr.selected {
+            background-color: #cce5ff;
         }
         .loading {
             text-align: center;
             padding: 20px;
+        }
+        .fixed-buttons {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -31,21 +65,30 @@
 
 <h2>All Responses</h2>
 
-<table id="responses-table">
-  <thead>
-  <tr>
-    <th>Response ID</th>
-    <th>Response</th>
-    <th>Timestamp</th>
-    <th>Date</th>
-  </tr>
-  </thead>
-  <tbody>
-  <!-- Dynamic rows will be inserted here -->
-  </tbody>
-</table>
+<!-- Table container for scrollable fixed-size table -->
+<div class="table-container">
+  <table id="responses-table">
+    <thead>
+    <tr>
+      <th>Response ID</th>
+      <th>Response</th>
+      <th>Timestamp</th>
+      <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Dynamic rows will be inserted here -->
+    </tbody>
+  </table>
+</div>
 
 <p class="loading" id="loading-message">Loading responses...</p>
+
+<!-- Fixed button container -->
+<div class="fixed-buttons">
+  <button id="back-button">Back</button>
+  <button id="delete-button">Delete</button>
+</div>
 
 <script src="all_responses_Staff.js"></script>
 
