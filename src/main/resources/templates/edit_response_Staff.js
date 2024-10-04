@@ -11,6 +11,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     document.getElementById("submit-button").addEventListener("click", updateResponse);
+
+    // Add event listener for the reset button
+    document.getElementById("reset-button").addEventListener("click", resetResponseInput);
+
+    // Add event listener for the cancel button
+    document.getElementById("cancel-button").addEventListener("click", function() {
+        window.location.href = 'all_responses_Staff.html'; // Redirect to the specified page
+    });
 });
 
 function fetchResponseData(responseId) {
@@ -76,9 +84,18 @@ function updateResponse() {
     })
     .then(data => {
         console.log('Update successful:', data);
+        // Inform the user that the update was successful
+        alert('Response updated successfully!');
         // Optionally re-fetch the data or update the UI accordingly
     })
     .catch(error => {
         console.error('There was a problem with the update operation:', error);
+        // Inform the user if there was an error
+        alert('Failed to update the response. Please try again.');
     });
+}
+
+// Function to clear the response input field
+function resetResponseInput() {
+    document.getElementById("response-input").value = ''; // Clear the input field
 }
