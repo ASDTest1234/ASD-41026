@@ -58,6 +58,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = 'all_tickets_Staff.html';
             });
 
+            const editButton = document.getElementById('edit-button');
+            editButton.addEventListener('click', function() {
+                if (selectedResponseId) {
+                    // Redirect to the edit page and pass the response_id as a query parameter
+                    window.location.href = `a_response_Staff.html?response_id=${selectedResponseId}`;
+                } else {
+                    alert('Please select a row to edit.');
+                }
+            });
+
+
             const deleteButton = document.getElementById('delete-button');
             deleteButton.addEventListener('click', function() {
                 if (selectedResponseId) {

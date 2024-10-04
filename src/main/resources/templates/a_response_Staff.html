@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Responses</title>
+  <title>New Page with Table and Buttons</title>
   <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,11 +45,7 @@
             text-align: center;
             padding: 20px;
         }
-        .fixed-buttons {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
+        .button-container {
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
             text-align: center;
@@ -65,7 +61,7 @@
 </head>
 <body>
 
-<h2>All Responses</h2>
+<h2>Responses Table</h2>
 
 <!-- Table container for scrollable fixed-size table -->
 <div class="table-container">
@@ -86,14 +82,16 @@
 
 <p class="loading" id="loading-message">Loading responses...</p>
 
-<!-- Fixed button container -->
-<div class="fixed-buttons">
-  <button id="back-button">Back</button>
-  <button id="edit-button">Edit</button>
-  <button id="delete-button">Delete</button>
+<!-- Button container below the table -->
+<div class="button-container">
+  <button id="cancel-button">Cancel</button>
+  <button id="reset-button">Reset</button>
+  <button id="submit-button">Submit</button>
 </div>
 
-<script src="all_responses_Staff.js"></script>
+<script>
+// Script can be added here if needed
+</script>
 
 </body>
 </html>
