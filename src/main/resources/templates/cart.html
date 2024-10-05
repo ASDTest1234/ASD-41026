@@ -89,13 +89,12 @@
     </table>
 
     <div class="total-price" id="totalPrice"></div>
-    <a href="javascript:void(0);" class="btn" id="proceedButton">Proceed to Payment</a>
+    <a href="/api/order/payment?customerId=testUser123" class="btn" id="proceedButton">Proceed to Payment</a>
 </div>
 
 <script>
     const userId = 'testUser123';
 
-    // Fetch the cart data for the user and populate the cart
     function fetchCartForCustomer() {
         const url = `http://localhost:8080/api/cart?customerId=${userId}`;
 
@@ -116,7 +115,6 @@
             });
     }
 
-    // Populate the cart table with data and handle stock status
     function populateCart(cart) {
         const cartItems = cart.items;
         const cartItemsContainer = document.getElementById('cartItems');
@@ -128,34 +126,36 @@
             const isOutOfStock = !item.stockSufficient;
 
             cartHtml += `
-                <tr>
-                    <td>${item.productName}</td>
-                    <td>${item.productDescription}</td>
-                    <td>$${item.productPrice.toFixed(2)}</td>
-                    <td class="${isOutOfStock ? 'out-of-stock' : ''}">
-                        ${item.quantity}
-                        ${isOutOfStock ? '<div class="out-of-stock">Insufficient stock</div>' : ''}
-                    </td>
-                    <td>
-                        <button class="btn" onclick="updateQuantity('${item.productName}', ${item.quantity - 1})">-</button>
-                        <button class="btn" onclick="updateQuantity('${item.productName}', ${item.quantity + 1})">+</button>
-                    </td>
-                </tr>
-            `;
+            <tr>
+                <td>${item.productName}</td>
+                <td>${item.productDescription || 'N/A'}</td>
+                <td>$${(item.productPrice || 0).toFixed(2)}</td>
+                <td class="${isOutOfStock ? 'out-of-stock' : ''}">
+                    ${item.quantity}
+                    ${isOutOfStock ? '<div class="out-of-stock">Insufficient stock</div>' : ''}
+                </td>
+                <td>
+                    <button class="btn" onclick="updateQuantity('${item.productName}', ${item.quantity - 1})">-</button>
+                    <button class="btn" onclick="updateQuantity('${item.productName}', ${item.quantity + 1})">+</button>
+                </td>
+            </tr>
+        `;
 
             if (isOutOfStock) {
                 isStockSufficient = false;
             }
         });
 
-        cartItemsContainer.innerHTML = cartHtml;
-        document.getElementById('totalPrice').innerText = 'Total Price: $' + cart.totalPrice.toFixed(2);
+        // Update total price based on dynamically calculated value from backend
+        document.getElementById('totalPrice').innerText = 'Total Price: $' + (cart.totalPrice || 0).toFixed(2);
 
+        cartItemsContainer.innerHTML = cartHtml;
         proceedButton.classList.toggle('disabled-btn', !isStockSufficient);
         proceedButton.disabled = !isStockSufficient;
     }
 
-    // Update product quantity in the cart and refresh the cart display
+
+
     function updateQuantity(productName, newQuantity) {
         if (newQuantity < 1) {
             alert("Quantity cannot be less than 1.");
@@ -184,7 +184,6 @@
             });
     }
 
-    // Complete the order, clear the cart and update inventory
     document.getElementById('proceedButton').addEventListener('click', () => {
         if (document.getElementById('proceedButton').disabled) {
             return;
@@ -198,14 +197,13 @@
             .then(response => response.json())
             .then(() => {
                 alert('Order completed successfully');
-                fetchCartForCustomer(); // Refresh the cart to show it as empty
+                fetchCartForCustomer();
             })
             .catch(error => {
                 console.error('Error completing order:', error);
             });
     });
 
-    // Initialize the cart on page load
     window.onload = () => fetchCartForCustomer();
 </script>
 
