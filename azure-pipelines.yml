@@ -20,6 +20,16 @@ steps:
       java -version
     displayName: 'Check Java 17 version'
 
+  # Maven clean and test step with Java 17
+  - task: Maven@4 
+    inputs:
+      mavenPomFile: 'pom.xml'  # Adjust path to where your pom.xml is located
+      mavenOptions: '-Xmx1024m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '17'
+      jdkArchitectureOption: 'x64'
+      goals: 'clean test'  # Change to 'clean test' to run tests
+
   # Maven build step with Java 17
   - task: Maven@4
     inputs:
@@ -28,7 +38,7 @@ steps:
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '17'
       jdkArchitectureOption: 'x64'
-      goals: 'clean package'
+      goals: 'package'
 
   # Copy JAR files to the staging directory
   - task: CopyFiles@2
