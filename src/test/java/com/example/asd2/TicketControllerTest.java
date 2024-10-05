@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TicketTest { // Changed class name to TicketTest
+class TicketControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
