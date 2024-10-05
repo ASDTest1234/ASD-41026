@@ -21,4 +21,8 @@ public class ProductService {
     public List<Products> getAllProducts(){
         return productRepository.findAll();
     }
+
+    public List<Products> getSpecificProductByName(String keyword){
+        return productRepository.findProducyByName(keyword);
+    }
 }
