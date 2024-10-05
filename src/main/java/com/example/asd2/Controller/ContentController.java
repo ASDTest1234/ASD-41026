@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -33,6 +34,20 @@ public class ContentController {// controller class that
         model.addAttribute("products", productService.getAllProducts());
         return "home_user";
     }
+
+//    @GetMapping("/Search")
+//    public List<Products> searchProducts(@RequestParam("keyword") String keyword){
+//        return productService.getSpecificProductByName(keyword);
+//    }
+
+    @GetMapping("/Search")
+    public String searchProducts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
+        List<Products> products = productService.getSpecificProductByName(keyword);
+        model.addAttribute("products", products);
+        return "Search";  // The name of your Thymeleaf template
+    }
+
+
 
 
     @GetMapping("/staff/home_staff")

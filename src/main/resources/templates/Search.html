@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Product List</title>
+</head>
+<body>
+
+<!-- Search Form -->
+<form th:action="@{/Search}" method="get">
+  <label for="keyword">Search Products:</label>
+  <input type="text" id="keyword" name="keyword" placeholder="Enter keyword"/>
+  <button type="submit">Search</button>
+</form>
+
+<!-- Displaying the List of Products -->
+<h2>Product List</h2>
+<ul>
+  <!-- Loop through products and display each one -->
+  <li th:each="product : ${products}">
+    <span th:text="${product.productName}">Product Name</span>
+  </li>
+</ul>
+
+<!-- Message for empty product list -->
+<p th:if="${#lists.isEmpty(products)}">No products found.</p>
+
+</body>
+</html>

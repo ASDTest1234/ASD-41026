@@ -110,7 +110,7 @@ public class LoginControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"));
     }
-
+//
     @Test
     public void BruteForceURL() throws Exception {
         mockMvc.perform(get("/staff/home_staff"))
@@ -154,6 +154,21 @@ public class LoginControllerTest {
                 .andExpect(redirectedUrl("/login?logout"));
 
         mockMvc.perform(get("/staff/home_staff"))
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+
+    @Test
+    public void testPerms() throws Exception {
+        mockMvc.perform(post("/login")
+                        .param("username", "test@gmail.com")
+                        .param("password", "123"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/staff/home_staff"));
+
+
+        mockMvc.perform(get("/admin/home_admin"))
 
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("http://localhost/login"));
