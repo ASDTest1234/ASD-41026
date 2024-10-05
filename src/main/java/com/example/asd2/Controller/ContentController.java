@@ -10,58 +10,52 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
-public class ContentController {// controller class that
+public class ContentController {
 
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/admin/home_admin")//Get Mapping means what the URL is to get into the HTMl
-    public String handleAdmin(){
+    @GetMapping("/admin/home_admin")
+    public String handleAdmin() {
         return "home_admin";
-    }// returns the HTML when URL is entered.
-
-//    @GetMapping("/user/home_user")
-//    public String handleUser(){
-//        return "home_user";
-//    }
+    }
 
     @RequestMapping("/user/home_user")
-    public String listProducts(Model model){
-        List<Products> product = productService.getAllProducts();
-        System.out.println("products " + product);
-        model.addAttribute("products", productService.getAllProducts());
+    public String listProducts(Model model) {
+        // Retrieve all products to display in the user home page
+        List<Products> products = productService.getAllProducts();
+        model.addAttribute("products", products);
         return "home_user";
     }
 
-//    @GetMapping("/Search")
-//    public List<Products> searchProducts(@RequestParam("keyword") String keyword){
-//        return productService.getSpecificProductByName(keyword);
-//    }
-
     @GetMapping("/Search")
     public String searchProducts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
-        List<Products> products = productService.getSpecificProductByName(keyword);
+        Optional<Products> products = productService.getProductByName(keyword);
         model.addAttribute("products", products);
-        return "Search";  // The name of your Thymeleaf template
+        return "Search";
     }
 
-
-
-
     @GetMapping("/staff/home_staff")
-    public String handleStaff(){
+    public String handleStaff() {
         return "home_staff";
     }
 
-    @GetMapping("logout")
-    public String handleLogout(){return "logout";}
+    @GetMapping("/logout")
+    public String handleLogout() {
+        return "logout";
+    }
+
     @GetMapping("/login")
-    public String handleLogin(){
+    public String handleLogin() {
         return "login";
     }
 
-
-
+    @GetMapping("/cart")
+    public String handleCart() {
+        // Renders the cart view without needing any parameters
+        return "cart";
+    }
 }

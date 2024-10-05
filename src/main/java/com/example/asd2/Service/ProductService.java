@@ -4,6 +4,7 @@ import com.example.asd2.Model.Products;
 import com.example.asd2.repository.ProductRepository;
 import org.bson.Document;
 import org.bson.types.Decimal128;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +118,10 @@ public class ProductService {
 
     public Optional<Products> getProductById(String productId) {
         logger.info("Fetching product by ID: {}", productId);
-        return productRepository.findById(productId);
+
+        Query query = new Query(Criteria.where("_id").is(new ObjectId(productId)));
+        return Optional.ofNullable(mongoTemplate.findOne(query, Products.class, "Product"));
     }
+
 
 }

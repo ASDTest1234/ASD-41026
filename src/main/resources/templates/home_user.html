@@ -132,15 +132,22 @@
 <!--</html>-->
 
 
-
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Product Page</title>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
-        /* Styling for the navbar */
+        /* General page styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styling */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -149,7 +156,6 @@
             padding: 14px 20px;
         }
 
-        /* Button and input field styling */
         .navbar input[type="submit"], .navbar input[type="search"] {
             padding: 8px 16px;
             margin-right: 10px;
@@ -167,24 +173,40 @@
             border-radius: 4px;
         }
 
+        .navbar input[type="submit"].logout {
+            background-color: #f44336;
+        }
+
+        .navbar input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .navbar input[type="submit"].logout:hover {
+            background-color: #e53935;
+        }
+
+        /* Table styling */
         .TableDiv {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             flex-direction: column;
+            padding: 20px;
         }
 
         table {
             border-collapse: collapse;
-            width: 80%;
+            width: 100%;
+            max-width: 1000px;
             text-align: center;
             margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
         }
 
         th {
@@ -192,13 +214,7 @@
             color: white;
         }
 
-        p {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        /* Styling for quantity buttons and the red add button */
+        /* Quantity buttons and input styling */
         .quantity-container {
             display: flex;
             align-items: center;
@@ -220,6 +236,7 @@
             margin: 0 5px;
         }
 
+        /* Add button styling */
         .add-button {
             background-color: #f44336;
             color: white;
@@ -238,6 +255,7 @@
 
 <body>
 
+<!-- Navigation bar with buttons for cart, details, search, and logout -->
 <div class="navbar">
     <div>
         <input type="submit" value="View Cart" onclick="viewCart()" />
@@ -251,8 +269,10 @@
     </form>
 </div>
 
-<p>List of products</p>
+<!-- Page heading -->
+<p style="text-align: center; font-size: 24px; font-weight: bold;">List of Products</p>
 
+<!-- Product table containing product details and add-to-cart options -->
 <div class="TableDiv">
     <table>
         <thead>
@@ -267,6 +287,7 @@
         </tr>
         </thead>
         <tbody>
+        <!-- Loop over products in the server response to display each product's details -->
         <tr th:each="product : ${products}">
             <td th:text="${product.productName}">Product Name</td>
             <td th:text="${product.productType}">Product Type</td>
@@ -283,7 +304,7 @@
             <td>
                 <button class="add-button"
                         th:attr="data-product-id=${product.product_Id}"
-                        onclick="addToCart('testUser123', this.getAttribute('data-product-id'), document.getElementById('quantity_' + this.getAttribute('data-product-id')).value)">
+                        onclick="addToCart(this.getAttribute('data-product-id'), document.getElementById('quantity_' + this.getAttribute('data-product-id')).value)">
                     Add
                 </button>
             </td>
@@ -293,26 +314,40 @@
 </div>
 
 <script>
-    function decreaseQuantity(quantityId) {
-        const quantityInput = document.getElementById(quantityId);
-        if (quantityInput.value > 1) {
-            quantityInput.value--;
+    /**
+     * Fetches the current logged-in user ID and assigns it to a global variable
+     */
+    fetch('/user/currentUserId')
+        .then(response => response.json())
+        .then(data => {
+            var userId = data.userId || 'Guest';
+            console.log("User ID retrieved from backend:", userId);
+
+            // Store the user ID globally for future reference
+            window.userId = userId;
+        })
+        .catch(error => {
+            console.error("Error fetching user ID:", error);
+        });
+
+    /**
+     * Adds a product to the cart by sending a POST request with the product ID and quantity
+     */
+    function addToCart(productId, quantity) {
+        // Check if user ID is valid before proceeding
+        if (!window.userId || window.userId === 'Guest') {
+            alert("User ID not found. Please log in.");
+            return;
         }
-    }
 
-    function increaseQuantity(quantityId) {
-        const quantityInput = document.getElementById(quantityId);
-        quantityInput.value++;
-    }
+        console.log("Adding to cart with Customer ID:", window.userId);
 
-    function addToCart(customerId, productId, quantity) {
-        console.log(`Adding to cart - Customer ID: ${customerId}, Product ID: ${productId}, Quantity: ${quantity}`);
         fetch('/product/addToCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `customerId=${customerId}&productId=${productId}&quantity=${quantity}`
+            body: `customerId=${window.userId}&productId=${productId}&quantity=${quantity}`
         })
             .then(response => {
                 if (response.ok) {
@@ -322,7 +357,7 @@
                 }
             })
             .then(data => {
-                alert(data);
+                alert(data);  // Notify the user of the successful addition
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -330,8 +365,29 @@
             });
     }
 
+    /**
+     * Opens the cart page without passing parameters, relying on the cart page to fetch userId itself
+     */
     function viewCart() {
-        window.location.href = '/api/cart?customerId=testUser123';
+        window.location.href = '/cart';
+    }
+
+    /**
+     * Increases the quantity of a product
+     */
+    function increaseQuantity(quantityId) {
+        const quantityInput = document.getElementById(quantityId);
+        quantityInput.value++;
+    }
+
+    /**
+     * Decreases the quantity of a product
+     */
+    function decreaseQuantity(quantityId) {
+        const quantityInput = document.getElementById(quantityId);
+        if (quantityInput.value > 1) {
+            quantityInput.value--;
+        }
     }
 </script>
 
