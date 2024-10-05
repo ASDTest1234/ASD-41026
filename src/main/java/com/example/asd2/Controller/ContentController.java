@@ -27,24 +27,24 @@ public class ContentController {// controller class that
 //        return "home_user";
 //    }
 
-    @RequestMapping("/user/home_user")
-    public String listProducts(Model model){
-        List<Products> product = productService.getAllProducts();
-        System.out.println("products " + product);
-        model.addAttribute("products", productService.getAllProducts());
-        return "home_user";
-    }
+//    @RequestMapping("/user/home_user")
+//    public String listProducts(Model model){
+//        List<Products> product = productService.getAllProducts();
+//        System.out.println("products " + product);
+//        model.addAttribute("products", productService.getAllProducts());
+//        return "home_user";
+//    }
 
 //    @GetMapping("/Search")
 //    public List<Products> searchProducts(@RequestParam("keyword") String keyword){
 //        return productService.getSpecificProductByName(keyword);
 //    }
 
-    @GetMapping("/Search")
+    @GetMapping("/user/home_user")
     public String searchProducts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
         List<Products> products = productService.getSpecificProductByName(keyword);
         model.addAttribute("products", products);
-        return "Search";  // The name of your Thymeleaf template
+        return "home_user";  // The name of your Thymeleaf template
     }
 
 

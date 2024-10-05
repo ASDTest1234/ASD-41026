@@ -120,4 +120,8 @@ public class ProductService {
         return productRepository.findById(productId);
     }
 
+    public List<Products> getSpecificProductByName(String keyword){
+        return productRepository.findProducyByName(keyword);
+    }
+
 }
