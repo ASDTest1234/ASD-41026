@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collection;
 
-
 @Component
 public class CustomerAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -18,7 +17,7 @@ public class CustomerAuthenticationSuccessHandler implements AuthenticationSucce
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // Retrieve the roles from the authentication object
         Collection<?> authorities = authentication.getAuthorities();
-        String redirectURL = "";
+        String redirectURL = request.getContextPath();
 
         // Redirect based on user role
         if (authorities.stream().anyMatch(role -> role.toString().equals("ROLE_ADMIN"))) {

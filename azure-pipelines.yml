@@ -20,6 +20,11 @@ steps:
       java -version
     displayName: 'Check Java 17 version'
 
+  - script: |
+      echo "Fetching agent public IP..."
+      AGENT_IP=$(curl -s https://api.ipify.org)
+      echo "Public IP of the build agent: $AGENT_IP"
+      
   # Maven build step with Java 17
   - task: Maven@4
     inputs:

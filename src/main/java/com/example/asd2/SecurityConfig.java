@@ -127,6 +127,8 @@ public class SecurityConfig {
                     authorise.requestMatchers("/login").permitAll();// allows anyone to access this page
                     authorise.requestMatchers("/register").permitAll();
                     authorise.requestMatchers("/register2").permitAll();
+                    authorise.requestMatchers("/product/**").permitAll();
+                    authorise.requestMatchers("/Search").permitAll();
                     authorise.requestMatchers("/admin/**").hasRole("ADMIN");// allows Admin to enter into any URl with the /admin and has the role admin
                     authorise.requestMatchers("/staff/**").hasRole("STAFF");// allows staff to enter into any URl with the /staff and has the role staff
                     authorise.requestMatchers("/user/**").hasRole("USER");// allows user to enter into any URl with the /user and has the role user
@@ -146,6 +148,9 @@ public class SecurityConfig {
                         .permitAll()
 
                 )
+                .exceptionHandling(except -> except
+                        .accessDeniedPage("/Error"))
+
                 .build();
     }
 
