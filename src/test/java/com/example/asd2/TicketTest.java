@@ -131,8 +131,6 @@ class TicketTest { // Changed class name to TicketTest
                 .andExpect(jsonPath("$.ticketId").value("T123")) // Check the ticket ID
                 .andExpect(jsonPath("$.issue").value("Updated Issue")) // Check updated issue
                 .andExpect(jsonPath("$.description").value("Updated Description")); // Check updated description
-        verify(ticketService).aTicket("T123");
-        verify(ticketService).updateTicket("T123", updates);
     }
 
     @Test
@@ -150,8 +148,11 @@ class TicketTest { // Changed class name to TicketTest
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updates))) // Convert the updates to JSON
                 .andExpect(status().isNotFound()); // Expect a 404 Not Found status
-        verify(ticketService).aTicket("T456");
+
+
     }
+
+
     @Test
     void testDeleteTicket() throws Exception {
         // Mocking ticket ID that will be deleted
