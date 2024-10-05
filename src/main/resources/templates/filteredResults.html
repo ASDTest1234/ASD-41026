@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<h2>Search Results for "{{ keyword }}"</h2>
+
+<ul>
+    <li th:each="product : ${products}">
+        <p th:text="${product.productName}"></p>
+    </li>
+</ul>
+</body>
+</html>
