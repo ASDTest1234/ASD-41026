@@ -135,13 +135,12 @@
 
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-
 <head>
     <title>User Product Page</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
-        /* Styles for the navbar */
+        /* Styling for the navbar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -150,12 +149,7 @@
             padding: 14px 20px;
         }
 
-        .navbar form, .navbar div {
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Style for the buttons and inputs */
+        /* Button and input field styling */
         .navbar input[type="submit"], .navbar input[type="search"] {
             padding: 8px 16px;
             margin-right: 10px;
@@ -173,21 +167,6 @@
             border-radius: 4px;
         }
 
-        /* Style for the logout button */
-        .navbar input[type="submit"].logout {
-            background-color: #f44336;
-        }
-
-        /* Change background on hover */
-        .navbar input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        .navbar input[type="submit"].logout:hover {
-            background-color: #e53935;
-        }
-
-        /* Center the table within the page */
         .TableDiv {
             display: flex;
             justify-content: center;
@@ -196,7 +175,6 @@
             flex-direction: column;
         }
 
-        /* Style for the table */
         table {
             border-collapse: collapse;
             width: 80%;
@@ -214,73 +192,148 @@
             color: white;
         }
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #ddd;
-        }
-
         p {
             text-align: center;
             font-size: 24px;
             font-weight: bold;
+        }
+
+        /* Styling for quantity buttons and the red add button */
+        .quantity-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-container button {
+            padding: 5px;
+            font-size: 16px;
+            background-color: #ddd;
+            border: none;
+            cursor: pointer;
+        }
+
+        .quantity-container input {
+            width: 40px;
+            text-align: center;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            margin: 0 5px;
+        }
+
+        .add-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            background-color: #e53935;
         }
     </style>
 </head>
 
 <body>
 
-<!-- Top Navigation Bar -->
 <div class="navbar">
-    <!-- Left side of the navbar -->
     <div>
-        <input type="submit" value="View Cart" />
+        <input type="submit" value="View Cart" onclick="viewCart()" />
         <input type="submit" value="View Details" />
     </div>
-
-    <!-- Center: Search bar -->
     <label>
         <input type="search" name="search" placeholder="Search..."/>
     </label>
-
-    <!-- Right side: Logout form -->
     <form th:action="@{/logout}" method="post">
         <input class="logout" type="submit" value="Logout"/>
     </form>
 </div>
 
-<!-- Product List Section -->
-<p th:text="'List of products'"></p>
+<p>List of products</p>
 
-<div class="TableDiv" th:if="${ not #lists.isEmpty(products) }">
+<div class="TableDiv">
     <table>
         <thead>
         <tr>
-
             <th>Product Name</th>
             <th>Type</th>
             <th>Stock</th>
             <th>Price</th>
             <th>Description</th>
+            <th>Quantity</th>
             <th>Add to Cart</th>
-
         </tr>
         </thead>
         <tbody>
         <tr th:each="product : ${products}">
-
-            <td th:text="${product.productName}"></td>
-            <td th:text="${product.productType}"></td>
-            <td th:text="${product.productStock}"></td>
-            <td th:text="@{ '$ ' + ${product.productPrice}}"></td>
-            <td th:text="${product.productDescription}"></td>
+            <td th:text="${product.productName}">Product Name</td>
+            <td th:text="${product.productType}">Product Type</td>
+            <td th:text="${product.productStock}">Stock</td>
+            <td th:text="@{'$' + ${product.productPrice}}">Price</td>
+            <td th:text="${product.productDescription}">Description</td>
+            <td>
+                <div class="quantity-container">
+                    <button onclick="decreaseQuantity('quantity_${product.product_Id}')">-</button>
+                    <input th:id="'quantity_' + ${product.product_Id}" type="number" value="1" min="1"/>
+                    <button onclick="increaseQuantity('quantity_${product.product_Id}')">+</button>
+                </div>
+            </td>
+            <td>
+                <button class="add-button"
+                        th:attr="data-product-id=${product.product_Id}"
+                        onclick="addToCart('testUser123', this.getAttribute('data-product-id'), document.getElementById('quantity_' + this.getAttribute('data-product-id')).value)">
+                    Add
+                </button>
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
 
+<script>
+    function decreaseQuantity(quantityId) {
+        const quantityInput = document.getElementById(quantityId);
+        if (quantityInput.value > 1) {
+            quantityInput.value--;
+        }
+    }
+
+    function increaseQuantity(quantityId) {
+        const quantityInput = document.getElementById(quantityId);
+        quantityInput.value++;
+    }
+
+    function addToCart(customerId, productId, quantity) {
+        console.log(`Adding to cart - Customer ID: ${customerId}, Product ID: ${productId}, Quantity: ${quantity}`);
+        fetch('/product/addToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `customerId=${customerId}&productId=${productId}&quantity=${quantity}`
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error("Failed to add product to cart");
+                }
+            })
+            .then(data => {
+                alert(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding product to cart');
+            });
+    }
+
+    function viewCart() {
+        window.location.href = '/api/cart?customerId=testUser123';
+    }
+</script>
+
 </body>
 </html>
-

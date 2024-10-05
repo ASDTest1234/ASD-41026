@@ -1,52 +1,50 @@
 package com.example.asd2.Controller;
 
-import com.example.asd2.Model.Products;
-import com.example.asd2.Model.Users;
+import com.example.asd2.Service.CartService;
 import com.example.asd2.Service.ProductService;
+import com.example.asd2.Model.Products;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/product")
 public class ProductController {
+
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CartService cartService;
+
     @GetMapping("/{ProductName}")
     public ResponseEntity<Optional<Products>> searchProductName(@PathVariable String ProductName){
-//        return new ResponseEntity<Optional<Users>>(Optional.ofNullable(userService.getUserByID(ID)), HttpStatus.OK);
-        return new ResponseEntity<Optional<Products>>(productService.getProductByName(ProductName), HttpStatus.OK);
+        return new ResponseEntity<>(productService.getProductByName(ProductName), HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<Products>> getAllProducts(){
-        List<Products> product = productService.getAllProducts();  // Fetch all users from the database
-        return new ResponseEntity<>(product, HttpStatus.OK);  // Return the users in the response
+        List<Products> products = productService.getAllProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @RequestMapping("/products")
-    public String listProducts(Model model){
-        List<Products> product = productService.getAllProducts();
-        System.out.println("products " + product);
-        model.addAttribute("products", productService.getAllProducts());
-        return "UserProductPage";
+    // 添加到购物车的端点
+    @PostMapping("/addToCart")
+    public ResponseEntity<String> addToCart(
+            @RequestParam String customerId,
+            @RequestParam String productId,
+            @RequestParam int quantity) {
+        try {
+            cartService.addToCart(customerId, productId, quantity);
+            return new ResponseEntity<>("Product added to cart", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to add product to cart: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-//    @RequestMapping("/user/home_user")
-//    public String listProducts(Model model){
-//        List<Products> product = productService.getAllProducts();
-//        System.out.println("products " + product);
-//        model.addAttribute("products", productService.getAllProducts());
-//        return "UserProductPage";
-//    }
 }
