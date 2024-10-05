@@ -26,9 +26,12 @@ public class TicketController {
         return new ResponseEntity<List<Ticket>>(ticketService.allTickets(), HttpStatus.OK);
     }
     @GetMapping("/{ticket_id}")
-    public ResponseEntity<Optional<Ticket>> searchATicket(@PathVariable String ticket_id){
-        return new ResponseEntity<Optional<Ticket>>(ticketService.aTicket(ticket_id), HttpStatus.OK);
+    public ResponseEntity<Ticket> searchATicket(@PathVariable String ticket_id) {
+        Optional<Ticket> ticket = ticketService.aTicket(ticket_id);
+        return ticket.map(ResponseEntity::ok) // if present, return it with a 200 status
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // return 404 if not found
     }
+
     @GetMapping("/mytickets/{customer_id}")
     public ResponseEntity<List<Ticket>> getTicketsByCustomerId(@PathVariable("customer_id") String customerId) {
         List<Ticket> tickets = ticketService.myTickets(customerId);
