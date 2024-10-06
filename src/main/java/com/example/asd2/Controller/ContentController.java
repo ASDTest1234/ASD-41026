@@ -31,7 +31,7 @@ public class ContentController {// controller class that
         System.out.println("products " + productService.getAllProducts());
         //storing stuff into the products so it can be accessed in the HTMl page by thymeleaf.
         model.addAttribute("products", products);
-        return "home_user";// returning the HTML page. 
+        return "home_user";// returning the HTML page.
     }
 
 

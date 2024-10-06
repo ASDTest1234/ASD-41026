@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,6 +30,8 @@ public class UserBrowsingTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private UserService userService;
 
 
     @Test
@@ -47,7 +50,7 @@ public class UserBrowsingTest {
         // Act: Perform a GET request to retrieve products by keyword "Product1"
         mockMvc.perform(get("/user/home_user")
                         .session(session)
-                        .param("keyword", "Pasta"))
+                        .param("filter", "Pasta"))
 
                 .andExpect(status().isOk())  // Expect HTTP 200 OK
                 .andExpect(view().name("home_user"))  // Expect the "home_user" view to be returned
@@ -57,10 +60,34 @@ public class UserBrowsingTest {
                 ));
     }
 
+    @Test
+    public void testSearchProductsByWrongName() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        mockMvc.perform(post("/login")
+                        .param("username", "user@gmail.com")
+                        .param("password", "123")
+                        .session(session))
+
+                .andExpect(status().is3xxRedirection());
+
+
+        String valueAsString = "123.2";
+        BigDecimal bigDecimalValue = new BigDecimal(valueAsString);
+
+        //getting the same URL but posting a result of wrong
+        mockMvc.perform(get("/user/home_user")
+                        .session(session)
+                        .param("filter", "Wrong"))
+
+                .andExpect(status().isOk())  // Expect HTTP 200 OK
+                .andExpect(view().name("home_user"))  // Expect the "home_user" view to be returned
+                .andExpect(model().attribute("products", hasSize(0)));  // Assert that one product is returned
+
+    }
+
 
 
     @Test
-
     public void testBrowsing() throws Exception {
         MockHttpSession session = new MockHttpSession();
 
@@ -82,4 +109,51 @@ public class UserBrowsingTest {
                 .andExpect(status().isForbidden());
 
     }
+
+    @Test
+    public void testDefaultProductsTable() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        mockMvc.perform(post("/login")
+                        .param("username", "user@gmail.com")
+                        .param("password", "123")
+                        .session(session))
+
+                .andExpect(status().is3xxRedirection());
+
+
+        //getting the same URL but posting a result of wrong
+        mockMvc.perform(get("/user/home_user")
+                        .session(session))
+
+                .andExpect(status().isOk())  // Expect HTTP 200 OK
+                .andExpect(view().name("home_user"));  // Expect the "home_user" view to be returned
+
+    }
+
+    @Test
+    public void testForbiddenURLs() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        mockMvc.perform(post("/login")
+                        .param("username", "user@gmail.com")
+                        .param("password", "123")
+                        .session(session))
+
+                .andExpect(status().is3xxRedirection());
+
+
+        //getting the same URL but posting a result of wrong
+        mockMvc.perform(get("/staff/home_staff")
+                        .session(session))
+                .andExpect(status().isForbidden());  // Expect HTTP 200 OK
+
+        //getting the same URL but posting a result of wrong
+        mockMvc.perform(get("/admin/home_admin")
+                        .session(session))
+                .andExpect(status().isForbidden());  // Expect HTTP 200 OK
+
+    }
+
+
+
+
 }
