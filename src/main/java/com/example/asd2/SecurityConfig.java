@@ -115,6 +115,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/staff/**").hasRole("STAFF")
                         .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/minh/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
