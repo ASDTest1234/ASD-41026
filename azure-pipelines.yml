@@ -32,7 +32,7 @@ steps:
 
   # Maven build step with Java 17
   - task: Maven@4
-    displayName: 'Run Tests with Maven'
+    displayName: 'Test'
     inputs:
       mavenPomFile: 'pom.xml'  # Adjust the path to where your pom.xml is located
       mavenOptions: '-Xmx1024m'
