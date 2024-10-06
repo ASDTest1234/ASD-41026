@@ -3,8 +3,17 @@
 <head>
     <title>Product List</title>
     <style>
-        .highlighted {
-            background-color: lightskyblue;
+        .product-row {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .selected {
+            background-color: #f0f0f0;
+        }
+        .disabled {
+            background-color: #ccc;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -20,40 +29,41 @@
     </form>
 </div>
 <br>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Stock</th>
-        <th>Price</th>
-        <th>Type</th>
-        <th>Admin ID</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="product : ${products}" th:class="${product.product_Id == selectedProductId ? 'highlighted' : ''}">
-        <td th:text="${product.product_Id}">ID</td>
-        <td th:text="${product.productName}">Name</td>
-        <td th:text="${product.productDescription}">Description</td>
-        <td th:text="${product.productStock}">Stock</td>
-        <td th:text="${product.productPrice}">Price</td>
-        <td th:text="${product.productType}">Type</td>
-        <td th:text="${product.adminID}">Admin ID</td>
-        <td>
-            <form th:action="@{/staff/product/edit/{productId}(productId=${product.product_Id})}" method="get">
-                <button type="submit">Edit</button>
-            </form>
-            <!-- Add a select link to highlight the product -->
-            <form th:action="@{/staff/product/inventory/{productId}(productId=${product.product_Id})}" method="get">
-                <button type="submit">Select</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div>
+    <ul id="productList">
+        <c:forEach var="product" items="${products}">
+            <li class="product-row" onclick="selectProduct('${product.product_Id}')" data-id="${product.product_Id}">
+                <strong>${product.productName}</strong> - ${product.productDescription} - ${product.productPrice}
+            </li>
+        </c:forEach>
+    </ul>
+</div>
+<button id="editButton" class="disabled" onclick="editProduct()" disabled>Edit</button>
 
+<form id="editForm" action="/staff/product/edit" method="get" style="display:none;">
+    <input type="hidden" name="productId" id="selectedProductId">
+</form>
+<script>
+    let selectedProductId = "";
+    function selectProduct(productId) {
+        document.querySelectorAll('.product-row').forEach(item => {
+            item.classList.remove('selected');
+        });
+
+        const selectedRow = document.querySelector(`[data-id="${productId}"]`);
+        selectedRow.classList.add('selected');
+
+        selectedProductId = productId;
+        document.getElementById('selectedProductId').value = productId;
+
+        const editButton = document.getElementById('editButton');
+        editButton.classList.remove('disabled');
+        editButton.disabled = false;
+    }
+
+    function editProduct() {
+        document.getElementById('editForm').submit();
+    }
+</script>
 </body>
 </html>

@@ -30,7 +30,7 @@ public class StaffProductController {
     public String showInventory(Model model) {
         List<Products> productsList = productService.getAllProducts();
         model.addAttribute("products", productsList);
-        model.addAttribute("selectedProductId", ""); // No product selected initially
+        model.addAttribute("selectedProductId", "");
         return "inventory";
     }
 
@@ -46,29 +46,20 @@ public class StaffProductController {
         return "redirect:/staff/product/new";
     }
 
-    @GetMapping("/edit/{productId}")
-    public String showEditProductForm(@PathVariable("productId") String productId, Model model) {
+    @GetMapping("/edit")
+    public String showEditProductForm(@RequestParam("productId") String productId, Model model) {
         Optional<Products> product = productService.getProductById(productId);
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
-            return "editProduct";
-        } else {
-            return "redirect:/staff/product/inventory";
+            return "edit_product";
         }
+        return "redirect:/staff/product/inventory";
     }
 
     @PostMapping("/update")
     public String updateProduct(Products product) {
-        productService.updateProduct(product);
+        productService.addProduct(product);
         return "redirect:/staff/product/inventory";
     }
-
-    @GetMapping("/inventory/{selectedProductId}")
-    public String showInventory(@PathVariable("selectedProductId") String selectedProductId, Model model) {
-        List<Products> productsList = productService.getAllProducts();
-        model.addAttribute("products", productsList);
-        model.addAttribute("selectedProductId", selectedProductId);
-        return "inventory";
-    }
-
+    
 }
