@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Page with Table and Buttons</title>
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            margin: 20px;
+            padding-bottom: 60px;
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            width: 150px;
+            height: 50px;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr {
+            cursor: pointer;
+        }
+        tr.selected {
+            background-color: #cce5ff;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        .button-container {
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+  </style>
+</head>
+<body>
+
+<h2>Responses Table</h2>
+
+<!-- Table container for scrollable fixed-size table -->
+<div class="table-container">
+  <table id="responses-table">
+    <thead>
+    <tr>
+      <th>Response ID</th>
+      <th>Response</th>
+      <th>Timestamp</th>
+      <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Dynamic rows will be inserted here -->
+    </tbody>
+  </table>
+</div>
+
+<p class="loading" id="loading-message">Loading responses...</p>
+
+<!-- Button container below the table -->
+<div class="button-container">
+  <button id="cancel-button">Cancel</button>
+  <button id="reset-button">Reset</button>
+  <button id="submit-button">Submit</button>
+</div>
+
+<!-- Link to the external JavaScript file -->
+<script src="edit_response_Staff.js"></script>
+
+</body>
+</html>
