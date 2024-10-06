@@ -19,15 +19,17 @@ class support_ticket {
         this.descriptionInput = document.getElementById('description');
         this.submitButton = document.getElementById('submit-button');
         this.resetButton = document.getElementById('reset-button');
-        this.cancelButton = document.getElementById('cancel-button'); // Bind cancel button
+        this.cancelButton = document.getElementById('cancel-button');
+        this.viewTicketsButton = document.getElementById('view-tickets-button');
         this.dateDisplay = document.getElementById('date-display');
-        this.messageDisplay = document.getElementById('message'); // Bind message display
+        this.messageDisplay = document.getElementById('message');
 
         this.dateDisplay.textContent = this.ticketData.date;
 
         this.submitButton.addEventListener('click', () => this.submit());
         this.resetButton.addEventListener('click', () => this.reset());
-        this.cancelButton.addEventListener('click', () => this.cancel()); // Add cancel event listener
+        this.cancelButton.addEventListener('click', () => this.cancel());
+        this.viewTicketsButton.addEventListener('click', () => this.viewMyTickets());
 
         // Add event listeners for input fields to toggle display text
         this.addInputListeners();
@@ -123,6 +125,10 @@ class support_ticket {
         this.messageDisplay.textContent = 'Returning to homepage...';
         // Optionally, you could add a redirect or hide the form as needed here
     }
+    viewMyTickets() {
+        window.location.href = 'my_tickets.html';
+    }
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {

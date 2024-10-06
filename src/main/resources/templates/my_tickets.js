@@ -6,10 +6,12 @@ class MyTickets {
     bindElements() {
         this.customerIdInput = document.getElementById('customer-id');
         this.searchButton = document.getElementById('search-button');
+        this.createTicketButton = document.getElementById('create-ticket-button');
         this.messageDisplay = document.getElementById('message');
-        this.ticketInfoCell = document.getElementById('ticket_info'); // Cell where ticket info will be displayed
+        this.ticketInfoCell = document.getElementById('ticket_info');
 
         this.searchButton.addEventListener('click', () => this.searchTickets());
+        this.createTicketButton.addEventListener('click', () => this.createTicket());
         this.addInputListeners();
     }
 
@@ -108,6 +110,9 @@ class MyTickets {
         });
 
         this.ticketInfoCell.appendChild(table);
+    }
+    createTicket() {
+        window.location.href = 'support_ticket.html';
     }
 }
 
