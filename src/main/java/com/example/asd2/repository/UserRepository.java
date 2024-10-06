@@ -9,9 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends MongoRepository<Users, String> {
+    //find a user based on their email .
     Users findByEmail(String email);
 
     //List<Users> findBySpecificEmail(String email);
 
+    // finds users based on their userID
     Optional<Users> findByUserID(String userID);
 }

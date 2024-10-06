@@ -11,10 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends MongoRepository<Products, String> {
+    // find the product by their name.
     Optional<Products> findByProductName(String productName);
 
+    // does a MongoDB Query to filter the results based on the Keyword.
     @Query("{ 'productName': { $regex: ?0 }}")
-    List<Products> findProducyByName(String Keyword);
+    List<Products> findProducyByName(String filter);
 }
 
 

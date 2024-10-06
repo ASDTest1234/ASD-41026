@@ -135,6 +135,7 @@ public class SecurityConfig {
                     authorise.anyRequest().authenticated(); // makes sure that the users have to be authenticated before they can access other page.
 
                 })
+                //disabling Cross Site Request Forgery for testing.
                 .csrf(csrf -> csrf.disable())
 
                 .formLogin(form -> form
@@ -177,7 +178,7 @@ public class SecurityConfig {
 //
 //    }
 
-
+    //implmenting the AuthenticationSuccessHandler to take the Customer one instead, automatic configurations will be done by Bean
     @Bean
     public AuthenticationSuccessHandler customerSuccessHandler() {
         return new CustomerAuthenticationSuccessHandler();

@@ -20,15 +20,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
+    //Overriding the UserDetails so it takes the information given from the userRepository
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Users user = userRepository.findByEmail(email);
-
+        //checks if there is a user
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-
+        //return the user's email and password and role.
         return new User(user.getEmail(), user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole())));
     }

@@ -120,8 +120,9 @@ public class ProductService {
         return productRepository.findById(productId);
     }
 
-    public List<Products> getSpecificProductByName(String keyword){
-        return productRepository.findProducyByName(keyword);
+    // gets a list of products dependent on the variables that is given.
+    public List<Products> getSpecificProductByName(String filter){
+        return productRepository.findProducyByName(filter);
     }
 
 }

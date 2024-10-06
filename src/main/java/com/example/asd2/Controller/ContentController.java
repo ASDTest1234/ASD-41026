@@ -22,33 +22,17 @@ public class ContentController {// controller class that
         return "home_admin";
     }// returns the HTML when URL is entered.
 
-//    @GetMapping("/user/home_user")
-//    public String handleUser(){
-//        return "home_user";
-//    }
-
-//    @RequestMapping("/user/home_user")
-//    public String listProducts(Model model){
-//        List<Products> product = productService.getAllProducts();
-//        System.out.println("products " + product);
-//        model.addAttribute("products", productService.getAllProducts());
-//        return "home_user";
-//    }
-
-//    @GetMapping("/Search")
-//    public List<Products> searchProducts(@RequestParam("keyword") String keyword){
-//        return productService.getSpecificProductByName(keyword);
-//    }
 
     @GetMapping("/user/home_user")
-    public String searchProducts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
+    //the RequestParam makes sure there is input set into the URL, so it's like "http://localhost:8080/user/home_user?keyword
+    public String searchProducts(@RequestParam(value = "filter", required = false, defaultValue = "") String keyword, Model model) {
+        //using the product Service to find the product by it's name
         List<Products> products = productService.getSpecificProductByName(keyword);
         System.out.println("products " + productService.getAllProducts());
+        //storing stuff into the products so it can be accessed in the HTMl page by thymeleaf.
         model.addAttribute("products", products);
-        return "home_user";  // The name of your Thymeleaf template
+        return "home_user";// returning the HTML page. 
     }
-
-
 
 
     @GetMapping("/staff/home_staff")

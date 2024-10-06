@@ -22,12 +22,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository; // Direct use of userRepository for /all
 
-//    @GetMapping("/email/{email}")
-//    public ResponseEntity<Users> getUserByEmail(@PathVariable String email) {
-//        Optional<Users> user = userService.getUserByEmail(email);
-//        return user.map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
 
 
 //    @GetMapping("/all")

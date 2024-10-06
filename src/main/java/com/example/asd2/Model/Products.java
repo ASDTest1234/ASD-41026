@@ -21,7 +21,7 @@ public class Products {
     private String productName;
     private String productDescription;
     private int productStock;
-    private BigDecimal productPrice;
+    private BigDecimal productPrice; // big Decimal because its to do with price and I think I've read using floats is a wrong choice here.
     private String productType;
     private String adminID;
 }
