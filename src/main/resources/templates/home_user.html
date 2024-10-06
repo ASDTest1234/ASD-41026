@@ -1,54 +1,395 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+
+<!--    <form th:action="@{/logout}" method="post">-->
+<!--        <input type="submit" value="logout" />-->
+
+<!--    </form>-->
+
+
+<!--    <input type="submit" value="view Cart" />-->
+<!--    <input type="submit" value="view details" />-->
+<!--    <label>-->
+<!--        <input type="search" name="search" placeholder="search"/>-->
+<!--    </label>-->
+<!--</head>-->
+
+<!--<h1>Product Dashboard</h1>-->
+<!--<table border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>ID</th>-->
+<!--        <th>Product</th>-->
+<!--        <th>Image</th>-->
+<!--        <th>Cart</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    &lt;!&ndash; Hardcoded rows &ndash;&gt;-->
+<!--    <tr>-->
+<!--        <td>1</td>-->
+<!--        <td>Product A</td>-->
+<!--        <td><img src="https://via.placeholder.com/100" alt="Product A Image"/></td>-->
+<!--        <td><button>Add to Cart</button></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td>2</td>-->
+<!--        <td>Product B</td>-->
+<!--        <td><img src="https://via.placeholder.com/100" alt="Product B Image"/></td>-->
+<!--        <td><button>Add to Cart</button></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td>3</td>-->
+<!--        <td>Product C</td>-->
+<!--        <td><img src="https://via.placeholder.com/100" alt="Product C Image"/></td>-->
+<!--        <td><button>Add to Cart</button></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Page with Navbar</title>-->
+<!--    <style>-->
+<!--        /* Style for the navbar */-->
+<!--        .navbar {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            background-color: #333;-->
+<!--            padding: 14px 20px;-->
+<!--        }-->
+
+<!--        .navbar form, .navbar div {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        /* Style for the buttons and inputs */-->
+<!--        .navbar input[type="submit"], .navbar input[type="search"] {-->
+<!--            padding: 8px 16px;-->
+<!--            margin-right: 10px;-->
+<!--            border: none;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .navbar input[type="submit"] {-->
+<!--            background-color: #4CAF50;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .navbar input[type="search"] {-->
+<!--            border: 1px solid #ccc;-->
+<!--            border-radius: 4px;-->
+<!--        }-->
+
+<!--        /* Style for the logout button */-->
+<!--        .navbar input[type="submit"].logout {-->
+<!--            background-color: #f44336;-->
+<!--        }-->
+
+<!--        /* Change background on hover */-->
+<!--        .navbar input[type="submit"]:hover {-->
+<!--            background-color: #45a049;-->
+<!--        }-->
+
+<!--        .navbar input[type="submit"].logout:hover {-->
+<!--            background-color: #e53935;-->
+<!--        }-->
+
+
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--&lt;!&ndash; Top Navigation Bar &ndash;&gt;-->
+<!--<div class="navbar">-->
+<!--    &lt;!&ndash; Left side of the navbar &ndash;&gt;-->
+<!--    <div>-->
+<!--        <input type="submit" value="View Cart" />-->
+<!--        <input type="submit" value="View Details" />-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Center: Search bar &ndash;&gt;-->
+<!--    <label>-->
+<!--        <input type="search" name="search" placeholder="Search..."/>-->
+<!--    </label>-->
+
+<!--    &lt;!&ndash; Right side: Logout form &ndash;&gt;-->
+<!--    <form th:action="@{/logout}" method="post">-->
+<!--        <input class="logout" type="submit" value="Logout"/>-->
+<!--    </form>-->
+<!--</div>-->
+
+
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Product Page</title>
+    <style>
+        /* General page styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-    <form th:action="@{/login}" method="post">
-        <input type="submit" value="logout" />
+        /* Navbar styling */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 14px 20px;
+        }
 
-    </form>
-    <form th:action="@{/DashBoard}" method="post">
-        <input type="submit" value="DashBoard" />
+        .navbar input[type="submit"], .navbar input[type="search"] {
+            padding: 8px 16px;
+            margin-right: 10px;
+            border: none;
+            cursor: pointer;
+        }
 
-    </form>
+        .navbar input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+        }
 
-    <input type="submit" value="view Cart" />
-    <input type="submit" value="view details" />
-    <label>
-        <input type="search" name="search" placeholder="search"/>
-    </label>
+        .navbar input[type="search"] {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .navbar input[type="submit"].logout {
+            background-color: #f44336;
+        }
+
+        .navbar input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .navbar input[type="submit"].logout:hover {
+            background-color: #e53935;
+        }
+
+        /* Table styling */
+        .TableDiv {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Quantity buttons and input styling */
+        .quantity-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-container button {
+            padding: 5px;
+            font-size: 16px;
+            background-color: #ddd;
+            border: none;
+            cursor: pointer;
+        }
+
+        .quantity-container input {
+            width: 40px;
+            text-align: center;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            margin: 0 5px;
+        }
+
+        /* Add button styling */
+        .add-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            background-color: #e53935;
+        }
+    </style>
 </head>
 
-<h1>Product Dashboard</h1>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Product</th>
-        <th>Image</th>
-        <th>Cart</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Hardcoded rows -->
-    <tr>
-        <td>1</td>
-        <td>Product A</td>
-        <td><img src="https://via.placeholder.com/100" alt="Product A Image"/></td>
-        <td><button>Add to Cart</button></td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>Product B</td>
-        <td><img src="https://via.placeholder.com/100" alt="Product B Image"/></td>
-        <td><button>Add to Cart</button></td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>Product C</td>
-        <td><img src="https://via.placeholder.com/100" alt="Product C Image"/></td>
-        <td><button>Add to Cart</button></td>
-    </tr>
-    </tbody>
-</table>
+<body>
+
+<!-- Navigation bar with buttons for cart, details, search, and logout -->
+<div class="navbar">
+    <div>
+        <input type="submit" value="View Cart" onclick="viewCart()" />
+        <input type="submit" value="View Details" />
+    </div>
+    <label>
+        <input type="search" name="search" placeholder="Search..."/>
+    </label>
+    <form th:action="@{/logout}" method="post">
+        <input class="logout" type="submit" value="Logout"/>
+    </form>
+</div>
+
+<!-- Page heading -->
+<p style="text-align: center; font-size: 24px; font-weight: bold;">List of Products</p>
+
+<!-- Product table containing product details and add-to-cart options -->
+<div class="TableDiv">
+    <table>
+        <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Type</th>
+            <th>Stock</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Add to Cart</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Loop over products in the server response to display each product's details -->
+        <tr th:each="product : ${products}">
+            <td th:text="${product.productName}">Product Name</td>
+            <td th:text="${product.productType}">Product Type</td>
+            <td th:text="${product.productStock}">Stock</td>
+            <td th:text="@{'$' + ${product.productPrice}}">Price</td>
+            <td th:text="${product.productDescription}">Description</td>
+            <td>
+                <div class="quantity-container">
+                    <button onclick="decreaseQuantity('quantity_${product.product_Id}')">-</button>
+                    <input th:id="'quantity_' + ${product.product_Id}" type="number" value="1" min="1"/>
+                    <button onclick="increaseQuantity('quantity_${product.product_Id}')">+</button>
+                </div>
+            </td>
+            <td>
+                <button class="add-button"
+                        th:attr="data-product-id=${product.product_Id}"
+                        onclick="addToCart(this.getAttribute('data-product-id'), document.getElementById('quantity_' + this.getAttribute('data-product-id')).value)">
+                    Add
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    /**
+     * Fetches the current logged-in user ID and assigns it to a global variable
+     */
+    fetch('/user/currentUserId')
+        .then(response => response.json())
+        .then(data => {
+            var userId = data.userId || 'Guest';
+            console.log("User ID retrieved from backend:", userId);
+
+            // Store the user ID globally for future reference
+            window.userId = userId;
+        })
+        .catch(error => {
+            console.error("Error fetching user ID:", error);
+        });
+
+    /**
+     * Adds a product to the cart by sending a POST request with the product ID and quantity
+     */
+    function addToCart(productId, quantity) {
+        // Check if user ID is valid before proceeding
+        if (!window.userId || window.userId === 'Guest') {
+            alert("User ID not found. Please log in.");
+            return;
+        }
+
+        console.log("Adding to cart with Customer ID:", window.userId);
+
+        fetch('/product/addToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `customerId=${window.userId}&productId=${productId}&quantity=${quantity}`
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error("Failed to add product to cart");
+                }
+            })
+            .then(data => {
+                alert(data);  // Notify the user of the successful addition
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding product to cart');
+            });
+    }
+
+    /**
+     * Opens the cart page without passing parameters, relying on the cart page to fetch userId itself
+     */
+    function viewCart() {
+        window.location.href = '/cart';
+    }
+
+    /**
+     * Increases the quantity of a product
+     */
+    function increaseQuantity(quantityId) {
+        const quantityInput = document.getElementById(quantityId);
+        quantityInput.value++;
+    }
+
+    /**
+     * Decreases the quantity of a product
+     */
+    function decreaseQuantity(quantityId) {
+        const quantityInput = document.getElementById(quantityId);
+        if (quantityInput.value > 1) {
+            quantityInput.value--;
+        }
+    }
+</script>
+
 </body>
 </html>

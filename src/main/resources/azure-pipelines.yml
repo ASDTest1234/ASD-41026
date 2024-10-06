@@ -47,7 +47,7 @@ steps:
         #     targetType: 'inline'
         #     script: |
         #       # Verify Java 17 is being used
-      #       java -version
+        #       java -version
 
   #       echo "Listing files in the Build Artifact Staging Directory:"
   #       ls -al $(Build.ArtifactStagingDirectory)
