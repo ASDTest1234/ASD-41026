@@ -28,9 +28,8 @@ public class StaffProductController {
 
     @GetMapping("/inventory")
     public String showInventory(Model model) {
-        List<Products> productsList = productService.getAllProducts();
-        model.addAttribute("products", productsList);
-        model.addAttribute("selectedProductId", "");
+        List<Products> products = productService.getAllProducts();
+        model.addAttribute("products", products);
         return "inventory";
     }
 
@@ -42,22 +41,6 @@ public class StaffProductController {
 
     @PostMapping("/add")
     public String addProduct(Products product) {
-        productService.addProduct(product);
-        return "redirect:/staff/product/new";
-    }
-
-    @GetMapping("/edit")
-    public String showEditProductForm(@RequestParam("productId") String productId, Model model) {
-        Optional<Products> product = productService.getProductById(productId);
-        if (product.isPresent()) {
-            model.addAttribute("product", product.get());
-            return "edit_product";
-        }
-        return "redirect:/staff/product/inventory";
-    }
-
-    @PostMapping("/update")
-    public String updateProduct(Products product) {
         productService.addProduct(product);
         return "redirect:/staff/product/inventory";
     }

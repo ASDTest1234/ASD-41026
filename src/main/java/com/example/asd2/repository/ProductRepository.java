@@ -13,7 +13,7 @@ public interface ProductRepository extends MongoRepository<Products, String> {
     Optional<Products> findByProductName(String productName);
 
     @Query("{ 'productName': { $regex: ?0 }}")
-    List<Products> findProducyByName(String Keyword);
+    List<Products> findProductByName(String Keyword);
 }
 
 

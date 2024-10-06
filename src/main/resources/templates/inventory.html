@@ -1,69 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <title>Product List</title>
-    <style>
-        .product-row {
-            cursor: pointer;
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
-        }
-        .selected {
-            background-color: #f0f0f0;
-        }
-        .disabled {
-            background-color: #ccc;
-            pointer-events: none;
-        }
-    </style>
+    <title>Product Inventory</title>
 </head>
 <body>
-<h1>Product List</h1>
-<form th:action="@{/staff/product/new}" method="get">
-    <input type="submit" value="Add Product"/>
-</form>
-<br>
 <div>
+    <h1>Product Inventory</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Select</th>
+            <th>Product Name</th>
+            <th>Product Description</th>
+            <th>Stock</th>
+            <th>Price</th>
+            <th>Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td>
+                <input type="radio" name="selectedProduct" th:value="${product.product_Id}">
+            </td>
+            <td th:text="${product.productName}"></td>
+            <td th:text="${product.productDescription}"></td>
+            <td th:text="${product.productStock}"></td>
+            <td th:text="${product.productPrice}"></td>
+            <td th:text="${product.productType}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{/staff/product/new}" method="get">
+        <input type="submit" value="Add Product"/>
+    </form>
+    <br>
     <form th:action="@{/staff/home_staff}" method="get">
         <input type="submit" value="Back"/>
     </form>
 </div>
-<br>
-<div>
-    <ul id="productList">
-        <c:forEach var="product" items="${products}">
-            <li class="product-row" onclick="selectProduct('${product.product_Id}')" data-id="${product.product_Id}">
-                <strong>${product.productName}</strong> - ${product.productDescription} - ${product.productPrice}
-            </li>
-        </c:forEach>
-    </ul>
-</div>
-<button id="editButton" class="disabled" onclick="editProduct()" disabled>Edit</button>
-
-<form id="editForm" action="/staff/product/edit" method="get" style="display:none;">
-    <input type="hidden" name="productId" id="selectedProductId">
-</form>
-<script>
-    let selectedProductId = "";
-    function selectProduct(productId) {
-        document.querySelectorAll('.product-row').forEach(item => {
-            item.classList.remove('selected');
-        });
-
-        const selectedRow = document.querySelector(`[data-id="${productId}"]`);
-        selectedRow.classList.add('selected');
-
-        selectedProductId = productId;
-        document.getElementById('selectedProductId').value = productId;
-
-        const editButton = document.getElementById('editButton');
-        editButton.classList.remove('disabled');
-        editButton.disabled = false;
-    }
-
-    function editProduct() {
-        document.getElementById('editForm').submit();
-    }
-</script>
 </body>
 </html>
