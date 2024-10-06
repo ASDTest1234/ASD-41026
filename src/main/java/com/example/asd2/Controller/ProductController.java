@@ -1,13 +1,12 @@
 package com.example.asd2.Controller;
 
-import com.example.asd2.Model.Products;
-import com.example.asd2.Model.Users;
+import com.example.asd2.Service.CartService;
 import com.example.asd2.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -18,27 +17,32 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
+
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/{ProductName}")
-    public ResponseEntity<Optional<Products>> searchProductName(@PathVariable String ProductName){
-//        return new ResponseEntity<Optional<Users>>(Optional.ofNullable(userService.getUserByID(ID)), HttpStatus.OK);
-        return new ResponseEntity<Optional<Products>>(productService.getProductByName(ProductName), HttpStatus.OK);
-    }
+    @Autowired
+    private CartService cartService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Products>> getAllProducts(){
-        List<Products> product = productService.getAllProducts();  // Fetch all users from the database
-        return new ResponseEntity<>(product, HttpStatus.OK);  // Return the users in the response
-    }
-
-    @RequestMapping("/products")
-    public String listProducts(Model model){
-        List<Products> product = productService.getAllProducts();
-        System.out.println("products " + product);
+    @GetMapping("/viewProducts")
+    public String viewProducts(Model model, Authentication authentication) {
+        String userId = authentication.getName();  // Retrieve the user ID from the SecurityContext
         model.addAttribute("products", productService.getAllProducts());
-        return "UserProductPage";
+        model.addAttribute("userId", userId); // Pass the userId to the view
+        return "userProductPage";
+    }
+
+    @PostMapping("/addToCart")
+    @ResponseBody
+    public String addToCart(@RequestParam String customerId, @RequestParam String productId, @RequestParam int quantity) {
+        System.out.println("Received customerId: " + customerId + ", productId: " + productId + ", quantity: " + quantity);
+
+        try {
+            cartService.addToCart(customerId, productId, quantity);
+            return "Product added to cart";
+        } catch (Exception e) {
+            return "Failed to add product to cart: " + e.getMessage();
+        }
     }
 
 }
