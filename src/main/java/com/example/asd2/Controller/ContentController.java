@@ -43,6 +43,7 @@ public class ContentController {// controller class that
     @GetMapping("/user/home_user")
     public String searchProducts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
         List<Products> products = productService.getSpecificProductByName(keyword);
+        System.out.println("products " + productService.getAllProducts());
         model.addAttribute("products", products);
         return "home_user";  // The name of your Thymeleaf template
     }

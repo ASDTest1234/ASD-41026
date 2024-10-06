@@ -4,3 +4,7 @@
 #  level:
 #    org.springframework.data.mongodb: DEBUG
 
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}

@@ -17,7 +17,7 @@ public class CustomerAuthenticationSuccessHandler implements AuthenticationSucce
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // Retrieve the roles from the authentication object
         Collection<?> authorities = authentication.getAuthorities();
-        String redirectURL = request.getContextPath();
+        String redirectURL = "";
 
         // Redirect based on user role
         if (authorities.stream().anyMatch(role -> role.toString().equals("ROLE_ADMIN"))) {

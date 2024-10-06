@@ -109,6 +109,7 @@
         <input type="submit" value="View Cart" onclick="viewCart()" />
         <input type="submit" value="View Details" />
     </div>
+
     <label>
         <form th:action="@{/user/home_user}" method="get">
 
@@ -116,9 +117,11 @@
             <button type="submit">Search</button>
         </form>
     </label>
+
     <form th:action="@{/logout}" method="post">
         <input class="logout" type="submit" value="Logout"/>
     </form>
+
 </div>
 
 <p>List of products</p>
