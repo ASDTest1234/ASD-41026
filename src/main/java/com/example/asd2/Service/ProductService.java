@@ -123,5 +123,10 @@ public class ProductService {
         return Optional.ofNullable(mongoTemplate.findOne(query, Products.class, "Product"));
     }
 
+    // gets a list of products dependent on the variables that is given.
+    public List<Products> getSpecificProductByName(String filter){
+        return productRepository.findProducyByName(filter);
+    }
+
 
 }

@@ -23,19 +23,30 @@ public class ContentController {
         return "home_admin";
     }
 
-    @RequestMapping("/user/home_user")
-    public String listProducts(Model model) {
-        // Retrieve all products to display in the user home page
-        List<Products> products = productService.getAllProducts();
-        model.addAttribute("products", products);
-        return "home_user";
-    }
+//    @RequestMapping("/user/home_user")
+//    public String listProducts(Model model) {
+//        // Retrieve all products to display in the user home page
+//        List<Products> products = productService.getAllProducts();
+//        model.addAttribute("products", products);
+//        return "home_user";
+//    }
+//
+//    @GetMapping("/Search")
+//    public String searchProducts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
+//        Optional<Products> products = productService.getProductByName(keyword);
+//        model.addAttribute("products", products);
+//        return "Search";
+//    }
 
-    @GetMapping("/Search")
-    public String searchProducts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
-        Optional<Products> products = productService.getProductByName(keyword);
+    @GetMapping("/user/home_user")
+    //the RequestParam makes sure there is input set into the URL, so it's like "http://localhost:8080/user/home_user?keyword="
+    public String searchProducts(@RequestParam(value = "filter", required = false, defaultValue = "") String keyword, Model model) {
+        //using the product Service to find the product by its name
+        List<Products> products = productService.getSpecificProductByName(keyword);
+        System.out.println("products " + productService.getAllProducts());
+        //storing stuff into the products so it can be accessed in the HTMl page by thymeleaf.
         model.addAttribute("products", products);
-        return "Search";
+        return "home_user";// returning the HTML page.
     }
 
     @GetMapping("/staff/home_staff")
