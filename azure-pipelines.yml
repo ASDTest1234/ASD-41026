@@ -35,6 +35,22 @@ steps:
       jdkArchitectureOption: 'x64'
       goals: 'clean package'
 
+  - task: Maven@4
+    displayName: 'Run Junit Test'
+    inputs:
+      mavenPomFile: 'pom.xml'  
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '17'  
+      jdkArchitectureOption: 'x64'  
+      goals: 'clean verify'  
+      options: '-DskipTests=false'  
+
+  - task: PublishTestResults@2  # This task ensures test results are published in Azure DevOps
+    inputs:
+      testResultsFormat: 'JUnit'  
+      testResultsFiles: '**/target/surefire-reports/*.xml' 
+      failTaskOnFailedTests: true  
+
   # Copy JAR files to the staging directory
   - task: CopyFiles@2
     inputs:
