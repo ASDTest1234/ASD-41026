@@ -1,7 +1,6 @@
 package com.example.asd2;
 
-import com.example.asd2.Model.Product;
-import com.example.asd2.Model.ProductService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -62,9 +61,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public ProductService productService() {
-        return List::of;
-    }
+
 
 }
