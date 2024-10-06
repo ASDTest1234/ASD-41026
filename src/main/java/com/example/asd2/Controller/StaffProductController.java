@@ -40,9 +40,26 @@ public class StaffProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(Products product) {
+    public String addProduct(Products product, RedirectAttributes redirectAttributes) {
         productService.addProduct(product);
+        redirectAttributes.addFlashAttribute("message", "Product Added Successfully");
         return "redirect:/staff/product/inventory";
     }
-    
+
+    @PostMapping("/deleteByName")
+    public String deleteProductByName(@RequestParam String productName, RedirectAttributes redirectAttributes) {
+        try {
+            boolean deleted = productService.deleteProductByName(productName);
+            if (deleted) {
+                redirectAttributes.addFlashAttribute("message", "Product Deleted Successfully");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Product not found");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error deleting product");
+        }
+        return "redirect:/staff/product/inventory";
+    }
+
+
 }

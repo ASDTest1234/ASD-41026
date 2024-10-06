@@ -128,5 +128,13 @@ public class ProductService {
         return Optional.ofNullable(mongoTemplate.findOne(query, Products.class, "Product"));
     }
 
+    public boolean deleteProductByName(String productName) {
+        Optional<Products> product = productRepository.findByProductName(productName);
+        if (product.isPresent()) {
+            productRepository.delete(product.get());
+            return true;
+        }
+        return false;
+    }
 
 }
