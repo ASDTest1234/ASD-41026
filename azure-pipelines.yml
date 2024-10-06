@@ -34,6 +34,7 @@ steps:
       jdkVersionOption: '17'
       jdkArchitectureOption: 'x64'
       goals: 'clean package'
+      options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
 
   - task: Maven@4
     displayName: 'Run Junit Test'
@@ -43,7 +44,7 @@ steps:
       jdkVersionOption: '17'  
       jdkArchitectureOption: 'x64'  
       goals: 'clean verify'  
-      options: '-DskipTests=false'  
+      options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
 
   - task: PublishTestResults@2  # This task ensures test results are published in Azure DevOps
     inputs:
