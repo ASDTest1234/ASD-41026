@@ -5,26 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration</title>
     <link rel="stylesheet" href="registerstyles.css">
-    <script>
-        // Submit the form
-        function submitForm(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-
-            fetch('/api/users/register', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.ok ? window.location.href = 'login.html' : alert("Registration failed. Please try again."))
-            .catch(() => alert("An error occurred. Please try again."));
-        }
-    </script>
 </head>
 <body>
     <div class="container">
         <div class="form-box">
             <h1>Registration</h1>
-            <form id="registrationForm" onsubmit="submitForm(event)">
+            <form action="/api/users/register" method="POST">
 
                 <!-- Personal Details -->
                 <label for="fName">First Name:</label>
@@ -67,7 +53,8 @@
                 <label for="unitNumber">Unit Number (optional):</label>
                 <input type="text" id="unitNumber" name="unitNumber"><br>
 
-                <button type="submit">Submit</button>
+                <!-- Submit Button -->
+                <button type="submit" class="btn">Submit</button>
             </form>
         </div>
     </div>
