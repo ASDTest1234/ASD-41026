@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment & Shipping Details</title>
+    <style>
+        /* General page styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Payment & Shipping Details</h1>
+
+    <!-- Payment Form -->
+    <form id="paymentForm">
+        <!-- Card Details -->
+        <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input type="number" id="cardNumber" name="cardNumber" placeholder="Enter your card number" required>
+        </div>
+
+        <div class="form-group">
+            <label for="expiryDate">Expiry Date (MM/YY)</label>
+            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cvv">CVV</label>
+            <input type="number" id="cvv" name="cvv" placeholder="Enter CVV" required>
+        </div>
+
+        <!-- Shipping Details -->
+        <h2>Shipping Address</h2>
+
+        <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" placeholder="Enter your address" required>
+        </div>
+
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="Enter your city" required>
+        </div>
+
+        <div class="form-group">
+            <label for="zipCode">Zip Code</label>
+            <input type="number" id="zipCode" name="zipCode" placeholder="Enter your zip code" required>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+    </form>
+
+    <!-- Buttons aligned like the cart page -->
+    <div class="button-container">
+        <button type="button" class="btn" onclick="goBackToCart()">Back to Cart</button>
+        <button type="button" class="btn" onclick="submitOrder()">Submit Order</button>
+    </div>
+</div>
+
+<script>
+    function submitOrder() {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvv = document.getElementById('cvv').value;
+        const fullName = document.getElementById('fullName').value;
+        const address = document.getElementById('address').value;
+        const city = document.getElementById('city').value;
+        const zipCode = document.getElementById('zipCode').value;
+        const errorMessage = document.getElementById('errorMessage');
+
+        const payload = {
+            customerId: window.userId,
+            cardNumber,
+            expiryDate,
+            cvv,
+            fullName,
+            address,
+            city,
+            zipCode
+        };
+
+        fetch('/api/order/confirm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Order placed successfully!');
+                    window.location.href = '/orderConfirmation';
+                } else {
+                    errorMessage.innerText = 'Error processing your order. Please try again.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorMessage.innerText = 'Unable to complete order. Please try again later.';
+            });
+    }
+
+
+    function goBackToCart() {
+        window.location.href = '/cart';
+    }
+</script>
+
+</body>
+</html>
