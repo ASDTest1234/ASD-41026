@@ -1,7 +1,11 @@
 package com.example.asd2.repository;
 
+import com.example.asd2.Model.Products;
 import com.example.asd2.Model.Users;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<Users, String> {
@@ -29,5 +33,10 @@ public interface UserRepository extends MongoRepository<Users, String> {
      * @return An Optional containing the user if found, or empty otherwise.
      */
     Optional<Users> findByEmail(String email);
+
+
+
+    @Query("{ 'role': { $regex: ?0 }}")
+    List<Users> findUsersByRole(String filter);
 
 }
