@@ -37,29 +37,37 @@ The user browsing is just what the user should be able to see, for example the c
 In this project, I was responsible for the Customer Shopping Cart and Checkout functionalities. This includes managing the backend logic and API endpoints for adding items to the cart, managing the cart, and handling the checkout process.
 Specifically, I am responsible for:
 
-Use Case UC501 - Add Items to Cart: Implementing the functionality for users to add items to their cart and ensuring that the cart updates correctly.
-Use Case UC502 - Checkout Selected Items: Implementing a secure and efficient checkout process, including payment processing and order confirmation.
-Functional and Non-Functional Requirements
+## Use Case UC501 
+- Add Items to Cart: Implementing the functionality for users to add items to their cart and ensuring that the cart updates correctly.
+## Use Case UC502
+- Checkout Selected Items: Implementing a secure and efficient checkout process, including payment processing and order confirmation.
+  
+## Functional and Non-Functional Requirements
 Functional Requirements
 Shopping Cart Management:
 Users can add items to their shopping cart (UC501).
 The system allows users to specify item quantities and displays the total cost of items in the cart.
 Users can view and update their cart, with real-time item availability and stock checks.
 The cart should be persistent and accessible across sessions.
+
 Checkout and Order Management:
 Users can proceed to checkout, where the system calculates the total cost and processes payments securely (UC502).
 The system generates an order confirmation and updates the order status upon successful payment.
 Admins can access, filter, and manage orders, including updating or deleting order statuses (UC601, UC602).
 Non-Functional Requirements
+
 Performance:
 Cart updates should be completed in under 2 seconds for a seamless shopping experience.
 The checkout process should complete within 3 seconds to minimize user frustration.
+
 Security:
 The checkout process must comply with PCI DSS standards, ensuring that all sensitive payment information is encrypted.
 The shopping cart must be secured against unauthorized modifications, and sessions must persist reliably.
+
 Error Handling:
 The system should handle errors gracefully, with user-friendly error messages. For instance, if an item is out of stock, the system notifies the user immediately and prevents the item from being added to the cart.
 During checkout, if payment fails, the system provides options to retry or cancel the transaction, with appropriate notifications for each scenario.
+
 Scalability:
 The system should support multiple users interacting with their shopping carts and the checkout process simultaneously.
 Admin functionalities, such as order filtering and updating order statuses, should be designed to handle a large volume of data efficiently.
