@@ -16,7 +16,7 @@ public interface ProductRepository extends MongoRepository<Products, String> {
 
     // does a MongoDB Query to filter the results based on the Keyword.
     @Query("{ 'productName': { $regex: ?0 }}")
-    List<Products> findProducyByName(String filter);
+    List<Products> findProductByName(String Keyword);
 }
 
 

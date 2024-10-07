@@ -1,19 +1,42 @@
 package com.example.asd2.repository;
 
+import com.example.asd2.Model.Products;
 import com.example.asd2.Model.Users;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface UserRepository extends MongoRepository<Users, String> {
-    //find a user based on their email .
-    Users findByEmail(String email);
 
-    //List<Users> findBySpecificEmail(String email);
-
-    // finds users based on their userID
+    /**
+     * Find a user by their userID.
+     *
+     * @param userID The userID of the user to find.
+     * @return An Optional containing the user if found, or empty otherwise.
+     */
     Optional<Users> findByUserID(String userID);
+
+    /**
+     * Find a user by their username.
+     *
+     * @param username The username of the user to find.
+     * @return An Optional containing the user if found, or empty otherwise.
+     */
+    Optional<Users> findByUsername(String username);
+
+    /**
+     * Find a user by their email.
+     *
+     * @param email The email of the user to find.
+     * @return An Optional containing the user if found, or empty otherwise.
+     */
+    Optional<Users> findByEmail(String email);
+
+
+    // custom query that gets all roles and sorts it by the filter given.
+    @Query("{ 'role': { $regex: ?0 }}")
+    List<Users> findUsersByRole(String filter);
+
 }

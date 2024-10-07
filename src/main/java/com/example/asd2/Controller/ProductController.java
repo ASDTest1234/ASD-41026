@@ -2,17 +2,19 @@ package com.example.asd2.Controller;
 
 import com.example.asd2.Service.CartService;
 import com.example.asd2.Service.ProductService;
-import com.example.asd2.Model.Products;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/product")
 public class ProductController {
 
@@ -22,28 +24,24 @@ public class ProductController {
     @Autowired
     private CartService cartService;
 
-    @GetMapping("/{ProductName}")
-    public ResponseEntity<Optional<Products>> searchProductName(@PathVariable String ProductName){
-        return new ResponseEntity<>(productService.getProductByName(ProductName), HttpStatus.OK);
+    @GetMapping("/viewProducts")
+    public String viewProducts(Model model, Authentication authentication) {
+        String userId = authentication.getName();  // Retrieve the user ID from the SecurityContext
+        model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("userId", userId); // Pass the userId to the view
+        return "userProductPage";
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Products>> getAllProducts(){
-        List<Products> products = productService.getAllProducts();
-        return new ResponseEntity<>(products, HttpStatus.OK);
-    }
-
-    // 添加到购物车的端点
     @PostMapping("/addToCart")
-    public ResponseEntity<String> addToCart(
-            @RequestParam String customerId,
-            @RequestParam String productId,
-            @RequestParam int quantity) {
+    @ResponseBody
+    public String addToCart(@RequestParam String customerId, @RequestParam String productId, @RequestParam int quantity) {
+        System.out.println("Received customerId: " + customerId + ", productId: " + productId + ", quantity: " + quantity);
+
         try {
             cartService.addToCart(customerId, productId, quantity);
-            return new ResponseEntity<>("Product added to cart", HttpStatus.OK);
+            return "Product added to cart";
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to add product to cart: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return "Failed to add product to cart: " + e.getMessage();
         }
     }
 

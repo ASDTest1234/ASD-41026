@@ -27,19 +27,10 @@ public class LoginControllerTest {
 
 // Unit Test
 
-    @Test
-    public void testRetrieveEmail() throws Exception {
-
-        String testEmail = "Wrong@gmail.com";
 
 
 
-    }
-
-
-
-
-// Integration test
+    // Integration test
     @Test
     public void testValidLogin() throws Exception {
         mockMvc.perform(post("/login")
@@ -57,15 +48,15 @@ public class LoginControllerTest {
                         .param("password", "123")
                         .session(session))
                 .andExpect(status().is3xxRedirection());
-                //.andExpect(redirectedUrl("/staff/home_staff"));
+        //.andExpect(redirectedUrl("/staff/home_staff"));
 
         mockMvc.perform(get("/staff/home_staff").session(session))
                 .andExpect(status().isOk());
-                //.andExpect(redirectedUrl("/staff/home_staff"));
+        //.andExpect(redirectedUrl("/staff/home_staff"));
 
         mockMvc.perform(get("/admin/home_admin").session(session))
                 .andExpect(status().isForbidden());
-                //.andExpect(redirectedUrl("/staff/home_staff"));
+        //.andExpect(redirectedUrl("/staff/home_staff"));
     }
 
     @Test
@@ -76,7 +67,7 @@ public class LoginControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"));
     }
-//
+    //
     @Test
     public void BruteForceURL() throws Exception {
         mockMvc.perform(get("/staff/home_staff"))

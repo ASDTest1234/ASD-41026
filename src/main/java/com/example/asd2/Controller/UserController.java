@@ -1,63 +1,49 @@
 package com.example.asd2.Controller;
+
 import com.example.asd2.Model.Users;
 import com.example.asd2.Service.UserService;
-import com.example.asd2.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/testing")
+@RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService; // Use userService for business logic
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private UserRepository userRepository; // Direct use of userRepository for /all
+    private UserService userService;
 
+    /**
+     * Get current user ID based on their email stored in Authentication object.
+     * @param authentication - the authentication object containing user's email
+     * @return Map containing user ID if found, otherwise a default value.
+     */
+    @GetMapping("/currentUserId")
+    public Map<String, String> getCurrentUserId(Authentication authentication) {
+        Map<String, String> response = new HashMap<>();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            logger.info("Retrieving user ID for email: {}", email);
 
-
-//    @GetMapping("/all")
-//    public List<Users> getAllUsers() {
-//        List<Users> users = userRepository.findAll();
-//        System.out.println("Retrieved users: " + users);
-//        return users;
-//    }
-//    @GetMapping("/all")
-//    public List<Users> getAllUsers() {
-//        return userService.getAllUsers();
-//    }
-
-//
-//    @GetMapping("/all")
-//    public ResponseEntity<List<Users>> getAllUsers(){
-//        return new ResponseEntity<List<Users>>(userService.getAllUsers(), HttpStatus.OK);
-//    }
-
-
-    @GetMapping("/test")
-    public ResponseEntity<List<Users>> testDatabaseRead() {
-        List<Users> users = userService.getAllUsers();  // Fetch all users from the database
-        return new ResponseEntity<>(users, HttpStatus.OK);  // Return the users in the response
+            Optional<Users> userOpt = userService.getUserByEmail(email);
+            if (userOpt.isPresent()) {
+                response.put("userId", userOpt.get().getUserID());
+                logger.info("User ID found: {}", userOpt.get().getUserID());
+            } else {
+                response.put("userId", "Guest");
+                logger.warn("No User ID found for email: {}", email);
+            }
+        } else {
+            response.put("userId", "Guest");
+        }
+        return response;
     }
-
-//    @GetMapping("/ByEmail/{Email}")
-//    public ResponseEntity<Optional<Users>> searchAEmail(@PathVariable String Email){
-//        return new ResponseEntity<Optional<Users>>(userService.aEmail(Email), HttpStatus.OK);
-//    }
-
-    @GetMapping("/{userID}")
-    public ResponseEntity<Optional<Users>> searchID(@PathVariable String userID){
-//        return new ResponseEntity<Optional<Users>>(Optional.ofNullable(userService.getUserByID(ID)), HttpStatus.OK);
-        return new ResponseEntity<Optional<Users>>(userService.getUserByID(userID), HttpStatus.OK);
-    }
-
-
 }

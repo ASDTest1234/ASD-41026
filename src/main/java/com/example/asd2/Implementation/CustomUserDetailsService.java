@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
+import java.util.Optional;
 
 
 @Service
@@ -17,19 +18,27 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    //constructor to take the UserRepository so it can allow for queries
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    //Overriding the UserDetails so it takes the information given from the userRepository
+
+    // overriding a method from the UserDetails Service to take the custom requirements from the Database
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Users user = userRepository.findByEmail(email);
-        //checks if there is a user
-        if (user == null) {
+        Optional<Users> user = userRepository.findByEmail(email);
+
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        //return the user's email and password and role.
-        return new User(user.getEmail(), user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(user.getRole())));
+
+        //Create instance of User with the email,password and role
+        return new User(
+                user.get().getEmail(),
+                user.get().getPassword(),
+                Collections.singletonList(
+                        new SimpleGrantedAuthority(user.get().getRole())
+                )
+        );
     }
 }

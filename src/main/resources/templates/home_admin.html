@@ -4,9 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page with Navbar</title>
+  <title>Admin Page</title>
   <style>
-    /* Style for the navbar */
+    /* General page styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Navbar styling */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -15,12 +23,6 @@
       padding: 14px 20px;
     }
 
-    .navbar form, .navbar div {
-      margin: 0;
-      padding: 0;
-    }
-
-    /* Style for the buttons and inputs */
     .navbar input[type="submit"], .navbar input[type="search"] {
       padding: 8px 16px;
       margin-right: 10px;
@@ -38,12 +40,10 @@
       border-radius: 4px;
     }
 
-    /* Style for the logout button */
     .navbar input[type="submit"].logout {
       background-color: #f44336;
     }
 
-    /* Change background on hover */
     .navbar input[type="submit"]:hover {
       background-color: #45a049;
     }
@@ -52,31 +52,206 @@
       background-color: #e53935;
     }
 
+    /* Table styling */
+    .TableDiv {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 40vh;
+      flex-direction: column;
+      padding: 20px;
+    }
 
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 1000px;
+      text-align: center;
+      margin: 20px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    /* Quantity buttons and input styling */
+    .quantity-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .quantity-container button {
+      padding: 5px;
+      font-size: 16px;
+      background-color: #ddd;
+      border: none;
+      cursor: pointer;
+    }
+
+    .quantity-container input {
+      width: 40px;
+      text-align: center;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      margin: 0 5px;
+    }
+
+    /* Add button styling */
+    .add-button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      padding: 8px 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .add-button:hover {
+      background-color: #e53935;
+    }
   </style>
 </head>
+
 <body>
 
-<!-- Top Navigation Bar -->
+<!--nav Bar -->
 <div class="navbar">
-  <!-- Left side of the navbar -->
   <div>
-    <input type="submit" value="View Cart" />
+    <input type="submit" value="View Cart" onclick="viewCart()" />
     <input type="submit" value="View Details" />
   </div>
 
-  <!-- Center: Search bar -->
   <label>
-    <input type="search" name="search" placeholder="Search..."/>
+    <form th:action="@{/admin/home_admin}" method="get">
+
+      <input type="text" id="filter" name="filter" placeholder="Enter User Roles"/>
+      <button type="submit">Search</button>
+    </form>
   </label>
 
-  <!-- Right side: Logout form -->
   <form th:action="@{/logout}" method="post">
     <input class="logout" type="submit" value="Logout"/>
   </form>
 </div>
 
+<!-- Page heading -->
+<p style="text-align: center; font-size: 24px; font-weight: bold;">List of Users</p>
+
+<!-- The Table that contains the Users -->
+<div class="TableDiv">
+  <table>
+    <thead>
+    <tr>
+
+      <th>UserID</th>
+      <th>Email</th>
+      <th>Username</th>
+      <th>Role</th>
+
+
+    </tr>
+    </thead>
+    <tbody>
+
+<!--    gets the information from the controller and iterates over them. -->
+    <tr th:each="user : ${users}">
+
+      <td th:text="${user.userID}"> userID</td>
+      <td th:text="${user.email}"> email</td>
+      <td th:text="${user.username}"> username</td>
+      <td th:text="${user.role}"> role</td>
+
+
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  /**
+   * Fetches the current logged-in user ID and assigns it to a global variable
+   */
+  fetch('/user/currentUserId')
+          .then(response => response.json())
+          .then(data => {
+            var userId = data.userId || 'Guest';
+            console.log("User ID retrieved from backend:", userId);
+
+            // Store the user ID globally for future reference
+            window.userId = userId;
+          })
+          .catch(error => {
+            console.error("Error fetching user ID:", error);
+          });
+
+  /**
+   * Adds a product to the cart by sending a POST request with the product ID and quantity
+   */
+  function addToCart(productId, quantity) {
+    // Check if user ID is valid before proceeding
+    if (!window.userId || window.userId === 'Guest') {
+      alert("User ID not found. Please log in.");
+      return;
+    }
+
+    console.log("Adding to cart with Customer ID:", window.userId);
+
+    fetch('/product/addToCart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `customerId=${window.userId}&productId=${productId}&quantity=${quantity}`
+    })
+            .then(response => {
+              if (response.ok) {
+                return response.text();
+              } else {
+                throw new Error("Failed to add product to cart");
+              }
+            })
+            .then(data => {
+              alert(data);  // Notify the user of the successful addition
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('Error adding product to cart');
+            });
+  }
+
+  /**
+   * Opens the cart page without passing parameters, relying on the cart page to fetch userId itself
+   */
+  function viewCart() {
+    window.location.href = '/cart';
+  }
+
+  /**
+   * Increases the quantity of a product
+   */
+  function increaseQuantity(quantityId) {
+    const quantityInput = document.getElementById(quantityId);
+    quantityInput.value++;
+  }
+
+  /**
+   * Decreases the quantity of a product
+   */
+  function decreaseQuantity(quantityId) {
+    const quantityInput = document.getElementById(quantityId);
+    if (quantityInput.value > 1) {
+      quantityInput.value--;
+    }
+  }
+</script>
 
 </body>
 </html>
-

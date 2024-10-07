@@ -4,6 +4,7 @@ import com.example.asd2.Model.Products;
 import com.example.asd2.repository.ProductRepository;
 import org.bson.Document;
 import org.bson.types.Decimal128;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,10 @@ public class ProductService {
     public List<Products> getAllProducts() {
         logger.info("Fetching all products");
         return productRepository.findAll();
+    }
+
+    public Products addProduct(Products product) {
+        return productRepository.save(product);
     }
 
     /**
@@ -117,12 +122,23 @@ public class ProductService {
 
     public Optional<Products> getProductById(String productId) {
         logger.info("Fetching product by ID: {}", productId);
-        return productRepository.findById(productId);
+
+        Query query = new Query(Criteria.where("_id").is(new ObjectId(productId)));
+        return Optional.ofNullable(mongoTemplate.findOne(query, Products.class, "Product"));
     }
 
+    public boolean deleteProductByName(String productName) {
+        Optional<Products> product = productRepository.findByProductName(productName);
+        if (product.isPresent()) {
+            productRepository.delete(product.get());
+            return true;
+        }
+        return false;
+    }
     // gets a list of products dependent on the variables that is given.
     public List<Products> getSpecificProductByName(String filter){
-        return productRepository.findProducyByName(filter);
+        return productRepository.findProductByName(filter);
     }
+
 
 }

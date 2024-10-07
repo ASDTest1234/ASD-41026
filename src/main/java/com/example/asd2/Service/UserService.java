@@ -46,9 +46,7 @@ public class UserService {
 //        return userRepository.findAllUsers();
 //    }
 
-    
     public List<Users> getUsersByRoles(String filter){
-
         return userRepository.findUsersByRole(filter);
     }
 }

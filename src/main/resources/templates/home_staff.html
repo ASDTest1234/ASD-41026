@@ -1,25 +1,10 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--  <meta charset="UTF-8">-->
-<!--  <title>STAFF</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h1> STAFF </h1>-->
-<!--<form th:action="@{/logout}" method="post">-->
-<!--  <input type="submit" value="logout" />-->
-
-<!--</form>-->
-
-<!--</body>-->
-<!--</html>-->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page with Navbar</title>
+    <title>Staff Page</title>
     <style>
         /* Style for the navbar */
         .navbar {
@@ -71,6 +56,8 @@
     </style>
 </head>
 <body>
+<h1> STAFF </h1>
+
 
 <!-- Top Navigation Bar -->
 <div class="navbar">
@@ -78,7 +65,18 @@
     <div>
         <input type="submit" value="View Cart" />
         <input type="submit" value="View Details" />
+
+
     </div>
+
+    <form th:action="@{/user/home_user}" method="get">
+        <input type="submit" value="User Page">
+
+    </form>
+    <form th:action="@{/staff/product/inventory}" method="get">
+        <input type="submit" value="View Inventory"/>
+    </form>
+
 
     <!-- Center: Search bar -->
     <label>
