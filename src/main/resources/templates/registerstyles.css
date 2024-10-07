@@ -10,7 +10,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh; /* Ensure form fits on the page */
+    padding: 1rem; /* Added padding to avoid inputs being cut off */
 }
 
 .container {
@@ -35,11 +36,6 @@ h1 {
     text-align: center;
 }
 
-.form-group {
-    margin-bottom: 1.2rem;
-    text-align: left;
-}
-
 label {
     font-size: 1rem;
     color: #333;
@@ -56,6 +52,7 @@ input[type="date"] {
     border-radius: 4px;
     font-size: 1rem;
     margin-top: 0.5rem;
+    margin-bottom: 1rem; /* Added spacing below input to avoid overlap */
 }
 
 button.btn {
@@ -67,6 +64,7 @@ button.btn {
     font-size: 1rem;
     cursor: pointer;
     width: 100%;
+    margin-top: 1rem; /* Spacing between input and button */
 }
 
 button.btn:hover {
