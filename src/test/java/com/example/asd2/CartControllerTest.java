@@ -1,4 +1,3 @@
-
 import com.example.asd2.Controller.CartController;
 import com.example.asd2.Model.Cart;
 import com.example.asd2.Service.CartNotFoundException;
@@ -9,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -16,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class CartControllerTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(CartControllerTest.class);
 
     @Mock
     private CartService cartService;
@@ -41,6 +44,7 @@ public class CartControllerTest {
 
         ResponseEntity<Cart> response = cartController.getCart(customerId);
 
+        logger.info("Test getCart_shouldReturnCartWhenExists: Status code = {}", response.getStatusCode());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(cart, response.getBody());
     }
@@ -53,6 +57,7 @@ public class CartControllerTest {
 
         ResponseEntity<Cart> response = cartController.getCart(customerId);
 
+        logger.info("Test getCart_shouldReturnNotFoundWhenCartDoesNotExist: Status code = {}", response.getStatusCode());
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
@@ -66,6 +71,7 @@ public class CartControllerTest {
 
         ResponseEntity<String> response = cartController.updateProductQuantity(customerId, productName, quantity);
 
+        logger.info("Test updateProductQuantity_shouldReturnOkOnSuccess: Status code = {}, message = {}", response.getStatusCode(), response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Quantity updated successfully", response.getBody());
     }
@@ -80,6 +86,7 @@ public class CartControllerTest {
 
         ResponseEntity<String> response = cartController.updateProductQuantity(customerId, productName, quantity);
 
+        logger.info("Test updateProductQuantity_shouldReturnNotFoundWhenCartDoesNotExist: Status code = {}", response.getStatusCode());
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
@@ -92,6 +99,7 @@ public class CartControllerTest {
 
         ResponseEntity<String> response = cartController.removeProductFromCart(customerId, productName);
 
+        logger.info("Test removeProductFromCart_shouldReturnOkOnSuccess: Status code = {}, message = {}", response.getStatusCode(), response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Product removed successfully", response.getBody());
     }

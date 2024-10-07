@@ -1,4 +1,3 @@
-
 import com.example.asd2.Model.Cart;
 import com.example.asd2.Model.Products;
 import com.example.asd2.Service.OrderService;
@@ -9,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.math.BigDecimal;
@@ -20,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class OrderServiceTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceTest.class);
 
     @Mock
     private MongoTemplate mongoTemplate;
@@ -55,6 +58,7 @@ public class OrderServiceTest {
 
         orderService.createOrder(customerId, items, customerDetails);
 
+        logger.info("Test createOrder_shouldCreateOrderWhenStockIsSufficient: Order created successfully for customerId {}", customerId);
         verify(mongoTemplate, times(1)).insert(any(Document.class), eq("Orders"));
     }
 
@@ -76,5 +80,6 @@ public class OrderServiceTest {
         when(productService.getProductByName("Product1")).thenReturn(Optional.of(product));
 
         assertThrows(Exception.class, () -> orderService.createOrder(customerId, items, new Document()));
+        logger.info("Test createOrder_shouldThrowExceptionWhenStockIsInsufficient: Insufficient stock exception thrown for customerId {}", customerId);
     }
 }
