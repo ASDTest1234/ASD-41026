@@ -122,7 +122,7 @@
 
 <body>
 
-<!-- Navigation bar with buttons for cart, details, search, and logout -->
+<!--nav Bar -->
 <div class="navbar">
   <div>
     <input type="submit" value="View Cart" onclick="viewCart()" />
@@ -145,7 +145,7 @@
 <!-- Page heading -->
 <p style="text-align: center; font-size: 24px; font-weight: bold;">List of Users</p>
 
-<!-- Product table containing product details and add-to-cart options -->
+<!-- The Table that contains the Users -->
 <div class="TableDiv">
   <table>
     <thead>
@@ -160,7 +160,8 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Loop over products in the server response to display each product's details -->
+
+<!--    gets the information from the controller and iterates over them. -->
     <tr th:each="user : ${users}">
 
       <td th:text="${user.userID}"> userID</td>
@@ -169,21 +170,6 @@
       <td th:text="${user.role}"> role</td>
 
 
-
-<!--      <td>-->
-<!--        <div class="quantity-container">-->
-<!--          <button onclick="decreaseQuantity('quantity_${product.product_Id}')">-</button>-->
-<!--          <input th:id="'quantity_' + ${product.product_Id}" type="number" value="1" min="1"/>-->
-<!--          <button onclick="increaseQuantity('quantity_${product.product_Id}')">+</button>-->
-<!--        </div>-->
-<!--      </td>-->
-<!--      <td>-->
-<!--        <button class="add-button"-->
-<!--                th:attr="data-product-id=${product.product_Id}"-->
-<!--                onclick="addToCart(this.getAttribute('data-product-id'), document.getElementById('quantity_' + this.getAttribute('data-product-id')).value)">-->
-<!--          Add-->
-<!--        </button>-->
-<!--      </td>-->
     </tr>
     </tbody>
   </table>

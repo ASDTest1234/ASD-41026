@@ -174,6 +174,52 @@ public class UserBrowsingTest {
 
     }
 
+    @Test
+    public void testStaffURLs() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        mockMvc.perform(post("/login")
+                        .param("username", "test@gmail.com")
+                        .param("password", "123")
+                        .session(session))
+
+                .andExpect(status().is3xxRedirection());
+
+
+        //getting the same URL but posting a result of wrong
+        mockMvc.perform(get("/admin/home_admin")
+                        .session(session))
+                .andExpect(status().isForbidden());  // Expect HTTP 200 OK
+
+        //getting the same URL but posting a result of wrong
+        mockMvc.perform(get("/user/home_user")
+                        .session(session))
+                .andExpect(status().isOk());  // Expect HTTP 200 OK
+
+    }
+
+    @Test
+    public void testUserURLs() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        mockMvc.perform(post("/login")
+                        .param("username", "user@gmail.com")
+                        .param("password", "123")
+                        .session(session))
+
+                .andExpect(status().is3xxRedirection());
+
+
+        //getting the same URL but posting a result of wrong
+        mockMvc.perform(get("/admin/home_admin")
+                        .session(session))
+                .andExpect(status().isForbidden());  // Expect HTTP 200 OK
+
+        //getting the same URL but posting a result of wrong
+        mockMvc.perform(get("/staff/home_staff")
+                        .session(session))
+                .andExpect(status().isForbidden());  // Expect HTTP 200 OK
+
+    }
+
 
 
 

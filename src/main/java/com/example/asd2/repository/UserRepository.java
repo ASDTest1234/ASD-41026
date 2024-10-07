@@ -35,7 +35,7 @@ public interface UserRepository extends MongoRepository<Users, String> {
     Optional<Users> findByEmail(String email);
 
 
-
+    // custom query that gets all roles and sorts it by the filter given.
     @Query("{ 'role': { $regex: ?0 }}")
     List<Users> findUsersByRole(String filter);
 

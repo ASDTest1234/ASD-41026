@@ -67,6 +67,7 @@ public class SecurityConfig {
 //    }
 
 
+    //implementing the custom Authentication SuccessHandler to redirect to specific URL's based on ROLE's
     @Bean
     public AuthenticationSuccessHandler customerSuccessHandler() {
         return new CustomerAuthenticationSuccessHandler();

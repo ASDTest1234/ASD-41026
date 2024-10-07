@@ -44,18 +44,12 @@ public class ContentController {
     public String searchUserRoles(@RequestParam(value = "filter", required = false, defaultValue = "") String keyword, Model model) {
         //using the product Service to find the product by its name
         List<Users> users = userService.getUsersByRoles(keyword);
-//        System.out.println("users " + userService.getAllUsers());
+
         //storing stuff into the products so it can be accessed in the HTMl page by thymeleaf.
         model.addAttribute("users", users);
         return "home_admin";// returning the HTML page.
     }
-//
-//    @GetMapping("/Search")
-//    public String searchProducts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword, Model model) {
-//        Optional<Products> products = productService.getProductByName(keyword);
-//        model.addAttribute("products", products);
-//        return "Search";
-//    }
+
 
     @GetMapping("/user/home_user")
     //the RequestParam makes sure there is input set into the URL, so it's like "http://localhost:8080/user/home_user?keyword="
