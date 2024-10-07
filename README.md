@@ -32,6 +32,12 @@ The passwords are hidden in the database with BCrypt, which springboot can decod
 ## F104 - User Browsing
 The user browsing is just what the user should be able to see, for example the customer should be able to access through the login and be able to view the products list and all the groceries that the store has, there will also be buttons that will redirect the user to specific locations such as the Cart, the Tickets, and logout. It uses the repository to call the data, where this data will be manipulated in the service layer to allow for CRUD operations, for my specific part I only needed the read part. Thymeleaf has great functions that allow for the integration of the data to be displayed in the frontend. 
 
+## F108 - Support Ticket Management (For customer role)
+This is where the customer ask for suppoprt or whatever they need that involve the website or its service. The table which represent the format of a support tickets requires user to fill all information before it can be sent. Pressing the submit button will instantly send the ticket to the database where it will be stored, there is also response message displayed on the interface to inform if the process is completed. The user have options to edit or remove their submitted tickets, as long as there is no responses from the staff to that ticket. The backend of this feature will handle the CRUD operations using the input passed from the frontend.
+
+## F109 - Response to Tickets (For staff/admin role)
+This is the feature for staff user to respond to the submitted tickets. The interface will present a large table will all submiited tickets. Staff will press in every ticket in order to response to it as they are provided enough tools to handle it. To view all sent response, staff can press the button bellow the ticket table which will send them to other webpage, which present another table displaying all sent responses, edit and delete function is available. The backend of this feature will handle the CRUD operations using the input passed from the frontend.
+
 
 # Ming Zhang - 24937524
 ## My Responsibilities
