@@ -56,6 +56,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public Products addProduct(Products product) {
+        return productRepository.save(product);
+    }
+
     /**
      * Converts a MongoDB document to Products.
      *
@@ -123,9 +127,17 @@ public class ProductService {
         return Optional.ofNullable(mongoTemplate.findOne(query, Products.class, "Product"));
     }
 
+    public boolean deleteProductByName(String productName) {
+        Optional<Products> product = productRepository.findByProductName(productName);
+        if (product.isPresent()) {
+            productRepository.delete(product.get());
+            return true;
+        }
+        return false;
+    }
     // gets a list of products dependent on the variables that is given.
     public List<Products> getSpecificProductByName(String filter){
-        return productRepository.findProducyByName(filter);
+        return productRepository.findProductByName(filter);
     }
 
 
