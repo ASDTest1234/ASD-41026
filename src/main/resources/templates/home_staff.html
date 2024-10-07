@@ -57,10 +57,7 @@
 </head>
 <body>
 <h1> STAFF </h1>
-<form th:action="@{/staff/product/inventory}" method="get">
-  <input type="submit" value="View Inventory"/>
-</form>
-<br>
+
 
 <!-- Top Navigation Bar -->
 <div class="navbar">
@@ -76,6 +73,10 @@
         <input type="submit" value="User Page">
 
     </form>
+    <form th:action="@{/staff/product/inventory}" method="get">
+        <input type="submit" value="View Inventory"/>
+    </form>
+
 
     <!-- Center: Search bar -->
     <label>
