@@ -22,7 +22,7 @@ public class Cart {
     @Getter
     @Setter
     public static class CartItem {
-        private String productId; // 添加产品ID字段
+        private String productId;
         private String productName;
         private String productDescription;
         private double productPrice;

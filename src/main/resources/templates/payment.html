@@ -1,6 +1,14 @@
-<!-- payment.html -->
-<form action="/api/order/confirm" method="post">
-    <input type="hidden" name="customerId" value="testUser123" /> <!-- 修改为正确的 customerId -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+</head>
+<body>
+<h1>Confirm Payment</h1>
+<form action="/api/order/confirm" method="post" id="paymentForm">
+    <input type="hidden" id="customerId" name="customerId" />
     <div>
         <label for="cardNumber">Card Number:</label>
         <input type="text" id="cardNumber" name="cardNumber" required>
@@ -19,3 +27,21 @@
     </div>
     <button type="submit">Confirm Payment</button>
 </form>
+
+<script>
+    function setCustomerId() {
+        const customerId = window.localStorage.getItem('userId');
+        if (customerId) {
+            document.getElementById('customerId').value = customerId;
+        } else {
+            alert('Please log in to proceed.');
+            window.location.href = '/login';
+        }
+    }
+
+    window.onload = () => {
+        setCustomerId();
+    };
+</script>
+</body>
+</html>

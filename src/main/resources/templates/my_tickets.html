@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Tickets</title>
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            text-align: center;
+            max-width: 500px;
+            padding: 20px;
+            flex: 1;
+            overflow: hidden;
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            background-color: transparent;
+            color: black;
+            margin-bottom: 10px;
+            position: relative;
+            border-radius: 4px;
+            //text-align: center;
+        }
+        .display-text {
+            color: grey;
+            position: absolute;
+            text-align: center;
+            left: 0;
+            right: 0;
+            top: 20px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            visibility: visible;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #message {
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+            max-height: 50px;
+            overflow: auto;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+        .table-container {
+            flex: 2;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            border: 1px solid #dddddd;
+            padding: 4px;
+            height: 30px;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+        }
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th, td {
+            vertical-align: middle;
+        }
+        .table2 {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+
+        .table2 tr:hover {
+            background-color: #e2e6e9;
+        }
+        #ticket_info {
+            display: block;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>My Tickets</h1>
+  <div style="position: relative;">
+    <span class="display-text" id="customer-id-display">Enter Customer ID</span>
+    <input type="text" id="customer-id">
+  </div>
+  <button id="search-button">Search</button>
+  <button id="create-ticket-button">Create Ticket</button>
+  <div id="message"></div>
+</div>
+
+<div class="table-container">
+  <table>
+    <tr>
+      <th>Information</th>
+    </tr>
+    <tr>
+      <td id="ticket_info">Ticket information.</td>
+    </tr>
+  </table>
+</div>
+
+<script src="my_tickets.js"></script>
+</body>
+</html>

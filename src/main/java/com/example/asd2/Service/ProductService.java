@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * Service for managing Product operations, utilizing both MongoTemplate and ProductRepository.
@@ -136,5 +135,10 @@ public class ProductService {
         }
         return false;
     }
+    // gets a list of products dependent on the variables that is given.
+    public List<Products> getSpecificProductByName(String filter){
+        return productRepository.findProductByName(filter);
+    }
+
 
 }

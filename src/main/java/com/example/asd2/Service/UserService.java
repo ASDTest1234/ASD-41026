@@ -1,18 +1,22 @@
 package com.example.asd2.Service;
 
 import com.example.asd2.Model.Users;
+import com.example.asd2.repository.ProductRepository;
 import com.example.asd2.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
 
     @Autowired
     private UserRepository userRepository;
@@ -35,5 +39,14 @@ public class UserService {
     public Optional<Users> getUserByID(String userID){
         logger.info("Attempting to retrieve user by userID: {}", userID);
         return userRepository.findByUserID(userID);
+    }
+
+//    public List<Users> getAllUsers(){
+//        logger.info("Attempting to retrieve all users");
+//        return userRepository.findAllUsers();
+//    }
+
+    public List<Users> getUsersByRoles(String filter){
+        return userRepository.findUsersByRole(filter);
     }
 }

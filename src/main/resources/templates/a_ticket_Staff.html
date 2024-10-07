@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Detail</title>
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            text-align: center;
+            max-width: 500px;
+            padding: 20px;
+            flex: 1;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+        }
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .table-container {
+            flex: 2;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px; /* Added some margin for spacing */
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .input-container {
+            margin-top: 20px;
+        }
+        .input-field {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+        }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Ticket Detail</h1>
+  <table id="ticket-details-table">
+    <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Value</th>
+    </tr>
+    </thead>
+    <tbody id="ticket-details-body">
+    <!-- Ticket details will be populated here -->
+    </tbody>
+  </table>
+
+  <!-- Buttons added below the ticket details table -->
+  <button id="back-button">Back</button>
+  <button id="delete-button">Delete</button>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+    <tr>
+      <th>All Responses</th>
+    </tr>
+    </thead>
+    <tbody id="responses-body">
+    <tr>
+      <td>The responses assigned to this ticket will be displayed here.</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Input fields and submit button -->
+  <div class="input-container">
+    <input type="text" class="input-field" id="inputField1" placeholder="Auto generated ID" />
+    <input type="text" class="input-field" id="inputField2" placeholder="Enter Response" />
+    <button id="submit-button">Submit</button>
+  </div>
+
+</div>
+
+<script src="a_ticket_Staff.js"></script>
+</body>
+</html>

@@ -160,4 +160,13 @@ public class CartService {
         mongoTemplate.updateFirst(query, update, "Cart");
         logger.info("Successfully cleared items in cart for customerId: {}", customerId);
     }
+
+    public void removeProductFromCart(String customerId, String productName) throws CartNotFoundException {
+        Query query = new Query(Criteria.where("customerId").is(customerId).and("items.productName").is(productName));
+        Update update = new Update().pull("items", Query.query(Criteria.where("productName").is(productName)));
+        mongoTemplate.updateFirst(query, update, "Cart");
+        logger.info("Removed product '{}' from cart for customer '{}'", productName, customerId);
+    }
+
+
 }

@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page with Navbar</title>
+    <title>Staff Page</title>
     <style>
         /* Style for the navbar */
         .navbar {
@@ -67,7 +68,14 @@
     <div>
         <input type="submit" value="View Cart" />
         <input type="submit" value="View Details" />
+
+
     </div>
+
+    <form th:action="@{/user/home_user}" method="get">
+        <input type="submit" value="User Page">
+
+    </form>
 
     <!-- Center: Search bar -->
     <label>
