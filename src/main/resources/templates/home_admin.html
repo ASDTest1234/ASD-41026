@@ -127,6 +127,13 @@
   <div>
     <input type="submit" value="View Cart" onclick="viewCart()" />
     <input type="submit" value="View Details" />
+
+    <form th:action="@{/staff/home_staff}" method="get">
+      <button type="submit">Staff</button>
+    </form>
+    <form th:action="@{/user/home_user}" method="get">
+      <button type="submit">User</button>
+    </form>
   </div>
 
   <label>
