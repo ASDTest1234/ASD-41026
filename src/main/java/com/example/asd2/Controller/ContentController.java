@@ -66,7 +66,6 @@ public class ContentController {
 
     @GetMapping("/cart")
     public String handleCart() {
-        // Renders the cart view without needing any parameters
         return "cart";
     }
 }

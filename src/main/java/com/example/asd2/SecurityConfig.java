@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -17,7 +19,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/register", "/product/**").permitAll()
+                        .requestMatchers("/login", "/register", "/product/**", "/payment.html", "/api/order/confirm").permitAll()
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                         .requestMatchers("/staff/**").hasAnyRole("STAFF" ,"ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "STAFF")

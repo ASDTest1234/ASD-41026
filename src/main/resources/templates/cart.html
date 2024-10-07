@@ -48,6 +48,12 @@
     .btn:hover {
       background-color: #45a049;
     }
+    .btn-remove {
+      background-color: #f44336;
+    }
+    .btn-remove:hover {
+      background-color: #e53935;
+    }
     .total-price {
       font-size: 18px;
       font-weight: bold;
@@ -166,6 +172,7 @@
           <td>
             <button class="btn" onclick="updateQuantity('${item.productName}', ${item.quantity - 1})">-</button>
             <button class="btn" onclick="updateQuantity('${item.productName}', ${item.quantity + 1})">+</button>
+            <button class="btn btn-remove" onclick="removeProduct('${item.productName}')">Remove</button>
           </td>
         </tr>
       `;
@@ -209,6 +216,32 @@
             })
             .catch(error => {
               console.error('Error updating quantity:', error);
+            });
+  }
+
+  /**
+   * Removes a product from the cart.
+   */
+  function removeProduct(productName) {
+    const url = `http://localhost:8080/api/cart/removeProduct`;
+    const body = `customerId=${window.userId}&productName=${productName}`;
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: body
+    })
+            .then(response => {
+              if (response.ok) {
+                fetchCartForCustomer();
+              } else {
+                alert('Error removing product');
+              }
+            })
+            .catch(error => {
+              console.error('Error removing product:', error);
             });
   }
 

@@ -5,6 +5,8 @@ import com.example.asd2.Service.CartNotFoundException;
 import com.example.asd2.Service.CartService;
 import com.example.asd2.Service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +37,6 @@ public class OrderController {
                                @RequestParam String cvv,
                                @RequestParam String address,
                                Model model) {
-        // 订单处理逻辑
 
         try {
             Cart cart = cartService.getCartByCustomerId(customerId);
@@ -60,4 +61,24 @@ public class OrderController {
             return "payment";
         }
     }
+
+    @PostMapping("/complete")
+    public ResponseEntity<String> completeOrder(@RequestParam String customerId) {
+        try {
+            Cart cart = cartService.getCartByCustomerId(customerId);
+            if (cart == null || cart.getItems().isEmpty()) {
+                return new ResponseEntity<>("No items in cart to complete order.", HttpStatus.BAD_REQUEST);
+            }
+
+            orderService.createOrder(customerId, cart.getItems());
+            cartService.clearCart(customerId);
+
+            return new ResponseEntity<>("Order completed successfully", HttpStatus.OK);
+        } catch (CartNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Order completion failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

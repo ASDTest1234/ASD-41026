@@ -53,6 +53,18 @@ public class CartController {
         }
     }
 
+    @PostMapping("/removeProduct")
+    public ResponseEntity<String> removeProductFromCart(@RequestParam String customerId, @RequestParam String productName) {
+        try {
+            cartService.removeProductFromCart(customerId, productName);
+            return new ResponseEntity<>("Product removed successfully", HttpStatus.OK);
+        } catch (CartNotFoundException e) {
+            return new ResponseEntity<>("Cart not found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/complete")
     public ResponseEntity<String> completeOrder(@RequestParam String customerId) {
         try {
