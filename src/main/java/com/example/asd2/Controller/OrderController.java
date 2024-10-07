@@ -8,14 +8,11 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/order")
@@ -30,66 +27,66 @@ public class OrderController {
     private CartService cartService;
 
     /**
-     * Handles GET request to show payment and shipping details page.
-     * @param customerId the ID of the customer
+     * Handles POST request to show payment page.
+     * @param payload the request body containing the customerId
      * @param model the model to pass attributes to the view
      * @return the payment and shipping details page view name
      */
-    @GetMapping("/payment")
-    public String showPaymentPage(@RequestParam String customerId, Model model) {
+    @PostMapping("/payment")
+    public String showPaymentPage(@RequestBody Map<String, String> payload, Model model) {
+        String customerId = payload.get("customerId");
+        if (customerId == null) {
+            logger.warn("No customerId found in the request payload.");
+            model.addAttribute("error", "Customer ID is required.");
+            return "errorPage";
+        }
         logger.info("Navigating to Payment and Shipping Details page for customerId={}", customerId);
-
-        model.addAttribute("customerId", customerId); // Pass customerId to the view
-        return "Payment&ShippingDetails"; // Return template name
+        model.addAttribute("customerId", customerId);
+        return "Payment&ShippingDetails";
     }
-
 
     /**
      * Handles POST request to confirm and complete an order.
-     * @param customerId the ID of the customer
-     * @param cardNumber the card number for payment
-     * @param expiryDate the expiry date of the card
-     * @param cvv the CVV code of the card
-     * @param address the shipping address
+     * @param payload the request body containing order details
      * @param model the model to pass attributes to the view
-     * @return the view name for either the order confirmation or the payment page (if errors occur)
+     * @return the view name for either the order confirmation or payment page (if errors occur)
      */
     @PostMapping("/confirm")
-    public String confirmOrder(@RequestParam String customerId,
-                               @RequestParam String cardNumber,
-                               @RequestParam String expiryDate,
-                               @RequestParam String cvv,
-                               @RequestParam String address,
-                               @RequestParam String fullName,
-                               @RequestParam String city,
-                               @RequestParam String zipCode,
-                               Model model) {
+    public String confirmOrder(@RequestBody Map<String, Object> payload, Model model) {
+        String customerId = (String) payload.get("customerId");
+        String cardNumber = (String) payload.get("cardNumber");
+        String expiryDate = (String) payload.get("expiryDate");
+        String cvv = (String) payload.get("cvv");
+        String address = (String) payload.get("address");
+        String fullName = (String) payload.get("fullName");
+        String city = (String) payload.get("city");
+        String zipCode = (String) payload.get("zipCode");
 
-        logger.info("Attempting to confirm order for customerId={}", customerId); // Log order attempt
+        if (customerId == null || cardNumber == null || expiryDate == null || cvv == null || address == null || fullName == null || city == null || zipCode == null) {
+            model.addAttribute("error", "All fields are required to complete the order.");
+            logger.warn("Missing fields in the order confirmation payload.");
+            return "Payment&ShippingDetails";
+        }
+
+        logger.info("Attempting to confirm order for customerId={}", customerId);
+
         try {
             Cart cart = cartService.getCartByCustomerId(customerId);
             if (cart == null || cart.getItems().isEmpty()) {
-                logger.warn("No items in cart for customerId={}", customerId); // Warn if cart is empty
+                logger.warn("No items in cart for customerId={}", customerId);
                 model.addAttribute("error", "No items in cart to complete order.");
                 return "Payment&ShippingDetails";
             }
 
-            // Create a Document for customer details
             Document customerDetails = new Document()
                     .append("fullName", fullName)
                     .append("address", address)
                     .append("city", city)
                     .append("zipCode", zipCode)
-                    .append("cardNumber", "****" + cardNumber.substring(cardNumber.length() - 4)) // Mask card number
+                    .append("cardNumber", "****" + cardNumber.substring(cardNumber.length() - 4))
                     .append("expiryDate", expiryDate);
 
-            // Simulate payment processing (logging only, no real processing)
-            logger.info("Processing payment for customerId={}, cardNumber=****{}", customerId, cardNumber.substring(cardNumber.length()-4));
-
-            // Pass customerId, cart items, and customerDetails to createOrder
             orderService.createOrder(customerId, cart.getItems(), customerDetails);
-
-            // Clear the cart after successful order
             cartService.clearCart(customerId);
             logger.info("Order completed successfully for customerId={}", customerId);
             return "orderConfirmation";
@@ -103,7 +100,4 @@ public class OrderController {
             return "Payment&ShippingDetails";
         }
     }
-
-
-
 }

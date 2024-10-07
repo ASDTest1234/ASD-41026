@@ -42,7 +42,6 @@ public class OrderService {
     public void createOrder(String customerId, List<Cart.CartItem> items, Document customerDetails) throws Exception {
         logger.info("Creating order for customerId: {} with items: {}", customerId, items);
 
-        // Verify stock availability for each item
         for (Cart.CartItem item : items) {
             Products product = productService.getProductByName(item.getProductName())
                     .orElseThrow(() -> new Exception("Product not found: " + item.getProductName()));
@@ -52,13 +51,6 @@ public class OrderService {
             }
         }
 
-        // Deduct stock for each item
-        for (Cart.CartItem item : items) {
-            Products product = productService.getProductByName(item.getProductName()).get();
-            productService.updateProductStock(product.getProduct_Id(), product.getProductStock() - item.getQuantity());
-        }
-
-        // Generate order items documents
         List<Document> orderItems = new ArrayList<>();
         for (Cart.CartItem item : items) {
             Document orderItemDoc = new Document()
@@ -69,20 +61,22 @@ public class OrderService {
             orderItems.add(orderItemDoc);
         }
 
-        // Generate unique order number using UUID
-        String orderNumber = UUID.randomUUID().toString();
+        // Ensure all data is correct before insertion
+        if (items.isEmpty()) {
+            throw new Exception("No items to create an order.");
+        }
 
-        // Create the order document with all details
         Document orderDoc = new Document()
-                .append("orderNumber", orderNumber) // Unique order number
+                .append("orderNumber", UUID.randomUUID().toString())
                 .append("customerId", customerId)
-                .append("orderDate", new Date()) // Order date
-                .append("customerDetails", customerDetails) // Customer's payment and shipping details
+                .append("orderDate", new Date())
+                .append("customerDetails", customerDetails)
                 .append("items", orderItems)
                 .append("totalPrice", items.stream().mapToDouble(i -> i.getProductPrice() * i.getQuantity()).sum());
 
-        // Insert the order document into the Orders collection
+        // Insert order to MongoDB
         mongoTemplate.insert(orderDoc, "Orders");
-        logger.info("Order created successfully with orderNumber: {} for customerId: {}", orderNumber, customerId);
+        logger.info("Order created successfully for customerId: {}", customerId);
     }
+
 }

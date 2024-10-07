@@ -112,7 +112,6 @@
         <div id="errorMessage" class="error-message"></div>
     </form>
 
-    <!-- Buttons aligned like the cart page -->
     <div class="button-container">
         <button type="button" class="btn" onclick="goBackToCart()">Back to Cart</button>
         <button type="button" class="btn" onclick="submitOrder()">Submit Order</button>
@@ -121,23 +120,49 @@
 
 <script>
     function submitOrder() {
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.innerText = '';  // Clear previous errors
+
         const cardNumber = document.getElementById('cardNumber').value;
         const expiryDate = document.getElementById('expiryDate').value;
         const cvv = document.getElementById('cvv').value;
-        const fullName = document.getElementById('fullName').value;
-        const address = document.getElementById('address').value;
-        const city = document.getElementById('city').value;
         const zipCode = document.getElementById('zipCode').value;
-        const errorMessage = document.getElementById('errorMessage');
 
+        // Validation checks
+        const cardNumberPattern = /^\d{16}$/;
+        const expiryDatePattern = /^(0[1-9]|1[0-2])\/\d{2}$/;
+        const cvvPattern = /^\d{3}$/;
+        const zipCodePattern = /^\d{4}$/;
+
+        if (!cardNumberPattern.test(cardNumber)) {
+            errorMessage.innerText = 'Invalid card number. Must be 16 digits.';
+            return;
+        }
+        if (!expiryDatePattern.test(expiryDate)) {
+            errorMessage.innerText = 'Invalid expiry date format. Use MM/YY.';
+            return;
+        }
+        if (!cvvPattern.test(cvv)) {
+            errorMessage.innerText = 'Invalid CVV. Must be 3 digits.';
+            return;
+        }
+        if (!zipCodePattern.test(zipCode)) {
+            errorMessage.innerText = 'Invalid zip code. Must be 4 digits.';
+            return;
+        }
+
+        // Log user ID to ensure it's set
+        console.log("User ID:", window.userId);
+
+        // Continue with the fetch request only if validations pass
         const payload = {
-            customerId: window.userId,
+            customerId: window.userId, // Ensure this is set correctly
             cardNumber,
             expiryDate,
             cvv,
-            fullName,
-            address,
-            city,
+            fullName: document.getElementById('fullName').value,
+            address: document.getElementById('address').value,
+            city: document.getElementById('city').value,
             zipCode
         };
 
@@ -161,6 +186,7 @@
                 errorMessage.innerText = 'Unable to complete order. Please try again later.';
             });
     }
+
 
 
     function goBackToCart() {

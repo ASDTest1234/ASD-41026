@@ -90,7 +90,7 @@
 
   <!-- Navigation Buttons -->
   <button onclick="goBackToUserHome()" class="btn">Back to Home</button>
-  <a href="#" class="btn" id="proceedButton">Proceed to Payment</a>
+  <button class="btn" id="proceedButton" onclick="navigateToPayment()">Proceed to Payment</button>
 </div>
 
 <script>
@@ -221,6 +221,27 @@
               console.error("Error removing item:", error);
             });
   }
+
+  function navigateToPayment() {
+    const payload = { customerId: window.userId };
+
+    fetch('/api/order/payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+            .then(response => response.text())
+            .then(html => {
+              // This is assuming your response contains the HTML of the Payment&ShippingDetails page
+              document.open();
+              document.write(html);
+              document.close();
+            })
+            .catch(error => console.error('Error navigating to payment page:', error));
+  }
+
 
   /**
    * Navigates back to the user's home page.
