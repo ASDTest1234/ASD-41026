@@ -29,19 +29,19 @@ class RegisterUserTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         registerUser = new RegisterUser();
-        registerUser.setFName("John");
-        registerUser.setLName("Doe");
-        registerUser.setEmail("john.doe@example.com");
-        registerUser.setPassword("password123");
-        registerUser.setPhone("1234567890");
-        registerUser.setDob("2000-01-01");
-        registerUser.setState("State");
-        registerUser.setCity("City");
-        registerUser.setSuburb("Suburb");
-        registerUser.setPostcode("12345");
-        registerUser.setStreetName("Street");
-        registerUser.setStreetNumber("1");
-        registerUser.setUnitNumber("Unit 1");
+        registerUser.setFName("test");
+        registerUser.setLName("test");
+        registerUser.setEmail("test@test.com");
+        registerUser.setPassword("test");
+        registerUser.setPhone("0000000000");
+        registerUser.setDob("1999-01-01");
+        registerUser.setState("NSW");
+        registerUser.setCity("Sydney");
+        registerUser.setSuburb("Ultimo");
+        registerUser.setPostcode("0000");
+        registerUser.setStreetName("Broadway");
+        registerUser.setStreetNumber("11");
+        registerUser.setUnitNumber("101");
     }
 
     @Test
@@ -67,7 +67,7 @@ class RegisterUserTest {
 
         // Then
         assertTrue(result.isPresent());
-        assertEquals("John", result.get().getFName());
+        assertEquals("test", result.get().getFName());
         verify(registerUserService, times(1)).findByEmail(registerUser.getEmail());
     }
 
