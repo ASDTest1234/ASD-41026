@@ -1,7 +1,7 @@
 package com.example.asd2;
 
-import com.example.asd2.model.RegisterUser;
-import com.example.asd2.service.UserService;
+import com.example.asd2.Model.RegisterUser;
+import com.example.asd2.Service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
