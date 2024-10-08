@@ -36,20 +36,20 @@
       background-color: #f2f2f2;
     }
     .btn {
-      display: inline-block;
-      padding: 5px 10px;
-      margin: 5px;
+      padding: 10px 20px;
       background-color: #4CAF50;
       color: white;
       text-align: center;
       text-decoration: none;
       border-radius: 4px;
+      cursor: pointer;
     }
     .btn:hover {
       background-color: #45a049;
     }
     .btn-remove {
       background-color: #f44336;
+      color: white;
     }
     .btn-remove:hover {
       background-color: #e53935;
@@ -59,11 +59,9 @@
       font-weight: bold;
       margin-top: 20px;
     }
-    .error-message {
-      color: red;
-      text-align: center;
-      font-weight: bold;
-      margin-top: 20px;
+    .quantity-btn {
+      padding: 5px 10px;
+      margin: 0 5px;
     }
     .out-of-stock {
       color: red;
@@ -80,13 +78,14 @@
 <div class="container">
   <h1>Customer Cart</h1>
 
+  <!-- Cart Table -->
   <table>
     <thead>
     <tr>
       <th>Product Name</th>
-      <th>Description</th>
-      <th>Price</th>
       <th>Quantity</th>
+      <th>Price</th>
+      <th>Total</th>
       <th>Actions</th>
     </tr>
     </thead>
@@ -95,177 +94,165 @@
     </tbody>
   </table>
 
-  <div class="total-price" id="totalPrice"></div>
-  <a href="#" class="btn" id="proceedButton">Proceed to Payment</a>
+  <div class="total-price" id="totalPrice">Total Price: $0.00</div>
+
+  <!-- Navigation Buttons -->
+  <button onclick="goBackToUserHome()" class="btn">Back to Home</button>
+  <button class="btn" id="proceedButton" onclick="navigateToPayment()">Proceed to Payment</button>
 </div>
 
 <script>
-  /**
-   * Fetches the current user's ID from the backend and calls the function to load cart data.
-   */
+  const proceedButton = document.getElementById('proceedButton');
+
   function fetchCurrentUserId() {
     fetch('/user/currentUserId')
             .then(response => response.json())
             .then(data => {
               const userId = data.userId;
-
               if (userId && userId !== 'Guest') {
-                window.userId = userId; // Store globally for other functions to use
-                fetchCartForCustomer();
+                window.userId = userId;
+                loadCart();
               } else {
+                alert("Please log in to view your cart.");
                 document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Please log in to view your cart.</td></tr>';
                 document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
+                proceedButton.classList.add('disabled-btn');
+                proceedButton.disabled = true;
               }
             })
             .catch(error => {
               console.error("Error fetching user ID:", error);
               document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Error loading cart</td></tr>';
               document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
+              proceedButton.classList.add('disabled-btn');
+              proceedButton.disabled = true;
             });
   }
 
-  /**
-   * Fetches the cart data for the currently logged-in user.
-   */
-  function fetchCartForCustomer() {
-    const url = `http://localhost:8080/api/cart?customerId=${window.userId}`;
-
-    fetch(url)
+  function loadCart() {
+    fetch(`/api/cart?customerId=${window.userId}`)
             .then(response => response.json())
             .then(cart => {
-              if (cart && cart.items && cart.items.length > 0) {
-                populateCart(cart);
+              const cartItemsContainer = document.getElementById('cartItems');
+              let isStockSufficient = true;
+              let cartHtml = '';
+
+              if (cart.items && cart.items.length > 0) {
+                cart.items.forEach(item => {
+                  const isOutOfStock = !item.stockSufficient;
+                  const itemTotal = item.quantity * item.productPrice;
+
+                  cartHtml += `
+              <tr>
+                <td>${item.productName}</td>
+                <td class="${isOutOfStock ? 'out-of-stock' : ''}">
+                  <button class="quantity-btn" onclick="updateQuantity('${item.productName}', ${item.quantity - 1}, ${item.stockAvailable})">-</button>
+                  ${item.quantity}
+                  <button class="quantity-btn" onclick="updateQuantity('${item.productName}', ${item.quantity + 1}, ${item.stockAvailable})">+</button>
+                  ${isOutOfStock ? '<div class="out-of-stock">Insufficient stock</div>' : ''}
+                </td>
+                <td>$${item.productPrice.toFixed(2)}</td>
+                <td>$${itemTotal.toFixed(2)}</td>
+                <td>
+                  <button class="btn-remove" onclick="removeItem('${item.productName}')">Remove</button>
+                </td>
+              </tr>
+            `;
+
+                  if (isOutOfStock) {
+                    isStockSufficient = false;
+                  }
+                });
+
+                document.getElementById('totalPrice').innerText = `Total Price: $${cart.totalPrice.toFixed(2)}`;
+                cartItemsContainer.innerHTML = cartHtml;
+                proceedButton.classList.toggle('disabled-btn', !isStockSufficient);
+                proceedButton.disabled = !isStockSufficient;
               } else {
-                document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
+                cartItemsContainer.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
                 document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
+                proceedButton.classList.add('disabled-btn');
+                proceedButton.disabled = true;
               }
             })
             .catch(error => {
               console.error("Error fetching cart:", error);
               document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Error loading cart</td></tr>';
               document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
+              proceedButton.classList.add('disabled-btn');
+              proceedButton.disabled = true;
             });
   }
 
-  /**
-   * Populates the cart table with item data and updates the total price.
-   */
-  function populateCart(cart) {
-    const cartItems = cart.items;
-    const cartItemsContainer = document.getElementById('cartItems');
-    const proceedButton = document.getElementById('proceedButton');
-    let isStockSufficient = true;
-    let cartHtml = '';
-
-    cartItems.forEach(item => {
-      const isOutOfStock = !item.stockSufficient;
-
-      cartHtml += `
-        <tr>
-          <td>${item.productName}</td>
-          <td>${item.productDescription || 'N/A'}</td>
-          <td>$${(item.productPrice || 0).toFixed(2)}</td>
-          <td class="${isOutOfStock ? 'out-of-stock' : ''}">
-            ${item.quantity}
-            ${isOutOfStock ? '<div class="out-of-stock">Insufficient stock</div>' : ''}
-          </td>
-          <td>
-            <button class="btn" onclick="updateQuantity('${item.productName}', ${item.quantity - 1})">-</button>
-            <button class="btn" onclick="updateQuantity('${item.productName}', ${item.quantity + 1})">+</button>
-            <button class="btn btn-remove" onclick="removeProduct('${item.productName}')">Remove</button>
-          </td>
-        </tr>
-      `;
-
-      if (isOutOfStock) {
-        isStockSufficient = false;
-      }
-    });
-
-    document.getElementById('totalPrice').innerText = 'Total Price: $' + (cart.totalPrice || 0).toFixed(2);
-    cartItemsContainer.innerHTML = cartHtml;
-    proceedButton.classList.toggle('disabled-btn', !isStockSufficient);
-    proceedButton.disabled = !isStockSufficient;
-  }
-
-  /**
-   * Updates the quantity of a specific product in the cart.
-   */
-  function updateQuantity(productName, newQuantity) {
+  function updateQuantity(productName, newQuantity, maxQuantity) {
     if (newQuantity < 1) {
       alert("Quantity cannot be less than 1.");
       return;
     }
 
-    const url = `http://localhost:8080/api/cart/updateQuantity`;
-    const body = `customerId=${window.userId}&productName=${productName}&quantity=${newQuantity}`;
-
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: body
-    })
-            .then(response => {
-              if (response.ok) {
-                fetchCartForCustomer();
-              } else {
-                alert('Error updating quantity');
-              }
-            })
-            .catch(error => {
-              console.error('Error updating quantity:', error);
-            });
-  }
-
-  /**
-   * Removes a product from the cart.
-   */
-  function removeProduct(productName) {
-    const url = `http://localhost:8080/api/cart/removeProduct`;
-    const body = `customerId=${window.userId}&productName=${productName}`;
-
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: body
-    })
-            .then(response => {
-              if (response.ok) {
-                fetchCartForCustomer();
-              } else {
-                alert('Error removing product');
-              }
-            })
-            .catch(error => {
-              console.error('Error removing product:', error);
-            });
-  }
-
-  document.getElementById('proceedButton').addEventListener('click', () => {
-    if (document.getElementById('proceedButton').disabled) {
+    if (newQuantity > maxQuantity) {
+      alert(`Only ${maxQuantity} units available for ${productName}.`);
       return;
     }
 
-    const url = `http://localhost:8080/api/order/complete?customerId=${window.userId}`;
-
-    fetch(url, {
-      method: 'POST'
+    fetch(`/api/cart/updateQuantity`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `customerId=${window.userId}&productName=${productName}&quantity=${newQuantity}`
     })
-            .then(response => response.json())
-            .then(() => {
-              alert('Order completed successfully');
-              fetchCartForCustomer();
+            .then(response => {
+              if (response.ok) {
+                loadCart();
+              } else {
+                alert("Failed to update quantity.");
+              }
             })
             .catch(error => {
-              console.error('Error completing order:', error);
+              console.error("Error updating quantity:", error);
             });
-  });
+  }
 
-  // Fetch the current user's ID when the page loads
+  function removeItem(productName) {
+    fetch(`/api/cart/removeProduct?customerId=${window.userId}&productName=${encodeURIComponent(productName)}`, {
+      method: 'POST'
+    })
+            .then(response => {
+              if (response.ok) {
+                loadCart();
+              } else {
+                alert("Failed to remove product from cart");
+              }
+            })
+            .catch(error => {
+              console.error("Error removing item:", error);
+            });
+  }
+
+  function navigateToPayment() {
+    if (proceedButton.disabled) return;
+
+    fetch('/api/order/payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ customerId: window.userId })
+    })
+            .then(response => response.text())
+            .then(html => {
+              document.open();
+              document.write(html);
+              document.close();
+            })
+            .catch(error => console.error('Error navigating to payment page:', error));
+  }
+
+  function goBackToUserHome() {
+    window.location.href = "/user/home_user";
+  }
+
   window.onload = () => fetchCurrentUserId();
 </script>
 

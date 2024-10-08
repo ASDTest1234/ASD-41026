@@ -57,10 +57,7 @@
 </head>
 <body>
 <h1> STAFF </h1>
-<form th:action="@{/staff/product/inventory}" method="get">
-  <input type="submit" value="View Inventory"/>
-</form>
-<br>
+
 
 <!-- Top Navigation Bar -->
 <div class="navbar">
@@ -75,6 +72,10 @@
     <form th:action="@{/user/home_user}" method="get">
         <input type="submit" value="User Page">
     </form>
+    <form th:action="@{/staff/product/inventory}" method="get">
+        <input type="submit" value="View Inventory"/>
+    </form>
+
 
 
 
@@ -87,6 +88,7 @@
     <form th:action="@{/logout}" method="post">
         <input class="logout" type="submit" value="Logout"/>
     </form>
+    <a href="support_ticket.html" class="register-link" style="color: white;">Support Management Center</a>
 </div>
 
 

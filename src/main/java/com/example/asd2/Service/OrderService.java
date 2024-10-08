@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.Instant;
+
 
 /**
  * Service for managing Order operations.
@@ -30,9 +35,19 @@ public class OrderService {
         this.productService = productService;
     }
 
-    public void createOrder(String customerId, List<Cart.CartItem> items) throws Exception {
+    /**
+     * Creates an order with customer and cart item details.
+     *
+     * @param customerId - the ID of the customer
+     * @param items - the list of items in the cart
+     * @param customerDetails - the customer's payment and shipping details
+     * @throws Exception if any product has insufficient stock
+     */
+    public void createOrder(String customerId, List<Cart.CartItem> items, Document customerDetails) throws Exception {
         logger.info("Creating order for customerId: {} with items: {}", customerId, items);
 
+
+        //Deduct stock
         for (Cart.CartItem item : items) {
             Products product = productService.getProductByName(item.getProductName())
                     .orElseThrow(() -> new Exception("Product not found: " + item.getProductName()));
@@ -42,9 +57,13 @@ public class OrderService {
             }
         }
 
+
         for (Cart.CartItem item : items) {
-            Products product = productService.getProductByName(item.getProductName()).get();
-            productService.updateProductStock(product.getProduct_Id(), product.getProductStock() - item.getQuantity());
+            Products product = productService.getProductByName(item.getProductName())
+                    .orElseThrow(() -> new Exception("Product not found: " + item.getProductName()));
+
+            int newStock = product.getProductStock() - item.getQuantity();
+            productService.updateProductStock(product.getProduct_Id(), newStock);
         }
 
         List<Document> orderItems = new ArrayList<>();
@@ -57,13 +76,25 @@ public class OrderService {
             orderItems.add(orderItemDoc);
         }
 
+        // Ensure all data is correct before insertion
+        if (items.isEmpty()) {
+            throw new Exception("No items to create an order.");
+        }
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Australia/Sydney"));
+        Date dateInSydney = Date.from(zonedDateTime.toInstant());
+
         Document orderDoc = new Document()
+                .append("orderNumber", UUID.randomUUID().toString())
                 .append("customerId", customerId)
-                .append("orderDate", new Date())
+                .append("orderDate", dateInSydney)
+                .append("customerDetails", customerDetails)
                 .append("items", orderItems)
                 .append("totalPrice", items.stream().mapToDouble(i -> i.getProductPrice() * i.getQuantity()).sum());
 
+        // Insert order to MongoDB
         mongoTemplate.insert(orderDoc, "Orders");
         logger.info("Order created successfully for customerId: {}", customerId);
     }
+
 }

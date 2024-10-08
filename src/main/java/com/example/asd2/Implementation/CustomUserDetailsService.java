@@ -18,10 +18,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    //constructor to take the UserRepository so it can allow for queries
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    // overriding a method from the UserDetails Service to take the custom requirements from the Database
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Users> user = userRepository.findByEmail(email);
@@ -30,7 +32,13 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
 
-        return new User(user.get().getEmail(), user.get().getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(user.get().getRole())));
+        //Create instance of User with the email,password and role
+        return new User(
+                user.get().getEmail(),
+                user.get().getPassword(),
+                Collections.singletonList(
+                        new SimpleGrantedAuthority(user.get().getRole())
+                )
+        );
     }
 }

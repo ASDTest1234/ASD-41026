@@ -3,14 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Personal Details</title>
-    <link rel="stylesheet" href="registerstyles.css">
+    <title>Registration</title>
+    <style>
+        /* CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .form-box {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="date"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button.btn {
+            background-color: #5cb85c;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 48%;
+            margin-top: 1rem;
+        }
+
+        button.btn:hover {
+            background-color: #4cae4c;
+        }
+
+        button.back-btn {
+            background-color: #6c757d;
+        }
+
+        button.back-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-box">
-            <h1>Personal Details</h1>
-            <form action="/api/users/step1" method="POST">
+<div class="container">
+    <div class="form-box">
+        <h1>Registration</h1>
+        <form action="/api/users/register" method="POST">
+
             <label for="fName">First Name:</label>
             <input type="text" id="fName" name="fName" required><br>
 
@@ -20,7 +108,7 @@
             <label for="dob">Date of Birth:</label>
             <input type="date" id="dob" name="dob" required><br>
 
-            <label for="email">Email Address:</label>
+            <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
 
             <label for="phone">Phone Number:</label>
@@ -29,8 +117,36 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
 
-            <button type="submit">Next</button>
-        </div>
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" required><br>
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required><br>
+
+            <label for="suburb">Suburb:</label>
+            <input type="text" id="suburb" name="suburb" required><br>
+
+            <label for="postcode">Postcode:</label>
+            <input type="text" id="postcode" name="postcode" required><br>
+
+            <label for="streetName">Street Name:</label>
+            <input type="text" id="streetName" name="streetName" required><br>
+
+            <label for="streetNumber">Street Number:</label>
+            <input type="text" id="streetNumber" name="streetNumber" required><br>
+
+            <label for="unitNumber">Unit Number (optional):</label>
+            <input type="text" id="unitNumber" name="unitNumber"><br>
+
+            <div class="form-actions">
+                <!-- Submit button -->
+                <button type="submit" class="btn">Submit</button>
+                <a href="/login" style="text-decoration: none; width: 48%;">
+                    <button type="button" class="btn back-btn">Back to Login</button>
+                </a>
+            </div>
+        </form>
     </div>
+</div>
 </body>
 </html>

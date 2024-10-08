@@ -4,19 +4,21 @@ import com.example.asd2.Model.Cart;
 import com.example.asd2.Service.CartNotFoundException;
 import com.example.asd2.Service.CartService;
 import com.example.asd2.Service.OrderService;
+import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/order")
 public class OrderController {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     private OrderService orderService;
@@ -24,61 +26,78 @@ public class OrderController {
     @Autowired
     private CartService cartService;
 
-    @GetMapping("/payment")
-    public String showPaymentPage(@RequestParam String customerId, Model model) {
+    /**
+     * Handles POST request to show payment page.
+     * @param payload the request body containing the customerId
+     * @param model the model to pass attributes to the view
+     * @return the payment and shipping details page view name
+     */
+    @PostMapping("/payment")
+    public String showPaymentPage(@RequestBody Map<String, String> payload, Model model) {
+        String customerId = payload.get("customerId");
+        if (customerId == null) {
+            logger.warn("No customerId found in the request payload.");
+            model.addAttribute("error", "Customer ID is required.");
+            return "errorPage";
+        }
+        logger.info("Navigating to Payment and Shipping Details page for customerId={}", customerId);
         model.addAttribute("customerId", customerId);
-        return "payment";
+        return "Payment&ShippingDetails";
     }
 
+    /**
+     * Handles POST request to confirm and complete an order.
+     * @param payload the request body containing order details
+     * @param model the model to pass attributes to the view
+     * @return the view name for either the order confirmation or payment page (if errors occur)
+     */
     @PostMapping("/confirm")
-    public String confirmOrder(@RequestParam String customerId,
-                               @RequestParam String cardNumber,
-                               @RequestParam String expiryDate,
-                               @RequestParam String cvv,
-                               @RequestParam String address,
-                               Model model) {
+    public String confirmOrder(@RequestBody Map<String, Object> payload, Model model) {
+        String customerId = (String) payload.get("customerId");
+        String cardNumber = (String) payload.get("cardNumber");
+        String expiryDate = (String) payload.get("expiryDate");
+        String cvv = (String) payload.get("cvv");
+        String address = (String) payload.get("address");
+        String fullName = (String) payload.get("fullName");
+        String city = (String) payload.get("city");
+        String zipCode = (String) payload.get("zipCode");
+
+        if (customerId == null || cardNumber == null || expiryDate == null || cvv == null || address == null || fullName == null || city == null || zipCode == null) {
+            model.addAttribute("error", "All fields are required to complete the order.");
+            logger.warn("Missing fields in the order confirmation payload.");
+            return "Payment&ShippingDetails";
+        }
+
+        logger.info("Attempting to confirm order for customerId={}", customerId);
 
         try {
             Cart cart = cartService.getCartByCustomerId(customerId);
             if (cart == null || cart.getItems().isEmpty()) {
+                logger.warn("No items in cart for customerId={}", customerId);
                 model.addAttribute("error", "No items in cart to complete order.");
-                return "payment";
+                return "Payment&ShippingDetails";
             }
 
-            // Simulate payment processing with card details (here only logging)
-            // Real application should have secure payment gateway integration
-            System.out.println("Processing payment for card: " + cardNumber);
+            Document customerDetails = new Document()
+                    .append("fullName", fullName)
+                    .append("address", address)
+                    .append("city", city)
+                    .append("zipCode", zipCode)
+                    .append("cardNumber", "****" + cardNumber.substring(cardNumber.length() - 4))
+                    .append("expiryDate", expiryDate);
 
-            orderService.createOrder(customerId, cart.getItems());
-
-            cartService.clearCart(customerId);  // 清空购物车
+            orderService.createOrder(customerId, cart.getItems(), customerDetails);
+            cartService.clearCart(customerId);
+            logger.info("Order completed successfully for customerId={}", customerId);
             return "orderConfirmation";
         } catch (CartNotFoundException e) {
+            logger.error("Cart not found for customerId={}: {}", customerId, e.getMessage());
             model.addAttribute("error", "Cart not found.");
-            return "payment";
+            return "Payment&ShippingDetails";
         } catch (Exception e) {
+            logger.error("Order completion failed for customerId={}: {}", customerId, e.getMessage());
             model.addAttribute("error", "Order completion failed: " + e.getMessage());
-            return "payment";
+            return "Payment&ShippingDetails";
         }
     }
-
-    @PostMapping("/complete")
-    public ResponseEntity<String> completeOrder(@RequestParam String customerId) {
-        try {
-            Cart cart = cartService.getCartByCustomerId(customerId);
-            if (cart == null || cart.getItems().isEmpty()) {
-                return new ResponseEntity<>("No items in cart to complete order.", HttpStatus.BAD_REQUEST);
-            }
-
-            orderService.createOrder(customerId, cart.getItems());
-            cartService.clearCart(customerId);
-
-            return new ResponseEntity<>("Order completed successfully", HttpStatus.OK);
-        } catch (CartNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Order completion failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 }

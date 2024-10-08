@@ -161,7 +161,8 @@
         </tr>
         </thead>
         <tbody>
-        <!-- Loop over products in the server response to display each product's details -->
+
+<!--        uses the products from the controller and iterates each product-->
         <tr th:each="product : ${products}">
             <td th:text="${product.productName}">Product Name</td>
             <td th:text="${product.productType}">Product Type</td>
