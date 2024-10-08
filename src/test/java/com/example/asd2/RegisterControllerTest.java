@@ -1,60 +1,57 @@
 package com.example.asd2;
-import com.example.asd2.Controller.RegisterUserController;
 
 import com.example.asd2.Model.RegisterUser;
-import com.example.asd2.Service.UserService;
+import com.example.asd2.Service.RegisterUserService;
+import com.example.asd2.controller.RegisterUserController;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-@WebMvcTest(RegisterUserController.class)
-class RegisterUserControllerTest {
+public class RegisterUserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private RegisterUserService registerUserService;
 
-    @MockBean
-    private UserService userService; // Mocking the service layer
+    @InjectMocks
+    private RegisterUserController registerUserController;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
-    void shouldRegisterUser() throws Exception {
-      
-        RegisterUser registerUser = new RegisterUser();
-        registerUser.setFName("John");
-        registerUser.setLName("Doe");
-        registerUser.setDob("2000-01-01");
-        registerUser.setEmail("johndoe@example.com");
-        registerUser.setPhone("1234567890");
-        registerUser.setPassword("password");
-        registerUser.setState("New York");
-        registerUser.setCity("New York City");
-        registerUser.setSuburb("Manhattan");
-        registerUser.setPostcode("10001");
-        registerUser.setStreetName("5th Avenue");
-        registerUser.setStreetNumber("1");
-        registerUser.setUnitNumber("A");
+    public void testRegisterUserWithAllFieldsFilled() {
+        // Arrange
+        RegisterUser user = new RegisterUser();
+        user.setfName("John");
+        user.setlName("Doe");
+        user.setDob("1990-01-01");
+        user.setEmail("test@example.com");
+        user.setPhone("1234567890");
+        user.setPassword("password");
+        user.setState("State");
+        user.setCity("City");
+        user.setSuburb("Suburb");
+        user.setPostcode("12345");
+        user.setStreetName("Main Street");
+        user.setStreetNumber("123");
+        user.setUnitNumber("Unit 5");
 
-        // Mock the service call
-        Mockito.when(userService.registerUser(Mockito.any(RegisterUser.class)))
-               .thenReturn(registerUser);
+        when(registerUserService.registerUser(user)).thenReturn(user);
 
-        
-        mockMvc.perform(post("/api/users/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerUser)))
-                .andExpect(status().isOk());
-        
-       
+        // Act
+        ResponseEntity<String> response = registerUserController.registerUser(user);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User registered successfully", response.getBody());
     }
 }
