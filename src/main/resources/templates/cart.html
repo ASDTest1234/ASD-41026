@@ -63,6 +63,14 @@
       padding: 5px 10px;
       margin: 0 5px;
     }
+    .out-of-stock {
+      color: red;
+      font-weight: bold;
+    }
+    .disabled-btn {
+      background-color: gray;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -96,59 +104,52 @@
 <script>
   const proceedButton = document.getElementById('proceedButton');
 
-  /**
-   * Fetch the current user's ID and load the cart if available.
-   */
   function fetchCurrentUserId() {
     fetch('/user/currentUserId')
             .then(response => response.json())
             .then(data => {
               const userId = data.userId;
-
               if (userId && userId !== 'Guest') {
                 window.userId = userId;
-                proceedButton.href = `/api/order/payment?customerId=${userId}`;
                 loadCart();
               } else {
-                proceedButton.href = "/login";
                 alert("Please log in to view your cart.");
                 document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Please log in to view your cart.</td></tr>';
                 document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
+                proceedButton.classList.add('disabled-btn');
+                proceedButton.disabled = true;
               }
             })
             .catch(error => {
               console.error("Error fetching user ID:", error);
               document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Error loading cart</td></tr>';
               document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
+              proceedButton.classList.add('disabled-btn');
+              proceedButton.disabled = true;
             });
   }
 
-  /**
-   * Load cart items for the current user and populate the table.
-   */
   function loadCart() {
-    if (!window.userId) {
-      console.error("Customer ID (userId) is not defined.");
-      return;
-    }
-
     fetch(`/api/cart?customerId=${window.userId}`)
             .then(response => response.json())
             .then(cart => {
               const cartItemsContainer = document.getElementById('cartItems');
+              let isStockSufficient = true;
               let cartHtml = '';
 
               if (cart.items && cart.items.length > 0) {
                 cart.items.forEach(item => {
+                  const isOutOfStock = !item.stockSufficient;
                   const itemTotal = item.quantity * item.productPrice;
-                  // Use productName instead of productId for all actions
+
                   cartHtml += `
               <tr>
                 <td>${item.productName}</td>
-                <td>
-                  <button class="quantity-btn" onclick="updateQuantity('${item.productName}', ${item.quantity - 1})">-</button>
+                <td class="${isOutOfStock ? 'out-of-stock' : ''}">
+                  <button class="quantity-btn" onclick="updateQuantity('${item.productName}', ${item.quantity - 1}, ${item.stockAvailable})">-</button>
                   ${item.quantity}
-                  <button class="quantity-btn" onclick="updateQuantity('${item.productName}', ${item.quantity + 1})">+</button>
+                  <button class="quantity-btn" onclick="updateQuantity('${item.productName}', ${item.quantity + 1}, ${item.stockAvailable})">+</button>
+                  ${isOutOfStock ? '<div class="out-of-stock">Insufficient stock</div>' : ''}
                 </td>
                 <td>$${item.productPrice.toFixed(2)}</td>
                 <td>$${itemTotal.toFixed(2)}</td>
@@ -157,37 +158,49 @@
                 </td>
               </tr>
             `;
+
+                  if (isOutOfStock) {
+                    isStockSufficient = false;
+                  }
                 });
 
                 document.getElementById('totalPrice').innerText = `Total Price: $${cart.totalPrice.toFixed(2)}`;
                 cartItemsContainer.innerHTML = cartHtml;
-                proceedButton.classList.remove('disabled-btn');
+                proceedButton.classList.toggle('disabled-btn', !isStockSufficient);
+                proceedButton.disabled = !isStockSufficient;
               } else {
                 cartItemsContainer.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
                 document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
                 proceedButton.classList.add('disabled-btn');
+                proceedButton.disabled = true;
               }
             })
             .catch(error => {
               console.error("Error fetching cart:", error);
+              document.getElementById('cartItems').innerHTML = '<tr><td colspan="5">Error loading cart</td></tr>';
+              document.getElementById('totalPrice').innerText = 'Total Price: $0.00';
               proceedButton.classList.add('disabled-btn');
+              proceedButton.disabled = true;
             });
   }
 
-  /**
-   * Updates the quantity of a specific product in the cart.
-   *
-   * @param {string} productName - The name of the product to update
-   * @param {number} newQuantity - The new quantity to set
-   */
-  function updateQuantity(productName, newQuantity) {
+  function updateQuantity(productName, newQuantity, maxQuantity) {
     if (newQuantity < 1) {
       alert("Quantity cannot be less than 1.");
       return;
     }
 
-    fetch(`/api/cart/updateQuantity?customerId=${window.userId}&productName=${encodeURIComponent(productName)}&quantity=${newQuantity}`, {
-      method: 'POST'
+    if (newQuantity > maxQuantity) {
+      alert(`Only ${maxQuantity} units available for ${productName}.`);
+      return;
+    }
+
+    fetch(`/api/cart/updateQuantity`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `customerId=${window.userId}&productName=${productName}&quantity=${newQuantity}`
     })
             .then(response => {
               if (response.ok) {
@@ -201,11 +214,6 @@
             });
   }
 
-  /**
-   * Removes a product from the cart by product name.
-   *
-   * @param {string} productName - The name of the product to remove
-   */
   function removeItem(productName) {
     fetch(`/api/cart/removeProduct?customerId=${window.userId}&productName=${encodeURIComponent(productName)}`, {
       method: 'POST'
@@ -223,18 +231,17 @@
   }
 
   function navigateToPayment() {
-    const payload = { customerId: window.userId };
+    if (proceedButton.disabled) return;
 
     fetch('/api/order/payment', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ customerId: window.userId })
     })
             .then(response => response.text())
             .then(html => {
-              // This is assuming your response contains the HTML of the Payment&ShippingDetails page
               document.open();
               document.write(html);
               document.close();
@@ -242,15 +249,10 @@
             .catch(error => console.error('Error navigating to payment page:', error));
   }
 
-
-  /**
-   * Navigates back to the user's home page.
-   */
   function goBackToUserHome() {
     window.location.href = "/user/home_user";
   }
 
-  // Fetch the current user's ID when the page loads
   window.onload = () => fetchCurrentUserId();
 </script>
 

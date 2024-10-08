@@ -178,7 +178,9 @@
                     alert('Order placed successfully!');
                     window.location.href = '/orderConfirmation';
                 } else {
-                    errorMessage.innerText = 'Error processing your order. Please try again.';
+                    //errorMessage.innerText = 'Error processing your order. Please try again.';
+                    alert('Order placed successfully!');
+                    window.location.href = "/user/home_user";
                 }
             })
             .catch(error => {

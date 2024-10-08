@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.Instant;
+
 
 /**
  * Service for managing Order operations.
@@ -42,6 +46,8 @@ public class OrderService {
     public void createOrder(String customerId, List<Cart.CartItem> items, Document customerDetails) throws Exception {
         logger.info("Creating order for customerId: {} with items: {}", customerId, items);
 
+
+        //Deduct stock
         for (Cart.CartItem item : items) {
             Products product = productService.getProductByName(item.getProductName())
                     .orElseThrow(() -> new Exception("Product not found: " + item.getProductName()));
@@ -49,6 +55,15 @@ public class OrderService {
             if (product.getProductStock() < item.getQuantity()) {
                 throw new Exception("Insufficient stock for product: " + item.getProductName());
             }
+        }
+
+
+        for (Cart.CartItem item : items) {
+            Products product = productService.getProductByName(item.getProductName())
+                    .orElseThrow(() -> new Exception("Product not found: " + item.getProductName()));
+
+            int newStock = product.getProductStock() - item.getQuantity();
+            productService.updateProductStock(product.getProduct_Id(), newStock);
         }
 
         List<Document> orderItems = new ArrayList<>();
@@ -66,10 +81,13 @@ public class OrderService {
             throw new Exception("No items to create an order.");
         }
 
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Australia/Sydney"));
+        Date dateInSydney = Date.from(zonedDateTime.toInstant());
+
         Document orderDoc = new Document()
                 .append("orderNumber", UUID.randomUUID().toString())
                 .append("customerId", customerId)
-                .append("orderDate", new Date())
+                .append("orderDate", dateInSydney)
                 .append("customerDetails", customerDetails)
                 .append("items", orderItems)
                 .append("totalPrice", items.stream().mapToDouble(i -> i.getProductPrice() * i.getQuantity()).sum());
