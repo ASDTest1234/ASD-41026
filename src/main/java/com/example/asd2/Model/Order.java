@@ -16,13 +16,22 @@ public class Order {
     @Id
     private String orderId;
     private String customerId;
+    private String orderNumber;
     private Date orderDate;
     private List<OrderItem> items;
-
+    private double totalPrice;
+    private CustomerDetails customerDetails;
     @Getter
     @Setter
     public static class OrderItem {
         private String productName;
         private int quantity;
     }
-}   
+
+    @Getter
+    @Setter
+    public static class CustomerDetails {
+        private String name;
+        private String address;
+    }
+}
