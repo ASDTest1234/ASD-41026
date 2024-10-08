@@ -127,6 +127,7 @@
     <div>
         <input type="submit" value="View Cart" onclick="viewCart()" />
         <input type="submit" value="View Details" />
+        <input type="submit" value="View Order History" onclick="viewOrderHistory()" />
     </div>
 
     <label>
@@ -243,6 +244,10 @@
      */
     function viewCart() {
         window.location.href = '/cart';
+    }
+
+    function viewOrderHistory() {
+        window.location.href = '/user/order_history';
     }
 
     /**
