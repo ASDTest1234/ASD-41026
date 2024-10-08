@@ -2,7 +2,7 @@ package com.example.asd2;
 
 import com.example.asd2.Model.RegisterUser;
 import com.example.asd2.Service.RegisterUserService;
-import com.example.asd2.controller.RegisterUserController;
+import com.example.asd2.Controller.RegisterUserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
