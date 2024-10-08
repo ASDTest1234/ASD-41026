@@ -27,17 +27,13 @@ public class RegisterUserController {
 
     // Handle registration form submission (POST request)
     @PostMapping
-    public String registerUser(@ModelAttribute("user") RegisterUser user, Model model) {
-        // Optionally, check if the email already exists
-        if (registerUserService.findByEmail(user.getEmail()).isPresent()) {
-            model.addAttribute("errorMessage", "Email already in use.");
-            return "register"; // Redisplay the form with an error message
-        }
-
-        // Save the new user
-        registerUserService.registerUser(user);
-
-        // Redirect to the login page after successful registration
-        return "redirect:/login?registered=true";
+public String registerUser(@ModelAttribute("user") RegisterUser user, Model model) {
+    // Optionally, check if the email already exists
+    if (registerUserService.findByEmail(user.getEmail()).isPresent()) {
+        model.addAttribute("errorMessage", "Email already in use.");
+        return "register"; // Redisplay the form with an error message
     }
+    registerUserService.registerUser(user);
+    return "redirect:/success"; 
+}
 }
