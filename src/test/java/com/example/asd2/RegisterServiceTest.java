@@ -1,24 +1,29 @@
 package com.example.asd2;
 
 import com.example.asd2.Model.RegisterUser;
-import com.example.asd2.repository.UserRepository;
-import com.example.asd2.Service.UserService;
+import com.example.asd2.Service.RegisterUserService;
+import com.example.asd2.repository.RegisterUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-class UserServiceTest {
+public class RegisterUserServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private RegisterUserRepository registerUserRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private UserService userService;
+    private RegisterUserService registerUserService;
 
     @BeforeEach
     void setUp() {
@@ -26,30 +31,42 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldRegisterUser() {
-        // Given
-        RegisterUser registerUser = new RegisterUser();
-        registerUser.setFName("John");
-        registerUser.setLName("Doe");
-        registerUser.setDob("2000-01-01");
-        registerUser.setEmail("johndoe@example.com");
-        registerUser.setPhone("1234567890");
-        registerUser.setPassword("password");
-        registerUser.setState("New York");
-        registerUser.setCity("New York City");
-        registerUser.setSuburb("Manhattan");
-        registerUser.setPostcode("10001");
-        registerUser.setStreetName("5th Avenue");
-        registerUser.setStreetNumber("1");
-        registerUser.setUnitNumber("A");
+    public void testRegisterUserWithAllFieldsFilled() {
+        // Arrange
+        RegisterUser user = new RegisterUser();
+        user.setfName("John");
+        user.setlName("Doe");
+        user.setDob("1990-01-01");
+        user.setEmail("test@example.com");
+        user.setPhone("1234567890");
+        user.setPassword("password");
+        user.setState("State");
+        user.setCity("City");
+        user.setSuburb("Suburb");
+        user.setPostcode("12345");
+        user.setStreetName("Main Street");
+        user.setStreetNumber("123");
+        user.setUnitNumber("Unit 5");
 
-  
-        when(userRepository.save(any(RegisterUser.class))).thenReturn(registerUser);
-        RegisterUser result = userService.registerUser(registerUser);
-        assertNotNull(result);
-        assertEquals("John", result.getFName());
-        assertEquals("johndoe@example.com", result.getEmail());
+        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
+        when(registerUserRepository.save(any(RegisterUser.class))).thenReturn(user);
 
-        verify(userRepository, times(1)).save(registerUser);
+        // Act
+        RegisterUser result = registerUserService.registerUser(user);
+
+        // Assert
+        assertEquals("encodedPassword", result.getPassword());
+        assertEquals("test@example.com", result.getEmail());
+        assertEquals("John", result.getfName());
+        assertEquals("Doe", result.getlName());
+        assertEquals("1990-01-01", result.getDob());
+        assertEquals("1234567890", result.getPhone());
+        assertEquals("State", result.getState());
+        assertEquals("City", result.getCity());
+        assertEquals("Suburb", result.getSuburb());
+        assertEquals("12345", result.getPostcode());
+        assertEquals("Main Street", result.getStreetName());
+        assertEquals("123", result.getStreetNumber());
+        assertEquals("Unit 5", result.getUnitNumber());
     }
 }
