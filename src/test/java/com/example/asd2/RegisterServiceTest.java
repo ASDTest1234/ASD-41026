@@ -1,8 +1,8 @@
 package com.example.asd2;
 
-import com.example.asd2.model.RegisterUser;
+import com.example.asd2.Model.RegisterUser;
 import com.example.asd2.repository.UserRepository;
-import com.example.asd2.service.UserService;
+import com.example.asd2.Service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
