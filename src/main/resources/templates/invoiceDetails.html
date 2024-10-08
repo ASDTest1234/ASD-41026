@@ -8,6 +8,10 @@
 
 <p>Order Date: <span th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></span></p>
 <p>Customer ID: <span th:text="${order.customerId}"></span></p>
+<p>Address: <span th:text="${order.customerDetails.address}"></span></p>
+
+
+
 
 <h2>Items</h2>
 <table>

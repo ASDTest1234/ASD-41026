@@ -21,6 +21,9 @@
         <td th:text="${order.totalPrice}"></td>
         <td th:text="${order.orderNumber}"></td>
         <td th:text="${order.orderDate}"></td>
+        <td>
+            <a th:href="@{/user/invoices/invoiceDetails(orderId=${order.orderId})}">View Details</a>
+        </td>
     </tr>
     </tbody>
 </table>

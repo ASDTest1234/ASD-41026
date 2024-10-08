@@ -32,7 +32,9 @@ public class Order {
     @Getter
     @Setter
     public static class CustomerDetails {
-        private String name;
+        private String fullName;
         private String address;
+        private String city;
+        private String zipCode;
     }
 }
