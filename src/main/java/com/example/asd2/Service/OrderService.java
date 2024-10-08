@@ -1,7 +1,9 @@
 package com.example.asd2.Service;
 
 import com.example.asd2.Model.Cart;
+import com.example.asd2.Model.Order;
 import com.example.asd2.Model.Products;
+import com.example.asd2.repository.OrderRepository;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,8 @@ public class OrderService {
         this.mongoTemplate = mongoTemplate;
         this.productService = productService;
     }
+
+    @Autowired private OrderRepository orderRepository;
 
     /**
      * Creates an order with customer and cart item details.
@@ -95,6 +99,16 @@ public class OrderService {
         // Insert order to MongoDB
         mongoTemplate.insert(orderDoc, "Orders");
         logger.info("Order created successfully for customerId: {}", customerId);
+    }
+
+    public List<Order> getOrdersByCustomerId(String customerId) {
+        // Fetch orders based on customerId
+        return orderRepository.findByCustomerId(customerId);
+    }
+
+    public Order getOrderById(String orderId) {
+        // Fetch order by orderId
+        return orderRepository.findById(orderId).orElse(null);
     }
 
 }

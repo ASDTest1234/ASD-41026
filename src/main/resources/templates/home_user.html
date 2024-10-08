@@ -127,7 +127,6 @@
     <div>
         <input type="submit" value="View Cart" onclick="viewCart()" />
         <input type="submit" value="View Details" />
-        <input type="submit" value="View Order History" onclick="viewOrderHistory()" />
     </div>
 
     <label>
@@ -140,6 +139,12 @@
 
     <form th:action="@{/logout}" method="post">
         <input class="logout" type="submit" value="Logout"/>
+    </form>
+</div>
+
+<div>
+    <form th:action="@{/user/invoices/list}" method="get">
+        <input type="submit" value="View Invoices"/>
     </form>
 </div>
 
@@ -245,10 +250,6 @@
      */
     function viewCart() {
         window.location.href = '/cart';
-    }
-
-    function viewOrderHistory() {
-        window.location.href = '/user/order_history';
     }
 
     /**
