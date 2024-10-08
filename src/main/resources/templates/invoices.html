@@ -9,20 +9,24 @@
 <table>
     <thead>
     <tr>
-        <th>Date</th>
         <th>Total Items</th>
-        <th>Details</th>
+        <th>Price</th>
+        <th>Order Number</th>
+        <th>Date</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="order : ${orders}">
-        <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></td>
         <td th:text="${order.items.size()}"></td>
-        <td>
-            <a th:href="@{/user/invoices/invoiceDetails(orderId=${order.orderId})}">View Details</a>
-        </td>
+        <td th:text="${order.totalPrice}"></td>
+        <td th:text="${order.orderNumber}"></td>
+        <td th:text="${order.orderDate}"></td>
     </tr>
     </tbody>
 </table>
+<br>
+<form th:action="@{/user/home_user}" method="get">
+    <input type="submit" value="Back"/>
+</form>
 </body>
 </html>

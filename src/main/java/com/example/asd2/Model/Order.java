@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Document(collection = "orders")
+@Document(collection = "Orders")
 public class Order {
 
     @Id
@@ -21,6 +21,7 @@ public class Order {
     private List<OrderItem> items;
     private double totalPrice;
     private CustomerDetails customerDetails;
+
     @Getter
     @Setter
     public static class OrderItem {

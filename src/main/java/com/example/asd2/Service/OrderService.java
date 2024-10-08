@@ -111,4 +111,8 @@ public class OrderService {
         return orderRepository.findById(orderId).orElse(null);
     }
 
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
 }

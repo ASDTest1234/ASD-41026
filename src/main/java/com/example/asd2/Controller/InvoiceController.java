@@ -2,9 +2,11 @@ package com.example.asd2.Controller;
 
 import com.example.asd2.Model.Cart;
 import com.example.asd2.Model.Order;
+import com.example.asd2.Model.Products;
 import com.example.asd2.Service.CartNotFoundException;
 import com.example.asd2.Service.CartService;
 import com.example.asd2.Service.OrderService;
+import com.example.asd2.Service.ProductService;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +28,9 @@ public class InvoiceController {
     @Autowired
     private OrderService orderService;
 
-    private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
-
     @GetMapping("/list")
-    public String listOrders(@RequestParam String customerId, Model model) {
-        List<Order> orders = orderService.getOrdersByCustomerId(customerId);
-        if (orders.isEmpty()) {
-            logger.info("No orders found for customerId: " + customerId);
-        } else {
-            logger.info("Orders found for customerId: " + customerId + ": " + orders.size());
-        }
+    public String listOrders(Model model) {
+        List<Order> orders = orderService.getAllOrders();
         model.addAttribute("orders", orders);
         return "invoices";
     }
