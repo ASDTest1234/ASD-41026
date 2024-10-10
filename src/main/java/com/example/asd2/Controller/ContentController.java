@@ -76,15 +76,10 @@ public class ContentController {
     public String handleLogin() {
         return "login";
     }
-    @GetMapping("/user/order_history")
-    public String handleOrderHistory(){return "order_history";}
 
     @GetMapping("/cart")
     public String handleCart() {
         return "cart";
     }
-
-    @GetMapping("/user/order_details")
-    public String handleOrderDetails(){return "order_details";}
 
 }
