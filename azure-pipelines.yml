@@ -44,7 +44,7 @@ steps:
       jdkVersionOption: '17'
       jdkArchitectureOption: 'x64'
       goals: 'clean verify'
-      options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
+      options: '-Dspring.data.mongodb.uri=mongodb+srv://dylan:12345@advancedsoftwaredevelop.66a2g.mongodb.net/?retryWrites=true&w=majority&appName=AdvancedSoftwareDevelopment'
 
   - task: PublishTestResults@2  # This task ensures test results are published in Azure DevOps
     inputs:
