@@ -29,7 +29,7 @@ steps:
   # Maven clean and package step with Java 17
   - task: Maven@4
     inputs:
-      mavenPomFile: 'pom.xml'  # Adjust the path to where your pom.xml is located
+      mavenPomFile: 'C:\Users\Dylan\Desktop\ASD-41026\pom.xml'  # Adjust the path to where your pom.xml is located
       mavenOptions: '-Xmx1024m'
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '17'
