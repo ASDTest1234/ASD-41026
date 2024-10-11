@@ -46,26 +46,16 @@ class RegisterUserTest {
 
     @Test
     void testRegisterUser() {
-        // Given
         when(registerUserService.registerUser(any(RegisterUser.class))).thenReturn(registerUser);
-
-        // When
         String result = registerUserController.registerUser(registerUser, mock(Model.class));
-
-        // Then
         assertEquals("redirect:/success", result);
         verify(registerUserService, times(1)).registerUser(registerUser);
     }
 
     @Test
     void testFindByEmail_UserExists() {
-        // Given
         when(registerUserService.findByEmail(registerUser.getEmail())).thenReturn(Optional.of(registerUser));
-
-        // When
         Optional<RegisterUser> result = registerUserService.findByEmail(registerUser.getEmail());
-
-        // Then
         assertTrue(result.isPresent());
         assertEquals("test", result.get().getFName());
         verify(registerUserService, times(1)).findByEmail(registerUser.getEmail());
@@ -73,13 +63,8 @@ class RegisterUserTest {
 
     @Test
     void testFindByEmail_UserDoesNotExist() {
-        // Given
         when(registerUserService.findByEmail(registerUser.getEmail())).thenReturn(Optional.empty());
-
-        // When
         Optional<RegisterUser> result = registerUserService.findByEmail(registerUser.getEmail());
-
-        // Then
         assertFalse(result.isPresent());
         verify(registerUserService, times(1)).findByEmail(registerUser.getEmail());
     }
