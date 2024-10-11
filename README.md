@@ -110,13 +110,13 @@ as well as the customer's details such as address.
 # Anton Olter 24747242
 In this project, I am responsible for the development of the Registration Page (F100), and User Account Management Page (F103). This includes design aspects, code logic, and endpoints.
 
-##F100 - Customer Registration
+## F100 - Customer Registration
 The customer Registration feature is where the user goes to set up an account with the System so that a user can Log into the Web server. This Feature shares many requirements with F101 for Login. The Authentication, Authorisation, and Confidentiality Listed by Hawken will also apply to registration. Additionally, there is data validation when for inputs on the registration page. i.e., you may not register if you do not have a valid email address, you must be born before the current date, etc.
 
 CRUD operations will take place to add the user to the system (provided they do not fail and validation).
 Once a customer submits all valid required data, they will be redirected to the login so they can access all other features.
 
-##F103 – User Account Management
+## F103 – User Account Management
 A User can view their current details in the system and change them if required. The Customer can select to update Data and input new data into all fields to Update (CRUD) their existing data. If the user wishes, they can also delete their account by selecting the option on the View Details page and then passing a confirmation check.
 
 
