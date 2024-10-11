@@ -86,3 +86,23 @@ Scalability:
 
 The system should support concurrent user sessions without performance degradation.
 Order management features should be able to handle a large volume of data, allowing admins to filter and manage orders efficiently.
+
+# Dylan Bracken 14251932
+
+## F102 - Staff Inventory Management
+Users that login with a staff account can navigate to the inventory page. This displays the current products in the database and their details.
+
+Staff members are able to add new products by clicking the add product button. This redirects to a new page where staff can enter
+the details of a product. The product is then added to the database.
+
+Staff members are able to delete products from the database. This is done by selecting a product and then clicking the delete button.
+
+The edit product feature was under development but ran into problems redirecting to a new page by product ID. The expected completion
+date for related user stories have been pushed back to release 2.
+
+## F107 - Customer Invoice Management
+Users that login with a customer account can view their invoices by navigating from the home page. The invoices are retrieved
+from the database and display the important details.
+
+Customers can view the details of an individual invoice. This redirects to a new page where all details of the invoice are displayed,
+as well as the customer's details such as address.
