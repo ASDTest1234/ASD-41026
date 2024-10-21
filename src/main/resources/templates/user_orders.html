@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Orders</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .order-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-info {
+      width: 70%;
+    }
+
+    .order-info h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .order-info p {
+      margin: 5px 0;
+      color: #666;
+    }
+
+    .order-status {
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .status-preparing {
+      background-color: #FF9800;
+      color: white;
+    }
+
+    .status-shipped {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .view-details-btn {
+      padding: 10px 20px;
+      background-color: #2196F3;
+      color: white;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .view-details-btn:hover {
+      background-color: #1976D2;
+    }
+  </style>
+
+  <script>
+    // This function will run as soon as the page loads and fetch orders based on customerId
+    window.onload = function() {
+      loadOrders('001');  // Replace '001' with dynamic customerId from backend or session if needed
+    };
+
+    // Function to fetch orders using the customerId
+    function loadOrders(customerId) {
+      fetch(`/api/order/list?customerId=${customerId}`)
+              .then(response => response.json())  // Convert response to JSON
+              .then(data => {
+                const ordersContainer = document.querySelector('.container');
+                if (data && data.length > 0) {
+                  data.forEach(order => {
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'order-card';
+
+                    const orderInfo = document.createElement('div');
+                    orderInfo.className = 'order-info';
+
+                    const orderTitle = document.createElement('h2');
+                    orderTitle.textContent = `Order #${order.orderNumber}`;
+                    orderInfo.appendChild(orderTitle);
+
+                    const orderDate = document.createElement('p');
+                    orderDate.textContent = `Order Date: ${new Date(order.orderDate).toISOString().slice(0, 10)}`;
+                    orderInfo.appendChild(orderDate);
+
+                    const orderItems = document.createElement('p');
+                    orderItems.textContent = `${order.items.length} Items | Total: $${order.totalPrice}`;
+                    orderInfo.appendChild(orderItems);
+
+                    const orderStatus = document.createElement('span');
+                    orderStatus.className = order.status === 'PREPARING' ? 'order-status status-preparing' : 'order-status status-shipped';
+                    orderStatus.textContent = order.status;
+                    orderInfo.appendChild(orderStatus);
+
+                    const viewDetailsBtn = document.createElement('a');
+                    viewDetailsBtn.className = 'view-details-btn';
+                    viewDetailsBtn.href = `/api/order/orderDetails?orderId=${order.orderId}`;
+                    viewDetailsBtn.textContent = 'View Details';
+
+                    orderCard.appendChild(orderInfo);
+                    orderCard.appendChild(viewDetailsBtn);
+                    ordersContainer.appendChild(orderCard);
+                  });
+                } else {
+                  // Display a message if no orders are found
+                  const noOrdersMessage = document.createElement('p');
+                  noOrdersMessage.textContent = 'No orders found.';
+                  ordersContainer.appendChild(noOrdersMessage);
+                }
+              })
+              .catch(error => {
+                console.error('Error fetching orders:', error);
+              });
+    }
+  </script>
+
+</head>
+<body>
+
+<div class="container">
+  <h1>Your Orders</h1>
+</div>
+
+</body>
+</html>

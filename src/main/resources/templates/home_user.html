@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,16 +121,17 @@
 
 <body>
 
-<!-- Navigation bar with buttons for cart, details, search, and logout -->
+<!-- Navigation bar with buttons for cart, details, orders, search, and logout -->
 <div class="navbar">
     <div>
         <input type="submit" value="View Cart" onclick="viewCart()" />
         <input type="submit" value="View Details" />
+        <!-- New Button: View Orders -->
+        <input type="submit" value="View Orders" onclick="viewOrders()" />
     </div>
 
     <label>
         <form th:action="@{/user/home_user}" method="get">
-
             <input type="text" id="filter" name="filter" placeholder="Enter Product Name"/>
             <button type="submit">Search</button>
         </form>
@@ -167,7 +167,7 @@
         </thead>
         <tbody>
 
-<!--        uses the products from the controller and iterates each product-->
+        <!-- uses the products from the controller and iterates each product -->
         <tr th:each="product : ${products}">
             <td th:text="${product.productName}">Product Name</td>
             <td th:text="${product.productType}">Product Type</td>
@@ -249,7 +249,22 @@
      * Opens the cart page without passing parameters, relying on the cart page to fetch userId itself
      */
     function viewCart() {
-        window.location.href = '/cart';
+        if (!window.userId || window.userId === 'Guest') {
+            alert("User ID not found. Please log in.");
+            return;
+        }
+        window.location.href = '/user/cart';
+    }
+
+    /**
+     * Opens the orders page, assuming userId is already stored globally
+     */
+    function viewOrders() {
+        if (!window.userId || window.userId === 'Guest') {
+            alert("User ID not found. Please log in.");
+            return;
+        }
+        window.location.href = `/user/orders`;
     }
 
     /**

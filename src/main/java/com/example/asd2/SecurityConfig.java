@@ -19,7 +19,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/register", "/product/**", "/payment.html", "/api/order/confirm").permitAll()
+                        .requestMatchers("/login", "/register", "/product/**", "/payment.html", "/api/order/**").permitAll()
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                         .requestMatchers("/staff/**").hasAnyRole("STAFF" ,"ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "STAFF")

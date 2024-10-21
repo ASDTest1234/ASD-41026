@@ -77,9 +77,14 @@ public class ContentController {
         return "login";
     }
 
-    @GetMapping("/cart")
+    @GetMapping("/user/cart")
     public String handleCart() {
         return "cart";
+    }
+
+    @GetMapping("/user/orders")
+    public String handleOrders() {
+        return "user_orders";
     }
 
 }

@@ -6,10 +6,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for performing CRUD operations on the 'Orders' collection in MongoDB.
+ */
 @Repository
 public interface OrderRepository extends MongoRepository<Order, String> {
-    List<Order> findByOrderId(List<String> ids);
 
+    /**
+     * Finds all orders for a specific customer by their customerId.
+     * @param customerId The ID of the customer whose orders are being fetched.
+     * @return A list of orders placed by the specified customer.
+     */
     List<Order> findByCustomerId(String customerId);
 
 }
