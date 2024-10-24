@@ -156,7 +156,17 @@
     <table>
         <thead>
         <tr>
-            <th>Product Name</th>
+<!--            <th>Product Name</th>-->
+<!--            <th>Type</th>-->
+<!--            <th>Stock</th>-->
+<!--            <th>Price</th>-->
+
+            <th>
+                <a th:href="@{|/user/home_user?filter=${keyword}&sortField=products.productName&sortDirection=${reverseSortDirection}&page=${currentPage}|}">
+                Product Name
+                    <span th:if="${sortDirection == 'ASC'}">↑</span>
+                    <span th:if="${sortDirection == 'DESC'}">↓</span>
+            </a>
             <th>Type</th>
             <th>Stock</th>
             <th>Price</th>
@@ -191,6 +201,22 @@
         </tr>
         </tbody>
     </table>
+</div>
+
+<!-- Pagination controls -->
+<div class="pagination" style="text-align: center; margin-top: 20px;">
+    <ul>
+        <li th:if="${currentPage > 0}">
+            <a th:href="@{|/user/home_user?filter=${keyword}&page=${currentPage - 1}&size=${productsPage.size}|}">Previous</a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{|/user/home_user?filter=${keyword}&page=${i}&size=${productsPage.size}|}"
+               th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active' : ''">1</a>
+        </li>
+        <li th:if="${currentPage < totalPages - 1}">
+            <a th:href="@{|/user/home_user?filter=${keyword}&page=${currentPage + 1}&size=${productsPage.size}|}">Next</a>
+        </li>
+    </ul>
 </div>
 
 <script>
