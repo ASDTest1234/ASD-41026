@@ -97,9 +97,6 @@ the details of a product. The product is then added to the database.
 
 Staff members are able to delete products from the database. This is done by selecting a product and then clicking the delete button.
 
-The edit product feature was under development but ran into problems redirecting to a new page by product ID. The expected completion
-date for related user stories have been pushed back to release 2.
-
 ## F107 - Customer Invoice Management
 Users that login with a customer account can view their invoices by navigating from the home page. The invoices are retrieved
 from the database and display the important details.

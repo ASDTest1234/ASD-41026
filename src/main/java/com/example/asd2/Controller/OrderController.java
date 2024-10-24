@@ -38,8 +38,9 @@ public class OrderController {
 
     /**
      * Shows the payment and shipping page based on customerId.
+     *
      * @param payload A map containing the customerId.
-     * @param model The model to pass attributes to the Thymeleaf view.
+     * @param model   The model to pass attributes to the Thymeleaf view.
      * @return The payment and shipping page view.
      */
     @PostMapping("/payment")
@@ -57,8 +58,9 @@ public class OrderController {
 
     /**
      * Confirms and completes an order. It validates the order payload and then processes the order.
+     *
      * @param payload A map containing all necessary order details.
-     * @param model The model to pass attributes to the Thymeleaf view.
+     * @param model   The model to pass attributes to the Thymeleaf view.
      * @return The confirmation page or the payment page with errors.
      */
     @PostMapping("/confirm")
@@ -114,6 +116,7 @@ public class OrderController {
 
     /**
      * Lists all orders for a specific customer.
+     *
      * @param customerId The customer ID for whom the orders are being fetched.
      * @return The Thymeleaf template for displaying user orders.
      */
@@ -128,8 +131,9 @@ public class OrderController {
 
     /**
      * Displays details of a specific order.
+     *
      * @param orderId The order ID to fetch details.
-     * @param model Model to pass data to the view.
+     * @param model   Model to pass data to the view.
      * @return The Thymeleaf template for order details.
      */
     @GetMapping("/orderDetails")
@@ -146,6 +150,69 @@ public class OrderController {
 
 
         return "orderDetails";
+    }
+
+    // In OrderController, add a new method to fetch all orders from the database
+    @GetMapping("/allOrders")
+    @ResponseBody
+    public ResponseEntity<List<Order>> getAllOrders() {
+        // Log the request to fetch all orders
+        logger.info("Fetching all orders from the database.");
+
+        // Retrieve all orders from the order service
+        List<Order> orders = orderService.getAllOrders();
+
+        // Return the list of orders as a JSON response with HTTP status OK
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @PostMapping("/update")
+    public String updateOrderDetails(@RequestParam("orderId") String orderId,
+                                     @RequestParam("fullName") String fullName,
+                                     @RequestParam("address") String address,
+                                     @RequestParam("city") String city,
+                                     @RequestParam("zipCode") String zipCode,
+                                     @RequestParam("status") String status,
+                                     Model model) {
+        try {
+            // Fetch the existing order by ID
+            Order order = orderService.getOrderById(orderId);
+            if (order == null) {
+                model.addAttribute("error", "Order not found.");
+                return "errorPage";
+            }
+
+            // Update the customer details
+            Order.CustomerDetails customerDetails = order.getCustomerDetails();
+            customerDetails.setFullName(fullName);
+            customerDetails.setAddress(address);
+            customerDetails.setCity(city);
+            customerDetails.setZipCode(zipCode);
+
+            // Update the order status
+            order.setStatus(Order.OrderStatus.valueOf(status));
+
+            // Save the updated order
+            orderService.updateOrder(order);
+
+            // Redirect back to the order details page
+            return "redirect:/user/orders";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to update order details: " + e.getMessage());
+            return "errorPage";
+        }
+    }
+
+    @GetMapping("/stuff_orderDetails")
+    public String handleStuffOrderDetails(@RequestParam("orderId") String orderId, Model model) {
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            model.addAttribute("error", "Order not found.");
+            return "errorPage";
+        }
+        model.addAttribute("order", order);
+        return "stuff_orderDetails";
     }
 
 }

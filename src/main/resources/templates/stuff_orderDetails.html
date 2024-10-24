@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - Edit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .order-summary div {
+            width: 48%;
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-summary h3 {
+            margin-top: 0;
+        }
+
+        .item-list {
+            margin: 20px 0;
+        }
+
+        .item-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .item-list th, .item-list td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .total-price {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Edit Order Details</h1>
+
+    <form action="/api/order/update" method="post">
+        <div class="order-summary">
+            <div>
+                <h3>Payment</h3>
+                <p>Visa **56</p>
+                <p>Total Price: $<span th:text="${order.totalPrice}"></span></p>
+            </div>
+
+            <div>
+                <h3>Delivery</h3>
+
+                <!-- Editable fields for customer address -->
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" th:value="${order.customerDetails.fullName}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" th:value="${order.customerDetails.address}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" th:value="${order.customerDetails.city}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="zipCode">Zip Code</label>
+                    <input type="text" id="zipCode" name="zipCode" th:value="${order.customerDetails.zipCode}" required>
+                </div>
+
+                <!-- Editable field for order status -->
+                <div class="form-group">
+                    <label for="status">Order Status</label>
+                    <select id="status" name="status" required>
+                        <option value="PREPARING" th:selected="${order.status == 'PREPARING'}">PREPARING</option>
+                        <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}">SHIPPED</option>
+                        <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">DELIVERED</option>
+                        <option value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">CANCELLED</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="item-list">
+            <h3>Items</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${order.items}">
+                    <td th:text="${item.productName}"></td>
+                    <td th:text="${item.quantity}"></td>
+                    <td th:text="${item.productPrice}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="total-price">
+                Total: $<span th:text="${order.totalPrice}"></span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <!-- Save button to submit the form -->
+            <button type="submit" class="btn">Save Changes</button>
+            <a href="/user/orders" class="btn">Back to Orders</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
