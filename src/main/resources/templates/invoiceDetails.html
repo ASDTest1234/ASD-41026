@@ -4,17 +4,19 @@
     <title>Invoice Details</title>
 </head>
 
-<!-- displays details from order by loading orderID in url-->
-
 <body>
 <h1>Invoice Details</h1>
 
 <p>Order Date: <span th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></span></p>
 <p>Customer ID: <span th:text="${order.customerId}"></span></p>
-<p>Address: <span th:text="${order.customerDetails.address}"></span></p>
 
 
-
+<p th:if="${order.customerDetails != null}">
+    Address: <span th:text="${order.customerDetails.address}"></span>
+</p>
+<p th:if="${order.customerDetails == null}">
+    Address: <span>Not available</span>
+</p>
 
 <h2>Items</h2>
 <table>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Orders</title>
+  <title>All Orders</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -107,42 +107,55 @@
   </style>
 
   <script>
-    // This function will run as soon as the page loads and fetch orders based on customerId
+    // This function will run when the page is loaded, and it will fetch all orders
     window.onload = function() {
-      loadOrders('001');  // Replace '001' with dynamic customerId from backend or session if needed
+      loadAllOrders();  // Call the function to load all orders
     };
 
-    // Function to fetch orders using the customerId
-    function loadOrders(customerId) {
-      fetch(`/api/order/list?customerId=${customerId}`)
+    /**
+     * Function to fetch all orders from the backend and display them on the page.
+     */
+    // Function to fetch all orders from the backend and display them on the page.
+    function loadAllOrders() {
+      // Fetch data from the newly created endpoint for all orders
+      fetch(`/api/order/allOrders`)
               .then(response => {
+                // Check if the response is valid
                 if (!response.ok) {
                   throw new Error('Network response was not ok');
                 }
-                return response.json();
+                return response.json();  // Convert the response to JSON
               })
               .then(data => {
+                // Select the container where the orders will be displayed
                 const ordersContainer = document.querySelector('.container');
+
+                // If there are orders in the data
                 if (data && data.length > 0) {
+                  // Loop through the list of orders and create an order card for each
                   data.forEach(order => {
+                    // Create a div for the order card
                     const orderCard = document.createElement('div');
                     orderCard.className = 'order-card';
 
+                    // Create a div to hold the order information
                     const orderInfo = document.createElement('div');
                     orderInfo.className = 'order-info';
 
+                    // Display the order number
                     const orderTitle = document.createElement('h2');
                     orderTitle.textContent = `Order #${order.orderNumber}`;
                     orderInfo.appendChild(orderTitle);
 
+                    // Display the order date, formatted as YYYY-MM-DD
                     const orderDate = document.createElement('p');
                     orderDate.textContent = `Order Date: ${new Date(order.orderDate).toISOString().slice(0, 10)}`;
                     orderInfo.appendChild(orderDate);
 
+                    // Display the number of items and the total price for the order
                     const orderItems = document.createElement('p');
                     orderItems.textContent = `${order.items.length} Items | Total: $${order.totalPrice}`;
                     orderInfo.appendChild(orderItems);
-
 
                     // Create a span element for the order status
                     const orderStatus = document.createElement('span');
@@ -159,24 +172,28 @@
                     // Append the status to the order info
                     orderInfo.appendChild(orderStatus);
 
-
+                    // Create a button to view more details about the order
                     const viewDetailsBtn = document.createElement('a');
                     viewDetailsBtn.className = 'view-details-btn';
-                    viewDetailsBtn.href = `/api/order/orderDetails?orderId=${order.orderId}`;
+                    viewDetailsBtn.href = `/stuff_orderDetails?orderId=${order.orderId}`;
                     viewDetailsBtn.textContent = 'View Details';
 
+                    // Append the order info and the details button to the order card
                     orderCard.appendChild(orderInfo);
                     orderCard.appendChild(viewDetailsBtn);
+
+                    // Append the order card to the container on the page
                     ordersContainer.appendChild(orderCard);
                   });
                 } else {
-                  // Display a message if no orders are found
+                  // If there are no orders, display a message
                   const noOrdersMessage = document.createElement('p');
                   noOrdersMessage.textContent = 'No orders found.';
                   ordersContainer.appendChild(noOrdersMessage);
                 }
               })
               .catch(error => {
+                // If there is an error fetching the orders, display an error message
                 console.error('Error fetching orders:', error);
                 const ordersContainer = document.querySelector('.container');
                 const errorMessage = document.createElement('p');
@@ -184,13 +201,14 @@
                 ordersContainer.appendChild(errorMessage);
               });
     }
+
   </script>
 
 </head>
 <body>
 
 <div class="container">
-  <h1>Your Orders</h1>
+  <h1>All Orders</h1>  <!-- Page title -->
 </div>
 
 </body>

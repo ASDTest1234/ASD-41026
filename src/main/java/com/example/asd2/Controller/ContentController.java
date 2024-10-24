@@ -87,4 +87,14 @@ public class ContentController {
         return "user_orders";
     }
 
+    @GetMapping("/stuff_orders")
+    public String handleStuffOrders() {
+        return "stuff_orders";  // This returns the stuff_orders.html page
+    }
+
+    @GetMapping("/stuff_orderDetails")
+    public String handleStuffOrderDetails() {
+        return "stuff_orderDetails";  // This returns the stuff_orderDetails.html page
+    }
+
 }

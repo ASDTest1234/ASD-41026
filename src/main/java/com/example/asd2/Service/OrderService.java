@@ -117,4 +117,17 @@ public class OrderService {
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
+    /**
+     * Updates the given order with new details.
+     *
+     * @param order The order with updated details.
+     * @return The updated order object.
+     */
+    public Order updateOrder(Order order) {
+        // Log the update action
+        logger.info("Updating order with ID: {}", order.getOrderId());
+        // Save the updated order back to the database using the repository
+        return orderRepository.save(order);
+    }
 }
