@@ -38,9 +38,37 @@ public class StaffProductController {
         return "add_product";
     }
 
-    //redirects to inventory page and displays success message
+    //Validates input then redirects to inventory page and displays success message
     @PostMapping("/add")
-    public String addProduct(Products product, RedirectAttributes redirectAttributes) {
+    public String addProduct(@ModelAttribute("product") Products product, RedirectAttributes redirectAttributes, Model model) {
+        if (product.getProduct_Id() == null) {
+            model.addAttribute("errorProductId", "Product ID required");
+            return "add_product";
+        }
+        if (product.getProductName() == null || product.getProductName().length() < 3 || product.getProductName().length() > 50) {
+            model.addAttribute("errorProductName", "Product Name must be between 3 and 50 characters");
+            return "add_product";
+        }
+        if (product.getProductDescription() == null) {
+            model.addAttribute("errorProductDescription", "Product Description Required");
+            return "add_product";
+        }
+        if (product.getProductStock() < 0) {
+            model.addAttribute("errorProductStock", "Stock cannot be negative");
+            return "add_product";
+        }
+        if (Integer.parseInt(product.getProduct_Id()) < 0) {
+            model.addAttribute("errorProductPrice", "Price cannot be negative");
+            return "add_product";
+        }
+        if (product.getProductType() == null) {
+            model.addAttribute("errorProductType", "Product Type Required");
+            return "add_product";
+        }
+        if (product.getAdminID() == null) {
+            model.addAttribute("errorAdminID", "Admin ID Required");
+            return "add_product";
+        }
         productService.addProduct(product);
         redirectAttributes.addFlashAttribute("message", "Product Added Successfully");
         return "redirect:/staff/product/inventory";
