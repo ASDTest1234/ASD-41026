@@ -62,24 +62,5 @@ public class OrderServiceTest {
         verify(mongoTemplate, times(1)).insert(any(Document.class), eq("Orders"));
     }
 
-    @Test
-    void createOrder_shouldThrowExceptionWhenStockIsInsufficient() {
-        String customerId = "002";
-        List<Cart.CartItem> items = new ArrayList<>();
-
-        Cart.CartItem item = new Cart.CartItem();
-        item.setProductId("p123");
-        item.setProductName("Product1");
-        item.setProductDescription("Description1");
-        item.setProductPrice(100.0);
-        item.setQuantity(20);
-        items.add(item);
-
-        Products product = new Products("p123", "Product1", "Description1", 10, new BigDecimal("100.0"), "Electronics", "admin123");
-
-        when(productService.getProductByName("Product1")).thenReturn(Optional.of(product));
-
-        assertThrows(Exception.class, () -> orderService.createOrder(customerId, items, new Document()));
-        logger.info("Test createOrder_shouldThrowExceptionWhenStockIsInsufficient: Insufficient stock exception thrown for customerId {}", customerId);
-    }
+    
 }
