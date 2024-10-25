@@ -1,5 +1,6 @@
 
 
+import com.example.asd2.*;
 import com.example.asd2.Service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
-@SpringBootTest
+@SpringBootTest(classes = Asd2Application.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 
