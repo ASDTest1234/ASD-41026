@@ -7,30 +7,25 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: ProductionVariables  # 引用您的生产环境变量组
+  - group: ProductionVariables
 
 stages:
   - stage: Build
-    displayName: 'Build Stage'
     jobs:
       - job: BuildJob
-        displayName: 'Build and Test'
         steps:
           - checkout: self
-
           - task: JavaToolInstaller@0
             displayName: 'Install Java 17'
             inputs:
               versionSpec: '17'
               jdkArchitectureOption: 'x64'
               jdkSourceOption: 'PreInstalled'
-
           - script: |
               java -version
             displayName: 'Check Java 17 version'
-
           - task: Maven@4
-            displayName: 'Maven Clean and Package'
+            displayName: 'Maven Clean and Package as ZIP'
             inputs:
               mavenPomFile: 'pom.xml'
               mavenOptions: '-Xmx1024m'
@@ -38,7 +33,7 @@ stages:
               jdkVersionOption: '17'
               jdkArchitectureOption: 'x64'
               goals: 'clean package'
-
+              options: '-DoutputDirectory=target -Darchive.format=zip'
           - task: Maven@4
             displayName: 'Run Junit Test'
             inputs:
@@ -48,39 +43,39 @@ stages:
               jdkArchitectureOption: 'x64'
               goals: 'clean verify'
               options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
-
           - task: PublishTestResults@2
             displayName: 'Publish Test Results'
             inputs:
               testResultsFormat: 'JUnit'
               testResultsFiles: '**/target/surefire-reports/*.xml'
               failTaskOnFailedTests: true
-
           - task: CopyFiles@2
-            displayName: 'Copy JAR files to staging'
+            displayName: 'Copy ZIP files to staging'
             inputs:
-              contents: '**/target/*.jar'
+              contents: '**/target/*.zip'
               targetFolder: '$(Build.ArtifactStagingDirectory)'
-
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Build Artifacts'
             inputs:
               pathToPublish: '$(Build.ArtifactStagingDirectory)'
               artifactName: 'drop'
 
-  - stage: DeployToProd
-    displayName: 'Deploy to Production'
-    dependsOn: Build 
-    jobs:
-      - deployment: DeployApp
-        environment: 'Prod'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: AzureWebApp@1
-                  displayName: 'Deploy to Azure Web App'
-                  inputs:
-                    azureSubscription: 'AzureAppServiceConnection'
-                    appName: 'onlineSupermarketOrderingApp'
-                    package: '$(Build.ArtifactStagingDirectory)/*.jar'
+  - stage: Deploy
+    dependsOn: Build
+    pool:
+      vmImage: 'ubuntu-20.04'
+    environment: 'Prod'
+    variables:
+      - group: Release
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - download: current
+              artifact: drop
+            - task: AzureWebApp@1
+              displayName: 'Azure App Service Deploy'
+              inputs:
+                azureSubscription: 'AzureAppServiceConnection'
+                appName: 'onlineSupermarketOrderingApp'
+                package: '$(Pipeline.Workspace)/drop/*.zip'
