@@ -1,5 +1,7 @@
 trigger:
-  - '*'
+  branches:
+    include:
+      - prod
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -7,69 +9,66 @@ pool:
 variables:
   - group: ProductionVariables
 
-steps:
-  - checkout: self
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildJob
+        steps:
+          - checkout: self
 
-  # Install Java 17
-  - task: JavaToolInstaller@0
-    displayName: 'Install Java 17'
-    inputs:
-      versionSpec: '17'
-      jdkArchitectureOption: 'x64'
-      jdkSourceOption: 'PreInstalled'
+          - task: JavaToolInstaller@0
+            displayName: 'Install Java 17'
+            inputs:
+              versionSpec: '17'
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'PreInstalled'
 
-  # Verify Java 17 version is installed
-  - script: |
-      java -version
-    displayName: 'Check Java 17 version'
+          - script: |
+              java -version
+            displayName: 'Check Java 17 version'
 
-  # Maven clean and package step
-  - task: Maven@4
-    displayName: 'Maven Clean and Package'
-    inputs:
-      mavenPomFile: 'pom.xml'
-      mavenOptions: '-Xmx1024m'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '17'
-      jdkArchitectureOption: 'x64'
-      goals: 'clean package'
+          - task: Maven@4
+            displayName: 'Maven Clean and Package'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              mavenOptions: '-Xmx1024m'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '17'
+              jdkArchitectureOption: 'x64'
+              goals: 'clean package'
 
-  # Run JUnit Tests
-  - task: Maven@4
-    displayName: 'Run Junit Test'
-    inputs:
-      mavenPomFile: 'pom.xml'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '17'
-      jdkArchitectureOption: 'x64'
-      goals: 'clean verify'
-      options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
+          - task: Maven@4
+            displayName: 'Run Junit Test'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '17'
+              jdkArchitectureOption: 'x64'
+              goals: 'clean verify'
+              options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
 
-  # Publish Test Results
-  - task: PublishTestResults@2
-    displayName: 'Publish Test Results'
-    inputs:
-      testResultsFormat: 'JUnit'
-      testResultsFiles: '**/target/surefire-reports/*.xml'
-      failTaskOnFailedTests: true
+          - task: PublishTestResults@2
+            displayName: 'Publish Test Results'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '**/target/surefire-reports/*.xml'
+              failTaskOnFailedTests: true
 
-  # Copy JAR files to the staging directory
-  - task: CopyFiles@2
-    displayName: 'Copy JAR files to staging'
-    inputs:
-      contents: '**/target/*.jar'
-      targetFolder: '$(Build.ArtifactStagingDirectory)'
+          - task: CopyFiles@2
+            displayName: 'Copy JAR files to staging'
+            inputs:
+              contents: '**/target/*.jar'
+              targetFolder: '$(Build.ArtifactStagingDirectory)'
 
-  # Publish build artifacts
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Build Artifacts'
-    inputs:
-      pathToPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: 'drop'
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Build Artifacts'
+            inputs:
+              pathToPublish: '$(Build.ArtifactStagingDirectory)'
+              artifactName: 'drop'
 
-  # Deploy to Azure App Service
   - stage: DeployToProd
-    displayName: 'Deploy to Production'
+    dependsOn: Build
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/prod')
     jobs:
       - deployment: DeployApp
         environment: 'Prod'
