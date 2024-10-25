@@ -4,8 +4,11 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  - group: ProductionVariables
+
 steps:
-  - checkout: self  # Ensure this step is included to checkout the code
+  - checkout: self
 
   # Install Java 17
   - task: JavaToolInstaller@0
@@ -20,22 +23,18 @@ steps:
       java -version
     displayName: 'Check Java 17 version'
 
-  # Fetch public IP of the build agent
-  - script: |
-      echo "Fetching agent public IP..."
-      AGENT_IP=$(curl -s https://api.ipify.org)
-      echo "Public IP of the build agent: $AGENT_IP"
-
-  # Maven clean and package step with Java 17
+  # Maven clean and package step
   - task: Maven@4
+    displayName: 'Maven Clean and Package'
     inputs:
-      mavenPomFile: 'C:\Users\Dylan\Desktop\ASD-41026\pom.xml'  # Adjust the path to where your pom.xml is located
+      mavenPomFile: 'pom.xml'
       mavenOptions: '-Xmx1024m'
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '17'
       jdkArchitectureOption: 'x64'
-      goals: 'clean package'  # Combined clean and package in one step
+      goals: 'clean package'
 
+  # Run JUnit Tests
   - task: Maven@4
     displayName: 'Run Junit Test'
     inputs:
@@ -46,7 +45,9 @@ steps:
       goals: 'clean verify'
       options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
 
-  - task: PublishTestResults@2  # This task ensures test results are published in Azure DevOps
+  # Publish Test Results
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results'
     inputs:
       testResultsFormat: 'JUnit'
       testResultsFiles: '**/target/surefire-reports/*.xml'
@@ -54,26 +55,31 @@ steps:
 
   # Copy JAR files to the staging directory
   - task: CopyFiles@2
+    displayName: 'Copy JAR files to staging'
     inputs:
       contents: '**/target/*.jar'
       targetFolder: '$(Build.ArtifactStagingDirectory)'
 
   # Publish build artifacts
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish Build Artifacts'
     inputs:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
 
-  # Un-comment below if you want to run the Spring Boot application
-  # - task: Bash@3
-  #   inputs:
-  #     targetType: 'inline'
-  #     script: |
-  #       # Verify Java 17 is being used
-  #       java -version
-
-  #       echo "Listing files in the Build Artifact Staging Directory:"
-  #       ls -al $(Build.ArtifactStagingDirectory)
-
-  #       echo "Running the Spring Boot application..."
-  #       java -jar $(Build.ArtifactStagingDirectory)/target/ASD-0.0.1-SNAPSHOT.jar
+  # Deploy to Azure App Service
+  - stage: DeployToProd
+    displayName: 'Deploy to Production'
+    jobs:
+      - deployment: DeployApp
+        environment: 'Prod'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureWebApp@1
+                  displayName: 'Deploy to Azure Web App'
+                  inputs:
+                    azureSubscription: 'AzureAppServiceConnection'
+                    appName: 'onlineSupermarketOrderingApp'
+                    package: $(Build.ArtifactStagingDirectory)/*.jar
