@@ -7,12 +7,14 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: ProductionVariables
+  - group: ProductionVariables  # 引用您的生产环境变量组
 
 stages:
   - stage: Build
+    displayName: 'Build Stage'
     jobs:
       - job: BuildJob
+        displayName: 'Build and Test'
         steps:
           - checkout: self
 
@@ -67,8 +69,8 @@ stages:
               artifactName: 'drop'
 
   - stage: DeployToProd
-    dependsOn: Build
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/prod')
+    displayName: 'Deploy to Production'
+    dependsOn: Build 
     jobs:
       - deployment: DeployApp
         environment: 'Prod'
@@ -81,4 +83,4 @@ stages:
                   inputs:
                     azureSubscription: 'AzureAppServiceConnection'
                     appName: 'onlineSupermarketOrderingApp'
-                    package: $(Build.ArtifactStagingDirectory)/*.jar
+                    package: '$(Build.ArtifactStagingDirectory)/*.jar'
