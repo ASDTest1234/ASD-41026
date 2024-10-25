@@ -1,0 +1,55 @@
+trigger:
+  branches:
+    include:
+      - dev
+      - prod
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - checkout: self
+
+  - task: JavaToolInstaller@0
+    displayName: 'Install Java 17'
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
+
+  - script: |
+      java -version
+    displayName: 'Check Java 17 version'
+
+  - task: Maven@4
+    displayName: 'Maven Build'
+    inputs:
+      mavenPomFile: 'pom.xml'
+      goals: 'clean package'
+
+  - task: Maven@4
+    displayName: 'Run JUnit Tests'
+    inputs:
+      mavenPomFile: 'pom.xml'
+      goals: 'test'
+
+  - task: CopyFiles@2
+    displayName: 'Copy JAR to Artifact Staging Directory'
+    inputs:
+      contents: '**/target/*.jar'
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Build Artifacts'
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'drop'
+
+  - script: |
+      if [ "$(Build.SourceBranchName)" == "prod" ]; then
+        echo "Deploying to production..."
+        scp -i ~/.ssh/id_rsa $(Build.ArtifactStagingDirectory)/*.jar user@prod-server:/path/to/deploy/
+        ssh -i ~/.ssh/id_rsa user@prod-server 'systemctl restart my-app'
+      fi
+    displayName: 'Deploy to Production'
+    condition: eq(variables['Build.SourceBranchName'], 'prod')
