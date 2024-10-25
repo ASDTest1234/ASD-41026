@@ -25,7 +25,7 @@ stages:
               java -version
             displayName: 'Check Java 17 version'
           - task: Maven@4
-            displayName: 'Maven Clean and Package as ZIP (Skip Tests)'
+            displayName: 'Maven Clean and Package (Skip Tests)'
             inputs:
               mavenPomFile: 'pom.xml'
               mavenOptions: '-Xmx1024m'
@@ -33,11 +33,11 @@ stages:
               jdkVersionOption: '17'
               jdkArchitectureOption: 'x64'
               goals: 'clean package'
-              options: '-DskipTests -DoutputDirectory=target -Darchive.format=zip'
+              options: '-DskipTests'
           - task: CopyFiles@2
-            displayName: 'Copy ZIP files to staging'
+            displayName: 'Copy JAR files to staging'
             inputs:
-              contents: '**/target/*.zip'
+              contents: '**/target/*.jar'
               targetFolder: '$(Build.ArtifactStagingDirectory)'
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Build Artifacts'
@@ -52,11 +52,14 @@ stages:
         pool:
           vmImage: 'ubuntu-20.04'
         steps:
-          - download: current
-            artifact: drop
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download Build Artifacts'
+            inputs:
+              artifactName: 'drop'
+              path: '$(Pipeline.Workspace)/drop'
           - task: AzureWebApp@1
             displayName: 'Azure App Service Deploy'
             inputs:
               azureSubscription: 'AzureAppServiceConnection'
               appName: 'onlineSupermarketOrderingApp'
-              package: '$(Pipeline.Workspace)/drop/*.zip'
+              package: '$(Pipeline.Workspace)/drop/*.jar'
