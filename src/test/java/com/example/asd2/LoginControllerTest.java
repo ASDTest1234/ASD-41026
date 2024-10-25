@@ -1,4 +1,4 @@
-package com.example.asd2;
+
 
 import com.example.asd2.Service.UserService;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
+
 public class LoginControllerTest {
 
     @Autowired
