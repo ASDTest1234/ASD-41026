@@ -1,55 +1,77 @@
 trigger:
   branches:
     include:
-      - dev
       - prod
 
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-  - checkout: self
+variables:
+  - group: ProductionVariables
 
-  - task: JavaToolInstaller@0
-    displayName: 'Install Java 17'
-    inputs:
-      versionSpec: '17'
-      jdkArchitectureOption: 'x64'
-      jdkSourceOption: 'PreInstalled'
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildJob
+        steps:
+          - checkout: self
+          - task: JavaToolInstaller@0
+            displayName: 'Install Java 17'
+            inputs:
+              versionSpec: '17'
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'PreInstalled'
+          - script: |
+              java -version
+            displayName: 'Check Java 17 version'
+          - task: Maven@4
+            displayName: 'Maven Clean and Package as ZIP'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              mavenOptions: '-Xmx1024m'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '17'
+              jdkArchitectureOption: 'x64'
+              goals: 'clean package'
+              options: '-DoutputDirectory=target -Darchive.format=zip'
+          - task: Maven@4
+            displayName: 'Run Junit Test'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '17'
+              jdkArchitectureOption: 'x64'
+              goals: 'clean verify'
+              options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
+          - task: PublishTestResults@2
+            displayName: 'Publish Test Results'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '**/target/surefire-reports/*.xml'
+              failTaskOnFailedTests: true
+          - task: CopyFiles@2
+            displayName: 'Copy ZIP files to staging'
+            inputs:
+              contents: '**/target/*.zip'
+              targetFolder: '$(Build.ArtifactStagingDirectory)'
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Build Artifacts'
+            inputs:
+              pathToPublish: '$(Build.ArtifactStagingDirectory)'
+              artifactName: 'drop'
 
-  - script: |
-      java -version
-    displayName: 'Check Java 17 version'
-
-  - task: Maven@4
-    displayName: 'Maven Build'
-    inputs:
-      mavenPomFile: 'pom.xml'
-      goals: 'clean package'
-
-  - task: Maven@4
-    displayName: 'Run JUnit Tests'
-    inputs:
-      mavenPomFile: 'pom.xml'
-      goals: 'test'
-
-  - task: CopyFiles@2
-    displayName: 'Copy JAR to Artifact Staging Directory'
-    inputs:
-      contents: '**/target/*.jar'
-      targetFolder: '$(Build.ArtifactStagingDirectory)'
-
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Build Artifacts'
-    inputs:
-      pathToPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: 'drop'
-
-  - script: |
-      if [ "$(Build.SourceBranchName)" == "prod" ]; then
-        echo "Deploying to production..."
-        scp -i ~/.ssh/id_rsa $(Build.ArtifactStagingDirectory)/*.jar user@prod-server:/path/to/deploy/
-        ssh -i ~/.ssh/id_rsa user@prod-server 'systemctl restart my-app'
-      fi
-    displayName: 'Deploy to Production'
-    condition: eq(variables['Build.SourceBranchName'], 'prod')
+  - stage: Deploy
+    dependsOn: Build
+    jobs:
+      - job: DeployJob
+        pool:
+          vmImage: 'ubuntu-20.04'
+        steps:
+          - download: current
+            artifact: drop
+          - task: AzureWebApp@1
+            displayName: 'Azure App Service Deploy'
+            inputs:
+              azureSubscription: 'AzureAppServiceConnection'
+              appName: 'onlineSupermarketOrderingApp'
+              package: '$(Pipeline.Workspace)/drop/*.zip'
