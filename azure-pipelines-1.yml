@@ -62,4 +62,4 @@ stages:
             inputs:
               azureSubscription: 'AzureAppServiceConnection'
               appName: 'onlineSupermarketOrderingApp'
-              package: '$(Pipeline.Workspace)/drop/*.jar'
+              package: '$(Pipeline.Workspace)/drop/**/*.jar'
