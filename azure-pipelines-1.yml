@@ -7,8 +7,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: ProductionVariables
-
+  - group: ProductionVariables  
 stages:
   - stage: Build
     jobs:
@@ -25,7 +24,7 @@ stages:
               java -version
             displayName: 'Check Java 17 version'
           - task: Maven@4
-            displayName: 'Maven Clean and Package (Skip Tests)'
+            displayName: 'Maven Clean and Package (Run Tests)'
             inputs:
               mavenPomFile: 'pom.xml'
               mavenOptions: '-Xmx1024m'
@@ -33,7 +32,7 @@ stages:
               jdkVersionOption: '17'
               jdkArchitectureOption: 'x64'
               goals: 'clean package'
-              options: '-DskipTests'
+              options: '-Dspring.application.name=$(springApplicationName)'  
           - task: CopyFiles@2
             displayName: 'Copy JAR files to staging'
             inputs:
