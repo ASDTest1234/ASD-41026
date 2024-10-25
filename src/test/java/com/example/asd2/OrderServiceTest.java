@@ -1,7 +1,9 @@
 import com.example.asd2.Model.Cart;
 import com.example.asd2.Model.Products;
+import com.example.asd2.Model.Order;
 import com.example.asd2.Service.OrderService;
 import com.example.asd2.Service.ProductService;
+import com.example.asd2.repository.OrderRepository;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,9 @@ public class OrderServiceTest {
     @Mock
     private ProductService productService;
 
+    @Mock
+    private OrderRepository orderRepository;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -54,13 +59,44 @@ public class OrderServiceTest {
         Products product = new Products("p123", "Product1", "Description1", 10, new BigDecimal("100.0"), "Electronics", "admin123");
         Document customerDetails = new Document().append("fullName", "John Doe");
 
+
         when(productService.getProductByName("Product1")).thenReturn(Optional.of(product));
+        when(orderRepository.save(any(Order.class))).thenReturn(new Order());
+
 
         orderService.createOrder(customerId, items, customerDetails);
 
         logger.info("Test createOrder_shouldCreateOrderWhenStockIsSufficient: Order created successfully for customerId {}", customerId);
-        verify(mongoTemplate, times(1)).insert(any(Document.class), eq("Orders"));
+
+
+        verify(orderRepository, times(1)).save(any(Order.class));
     }
 
-    
+    @Test
+    void createOrder_shouldThrowExceptionWhenStockIsInsufficient() {
+        // 设置客户ID和购物车
+        String customerId = "002";
+        List<Cart.CartItem> items = new ArrayList<>();
+
+        Cart.CartItem item = new Cart.CartItem();
+        item.setProductId("p123");
+        item.setProductName("Product1");
+        item.setProductDescription("Description1");
+        item.setProductPrice(100.0);
+        item.setQuantity(10);
+        items.add(item);
+
+
+        Products product = new Products("p123", "Product1", "Description1", 5, new BigDecimal("100.0"), "Electronics", "admin123");
+
+
+        when(productService.getProductByName("Product1")).thenReturn(Optional.of(product));
+
+
+        assertThrows(Exception.class, () -> {
+            orderService.createOrder(customerId, items, new Document());
+        });
+
+        verify(orderRepository, never()).save(any());
+    }
 }
