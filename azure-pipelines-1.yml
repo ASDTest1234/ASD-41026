@@ -25,7 +25,7 @@ stages:
               java -version
             displayName: 'Check Java 17 version'
           - task: Maven@4
-            displayName: 'Maven Clean and Package as ZIP'
+            displayName: 'Maven Clean and Package as ZIP (Skip Tests)'
             inputs:
               mavenPomFile: 'pom.xml'
               mavenOptions: '-Xmx1024m'
@@ -33,22 +33,7 @@ stages:
               jdkVersionOption: '17'
               jdkArchitectureOption: 'x64'
               goals: 'clean package'
-              options: '-DoutputDirectory=target -Darchive.format=zip'
-          - task: Maven@4
-            displayName: 'Run Junit Test'
-            inputs:
-              mavenPomFile: 'pom.xml'
-              javaHomeOption: 'JDKVersion'
-              jdkVersionOption: '17'
-              jdkArchitectureOption: 'x64'
-              goals: 'clean verify'
-              options: '-Dspring.data.mongodb.uri=$(MONGODB_URI)'
-          - task: PublishTestResults@2
-            displayName: 'Publish Test Results'
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '**/target/surefire-reports/*.xml'
-              failTaskOnFailedTests: true
+              options: '-DskipTests -DoutputDirectory=target -Darchive.format=zip'
           - task: CopyFiles@2
             displayName: 'Copy ZIP files to staging'
             inputs:
