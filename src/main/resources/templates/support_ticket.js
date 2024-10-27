@@ -71,38 +71,51 @@ class support_ticket {
     }
 
     async submit() {
-            this.ticketData.ticketId = this.ticketIdInput.value;
-            this.ticketData.customerId = this.customerIdInput.value;
-            this.ticketData.issue = this.issueInput.value;
-            this.ticketData.description = this.descriptionInput.value;
+        this.ticketData.ticketId = this.ticketIdInput.value;
+        this.ticketData.customerId = this.customerIdInput.value;
+        this.ticketData.issue = this.issueInput.value;
+        this.ticketData.description = this.descriptionInput.value;
 
-            // Debug logs for ticket data
-            console.log(`Submitting ticket data:`, this.ticketData);
+        const specialCharRegex = /[~!@#$%^&*<>/.]/;
 
-            if (this.ticketData.ticketId && this.ticketData.customerId && this.ticketData.issue && this.ticketData.description) {
-                try {
-                    const response = await fetch('http://localhost:8080/minh/tickets', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(this.ticketData)
-                    });
+        // Check inputs for special characters
+        if (specialCharRegex.test(this.ticketData.ticketId) ||
+            specialCharRegex.test(this.ticketData.customerId) ||
+            specialCharRegex.test(this.ticketData.issue) ||
+            specialCharRegex.test(this.ticketData.description)) {
+            this.messageDisplay.textContent = 'Error: Special characters are not allowed in inputs.';
+            console.log('Submission failed: Special characters detected in inputs.'); // Debug log
+            return;
+        }
 
-                    if (!response.ok) throw new Error('Network response was not ok');
+        // Debug logs for ticket data
+        console.log(`Submitting ticket data:`, this.ticketData);
 
-                    const data = await response.json();
-                    this.messageDisplay.textContent = 'Ticket created successfully: ' + JSON.stringify(data);
-                    console.log('Successfully created ticket:', data); // Log the response data
-                } catch (error) {
-                    this.messageDisplay.textContent = 'Error: ' + error.message;
-                    console.log('Submission failed:', error); // Debug log
-                }
-            } else {
-                this.messageDisplay.textContent = 'Please fill in all fields.';
-                console.log('Submission failed: All fields must be filled.'); // Debug log
+        if (this.ticketData.ticketId && this.ticketData.customerId && this.ticketData.issue && this.ticketData.description) {
+            try {
+                const response = await fetch('http://localhost:8080/minh/tickets', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.ticketData)
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const data = await response.json();
+                this.messageDisplay.textContent = 'Ticket created successfully: ' + JSON.stringify(data);
+                console.log('Successfully created ticket:', data); // Log the response data
+            } catch (error) {
+                this.messageDisplay.textContent = 'Error: ' + error.message;
+                console.log('Submission failed:', error); // Debug log
             }
+        } else {
+            this.messageDisplay.textContent = 'Please fill in all fields.';
+            console.log('Submission failed: All fields must be filled.'); // Debug log
+        }
     }
+
 
     reset() {
         this.ticketIdInput.value = '';
