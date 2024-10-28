@@ -110,6 +110,14 @@ public class ContentController {
     public String handleCart() {
         return "cart";
     }
+    @GetMapping("/details")
+    public String handleDetails() {
+        return "details";
+    }
+    @GetMapping("/user/update_details")
+    public String handleUpdateDetails() {
+        return "update_details"; // Ensure this matches the name of your HTML file without extension
+    }
 
     @GetMapping("/user/orders")
     public String handleOrders() {
