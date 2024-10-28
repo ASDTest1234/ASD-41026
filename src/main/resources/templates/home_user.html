@@ -125,7 +125,7 @@
 <div class="navbar">
     <div>
         <input type="submit" value="View Cart" onclick="viewCart()" />
-        <input type="submit" value="View Details" />
+        <input type="submit" value="View Details" onclick="viewDetails()" />
         <!-- New Button: View Orders -->
         <input type="submit" value="View Orders" onclick="viewOrders()" />
     </div>
@@ -282,6 +282,11 @@
         window.location.href = '/user/cart';
     }
 
+    function viewDetails() {
+        console.log("Redirecting to details page...");
+        window.location.href = '/details';
+    }
+    
     /**
      * Opens the orders page, assuming userId is already stored globally
      */
