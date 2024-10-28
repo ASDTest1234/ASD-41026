@@ -3,8 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tableBody = document.getElementById('tickets-table').getElementsByTagName('tbody')[0];
     const loadingMessage = document.getElementById('loading-message');
     let colorMap = {}; // Mapping to assign colors to customer IDs
-    let colorCounter = 0; // Counter to track how many colors have been used
-    const colors = ["#FFDDC1", "#FFABAB", "#FFC3A0", "#FF677D", "#DDF6E4", "#F9FBCB", "#D4C5E1"]; // Array of colors to use
+    let lastColor = null; // To keep track of the last used color
 
     fetch('http://localhost:8080/minh/tickets')
         .then(response => response.json())
@@ -55,6 +54,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Function to generate a random RGB color
+    function getRandomColor() {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
     // Function to color rows by customer ID and group them
     function applyColorByCustomerID() {
         const sortedTickets = [...ticketsData].sort((a, b) => {
@@ -70,10 +77,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         uniqueCustomers.forEach(customerId => {
-            // Assign a color if not yet assigned
-            if (!colorMap[customerId] && colorCounter < colors.length) {
-                colorMap[customerId] = colors[colorCounter++];
-            }
+            // Assign a random color for each customer ID
+            let assignedColor;
+            do {
+                assignedColor = getRandomColor();
+            } while (assignedColor === lastColor); // Ensure it's not the same as the last used color
+
+            colorMap[customerId] = assignedColor; // Store the assigned color
+            lastColor = assignedColor; // Update the last color used
 
             // Get tickets that belong to this customerId
             const customerTickets = sortedTickets.filter(ticket => ticket.customerId === customerId);
@@ -111,7 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.href = `a_ticket_Staff.html?ticketId=${ticket.ticketId}`;
                 });
 
-                tableBody.appendChild(row); // Append the row to the table body
+                // Append the row with random background color to the table body
+                tableBody.appendChild(row);
             });
         });
     }
@@ -135,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to clear the color mapping
     function clearColorMap() {
         colorMap = {}; // Reset the color mapping
-        colorCounter = 0; // Reset color counter
     }
 
     // Attach event listeners to dropdown options
@@ -149,3 +160,4 @@ document.addEventListener('DOMContentLoaded', function() {
         sortByCustomerID(); // Sort tickets by customer ID and apply colors
     });
 });
+
