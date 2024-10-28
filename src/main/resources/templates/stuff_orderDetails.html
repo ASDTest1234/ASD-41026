@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details</title>
+    <title>Staff Order Details</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@
         }
 
         .order-summary div {
-            width: 48%;
+            width: 32%;
             background-color: #fafafa;
             padding: 20px;
             border-radius: 8px;
@@ -67,18 +67,57 @@
             margin-top: 20px;
         }
 
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .actions {
+            text-align: right;
+            margin-top: 30px;
+        }
+
         .btn {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #9E9E9E;
             color: white;
             text-align: center;
             border-radius: 4px;
-            cursor: pointer;
+            cursor: not-allowed;
             text-decoration: none;
+            margin-left: 10px;
+            border: none;
         }
 
-        .btn:hover {
-            background-color: #45a049;
+        .btn.enabled {
+            cursor: pointer;
+        }
+
+        .btn-blue {
+            background-color: #2196F3;
+        }
+
+        .btn-blue:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-cancel {
+            background-color: #f44336;
+        }
+
+        .btn-cancel:hover {
+            background-color: #d32f2f;
         }
 
     </style>
@@ -88,50 +127,142 @@
 <div class="container">
     <h1>Order Details</h1>
 
-    <div class="order-summary">
-        <div>
-            <h3>Payment</h3>
-            <p>Visa **56</p>
-            <p>Total Price: $<span th:text="${order.totalPrice}"></span></p>
+    <form id="orderForm">
+        <div class="order-summary">
+            <!-- Payment Information -->
+            <div>
+                <h3>Payment</h3>
+                <p>Visa **56</p>
+                <p>Total Price: $<span th:text="${order.totalPrice}"></span></p>
+            </div>
+
+            <!-- Delivery Information (Editable) -->
+            <div>
+                <h3>Delivery</h3>
+                <div class="form-group">
+                    <label for="fullName">Full Name:</label>
+                    <input type="text" id="fullName" name="fullName" th:value="${order.customerDetails.fullName}" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" th:value="${order.customerDetails.address}" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" name="city" th:value="${order.customerDetails.city}" required>
+                </div>
+                <div class="form-group">
+                    <label for="zipCode">Zip Code:</label>
+                    <input type="text" id="zipCode" name="zipCode" th:value="${order.customerDetails.zipCode}" required>
+                </div>
+                <div class="form-group">
+                    <label for="status">Order Status:</label>
+                    <select id="status" name="status">
+                        <option th:value="${order.status}" th:text="${order.status}"></option>
+                        <option value="PREPARING">PREPARING</option>
+                        <option value="SHIPPED">SHIPPED</option>
+                        <option value="DELIVERED">DELIVERED</option>
+                        <option value="CANCELLED">CANCELLED</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Item Summary -->
+            <div>
+                <h3>Items</h3>
+                <p><span th:text="${order.items.size()}"></span> items in this order</p>
+                <p>Total: $<span th:text="${order.totalPrice}"></span></p>
+            </div>
         </div>
 
-        <div>
-            <h3>Delivery</h3>
-            <p><span th:text="${order.customerDetails.fullName}"></span></p>
-            <p><span th:text="${order.customerDetails.address}"></span></p>
-            <p><span th:text="${order.customerDetails.city}"></span>, <span th:text="${order.customerDetails.zipCode}"></span></p>
-            <p>Delivery method: Free (30 days)</p>
+        <!-- Items Table -->
+        <div class="item-list">
+            <h3>Items</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${order.items}">
+                    <td th:text="${item.productName}"></td>
+                    <td th:text="${item.quantity}"></td>
+                    <td th:text="${item.productPrice}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="total-price">
+                Total: $<span th:text="${order.totalPrice}"></span>
+            </div>
         </div>
-    </div>
 
-    <div class="item-list">
-        <h3>Items</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Price</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${order.items}">
-                <td th:text="${item.productName}"></td>
-                <td th:text="${item.quantity}"></td>
-                <td th:text="${item.productPrice}"></td>
-            </tr>
-            </tbody>
-        </table>
-
-        <div class="total-price">
-            Total: $<span th:text="${order.totalPrice}"></span>
+        <!-- Action Buttons -->
+        <div class="actions">
+            <button type="button" class="btn btn-cancel" id="cancelBtn" disabled>Cancel</button>
+            <button type="submit" class="btn btn-blue" id="updateBtn" disabled>Update</button>
         </div>
-    </div>
-
-    <div class="actions">
-        <a href="/user/orders" class="btn">Back to Orders</a>
-    </div>
+    </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('orderForm');
+        const updateBtn = document.getElementById('updateBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        let formModified = false;
+
+        // Validation patterns
+        const zipCodePattern = /^\d{4}$/;
+
+        // Monitor input changes
+        form.addEventListener('input', () => {
+            formModified = true;
+            validateForm();
+        });
+
+        // Enable buttons if form is modified and valid
+        function validateForm() {
+            const fullName = form.fullName.value.trim();
+            const address = form.address.value.trim();
+            const city = form.city.value.trim();
+            const zipCode = form.zipCode.value.trim();
+            const status = form.status.value;
+
+            let isValid = fullName && address && city && zipCodePattern.test(zipCode) && status;
+
+            if (isValid && formModified) {
+                updateBtn.disabled = false;
+                updateBtn.classList.add('enabled');
+                cancelBtn.disabled = false;
+                cancelBtn.classList.add('enabled');
+            } else {
+                updateBtn.disabled = true;
+                updateBtn.classList.remove('enabled');
+                cancelBtn.disabled = true;
+                cancelBtn.classList.remove('enabled');
+            }
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!updateBtn.disabled) {
+                // Perform the update via AJAX or form submission here
+                alert('Order updated successfully!');
+            }
+        });
+
+        // Handle cancel action
+        cancelBtn.addEventListener('click', () => {
+            // Reload the page or reset form fields to the original values
+            window.location.reload();
+        });
+    });
+</script>
 
 </body>
 </html>
