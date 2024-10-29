@@ -8,11 +8,15 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -136,8 +140,17 @@ public class ProductService {
         return false;
     }
     // gets a list of products dependent on the variables that is given.
-    public List<Products> getSpecificProductByName(String filter){
-        return productRepository.findProductByName(filter);
+    public Page<Products> getSpecificProductByName(String filter, int page, int size, String sortDirection ) {
+
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by("productName").ascending() :
+                Sort.by("productName").descending();
+
+        Pageable pageable =  PageRequest.of(page,size, sort);
+
+
+
+        return productRepository.findProductByName(filter, pageable);
     }
 
 

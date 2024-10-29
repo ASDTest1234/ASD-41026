@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details</title>
+    <style>
+        /* Basic styling for page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .user-detail {
+            margin: 10px 0;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-delete {
+            background-color: #f44336;
+        }
+        .btn-delete:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Account Details</h1>
+    <div id="userDetailsContainer">
+        <!-- User details will be populated here -->
+    </div>
+    <div id="errorContainer" style="color:red;"></div>
+
+    <div class="buttons">
+        <a href="/user/home_user" class="btn">Back to Home</a>
+        <button onclick="updateDetails()" class="btn">Update Details</button>
+        <button onclick="navigateToConfirmDelete()" class="btn btn-delete">Terminate Account</button>
+    </div>
+</div>
+
+<script>
+    /**
+     * Fetches and displays user details
+     */
+    function fetchUserDetails() {
+        fetch('/user/details')
+            .then(response => {
+                if (!response.ok) throw new Error("Error loading user details");
+                return response.json();
+            })
+            .then(userDetails => {
+                const userDetailsContainer = document.getElementById("userDetailsContainer");
+                userDetailsContainer.innerHTML = `
+                    <div class="user-detail"><strong>Username:</strong> ${userDetails.username}</div>
+                    <div class="user-detail"><strong>Email:</strong> ${userDetails.email}</div>
+                    <div class="user-detail"><strong>Phone:</strong> ${userDetails.phone || 'N/A'}</div>
+                    <div class="user-detail"><strong>Address:</strong> ${userDetails.address || 'N/A'}</div>
+                `;
+            })
+            .catch(error => {
+                document.getElementById("errorContainer").innerText = error.message;
+            });
+    }
+
+    /**
+     * Navigation functions
+     */
+    function navigateToConfirmDelete() {
+        window.location.href = '/user/confirm_delete';
+    }
+
+    function updateDetails() {
+        console.log("Redirecting to update details page...");
+        window.location.href = '/user/update_details';
+    }
+
+    // Fetch user details on page load
+    window.onload = window.userId;
+</script>
+
+</body>
+</html>

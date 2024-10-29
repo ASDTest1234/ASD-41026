@@ -212,7 +212,48 @@ public class OrderController {
             return "errorPage";
         }
         model.addAttribute("order", order);
-        return "stuff_orderDetails";
+        return "stuff_orderDetails"; // View for staff-specific order details
     }
+
+    @PostMapping("/updateOrder")
+    public String updateOrderByStaff(@RequestParam("orderId") String orderId,
+                                     @RequestParam("fullName") String fullName,
+                                     @RequestParam("address") String address,
+                                     @RequestParam("city") String city,
+                                     @RequestParam("zipCode") String zipCode,
+                                     @RequestParam("status") String status,
+                                     Model model) {
+        try {
+            // Fetch the existing order by ID
+            Order order = orderService.getOrderById(orderId);
+            if (order == null) {
+                model.addAttribute("error", "Order not found.");
+                return "errorPage";
+            }
+
+            // Update the customer details
+            Order.CustomerDetails customerDetails = order.getCustomerDetails();
+            customerDetails.setFullName(fullName);
+            customerDetails.setAddress(address);
+            customerDetails.setCity(city);
+            customerDetails.setZipCode(zipCode);
+
+            // Update the order status
+            order.setStatus(Order.OrderStatus.valueOf(status.toUpperCase()));
+
+            // Save the updated order
+            orderService.updateOrder(order);
+
+            // Add a success message to the model
+            model.addAttribute("success", "Order updated successfully.");
+            model.addAttribute("order", order);
+            return "stuff_orderDetails";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to update order details: " + e.getMessage());
+            return "errorPage";
+        }
+    }
+
 
 }

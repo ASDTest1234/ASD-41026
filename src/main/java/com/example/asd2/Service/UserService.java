@@ -49,4 +49,22 @@ public class UserService {
     public List<Users> getUsersByRoles(String filter){
         return userRepository.findUsersByRole(filter);
     }
+    /**
+     * Updates the user details in the database.
+     *
+     * @param updatedUser The user object containing updated details.
+     */
+    public void updateUser(Users updatedUser) {
+        // Check if the user exists
+        Users existingUser = userRepository.findById(updatedUser.getUserID()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Update the user's details
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setPhone(updatedUser.getPhone());
+        existingUser.setAddress(updatedUser.getAddress());
+
+        // Save the updated user back to the database
+        userRepository.save(existingUser);
+    }
 }

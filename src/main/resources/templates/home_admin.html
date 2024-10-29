@@ -126,7 +126,7 @@
 <div class="navbar">
   <div>
     <input type="submit" value="View Cart" onclick="viewCart()" />
-    <input type="submit" value="View Details" />
+    <input type="submit" value="View Details" onclick="viewDetails()" />
 
     <form th:action="@{/staff/home_staff}" method="get">
       <button type="submit">Staff</button>
@@ -240,6 +240,11 @@
   function viewCart() {
     window.location.href = '/cart';
   }
+
+  function viewDetails() {
+        console.log("Redirecting to details page...");
+        window.location.href = '/details';
+    }
 
   /**
    * Increases the quantity of a product

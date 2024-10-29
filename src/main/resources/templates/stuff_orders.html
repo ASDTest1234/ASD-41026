@@ -23,8 +23,36 @@
 
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       font-size: 24px;
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input, .search-bar button {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .search-bar input {
+      width: 30%;
+    }
+
+    .search-bar button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      width: 15%;
+    }
+
+    .search-bar button:hover {
+      background-color: #45a049;
     }
 
     .order-card {
@@ -61,31 +89,26 @@
       display: inline-block;
     }
 
-    /* Preparing status - Orange */
     .status-preparing {
       background-color: #FFA500;
       color: white;
     }
 
-    /* Shipped status - Blue */
     .status-shipped {
       background-color: #2196F3;
       color: white;
     }
 
-    /* Delivered status - Green */
     .status-delivered {
       background-color: #4CAF50;
       color: white;
     }
 
-    /* Cancelled status - Red */
     .status-cancelled {
       background-color: #F44336;
       color: white;
     }
 
-    /* Unknown status - Grey (for cases where status is null or undefined) */
     .status-unknown {
       background-color: #9E9E9E;
       color: white;
@@ -107,93 +130,83 @@
   </style>
 
   <script>
-    // This function will run when the page is loaded, and it will fetch all orders
     window.onload = function() {
-      loadAllOrders();  // Call the function to load all orders
+      loadAllOrders();  // Load all orders initially
     };
 
-    /**
-     * Function to fetch all orders from the backend and display them on the page.
-     */
-    // Function to fetch all orders from the backend and display them on the page.
-    function loadAllOrders() {
-      // Fetch data from the newly created endpoint for all orders
-      fetch(`/api/order/allOrders`)
+    function loadAllOrders(filter = {}) {
+      const { orderNumber, userId, orderDate } = filter;
+      let query = '/api/order/allOrders';
+
+      // Build the query string based on the filter criteria
+      if (orderNumber || userId || orderDate) {
+        query += '?';
+        if (orderNumber) {
+          query += `orderNumber=${orderNumber}&`;
+        }
+        if (userId) {
+          query += `userId=${userId}&`;
+        }
+        if (orderDate) {
+          query += `orderDate=${orderDate}&`;
+        }
+        query = query.slice(0, -1); // Remove the trailing '&'
+      }
+
+      // Fetch the orders from the backend
+      fetch(query)
               .then(response => {
-                // Check if the response is valid
                 if (!response.ok) {
                   throw new Error('Network response was not ok');
                 }
-                return response.json();  // Convert the response to JSON
+                return response.json();
               })
               .then(data => {
-                // Select the container where the orders will be displayed
                 const ordersContainer = document.querySelector('.container');
+                ordersContainer.innerHTML = '<h1>All Orders</h1>'; // Clear existing orders
 
-                // If there are orders in the data
                 if (data && data.length > 0) {
-                  // Loop through the list of orders and create an order card for each
                   data.forEach(order => {
-                    // Create a div for the order card
                     const orderCard = document.createElement('div');
                     orderCard.className = 'order-card';
 
-                    // Create a div to hold the order information
                     const orderInfo = document.createElement('div');
                     orderInfo.className = 'order-info';
 
-                    // Display the order number
                     const orderTitle = document.createElement('h2');
                     orderTitle.textContent = `Order #${order.orderNumber}`;
                     orderInfo.appendChild(orderTitle);
 
-                    // Display the order date, formatted as YYYY-MM-DD
                     const orderDate = document.createElement('p');
                     orderDate.textContent = `Order Date: ${new Date(order.orderDate).toISOString().slice(0, 10)}`;
                     orderInfo.appendChild(orderDate);
 
-                    // Display the number of items and the total price for the order
                     const orderItems = document.createElement('p');
                     orderItems.textContent = `${order.items.length} Items | Total: $${order.totalPrice}`;
                     orderInfo.appendChild(orderItems);
 
-                    // Create a span element for the order status
                     const orderStatus = document.createElement('span');
-
-                    // Check if order.status is not null or undefined before converting to lowercase
                     const statusClass = order.status ? `status-${order.status.toLowerCase()}` : 'status-unknown';
-
-                    // Apply the appropriate class based on the order status (or default to 'unknown')
                     orderStatus.className = `order-status ${statusClass}`;
-
-                    // Set the text content to the order status (or default to 'UNKNOWN' if status is null)
                     orderStatus.textContent = order.status || 'UNKNOWN';
-
-                    // Append the status to the order info
                     orderInfo.appendChild(orderStatus);
 
-                    // Create a button to view more details about the order
                     const viewDetailsBtn = document.createElement('a');
                     viewDetailsBtn.className = 'view-details-btn';
-                    viewDetailsBtn.href = `/stuff_orderDetails?orderId=${order.orderId}`;
+                    viewDetailsBtn.href = `/api/order/stuff_orderDetails?orderId=${order.orderId}`;
                     viewDetailsBtn.textContent = 'View Details';
 
-                    // Append the order info and the details button to the order card
                     orderCard.appendChild(orderInfo);
                     orderCard.appendChild(viewDetailsBtn);
-
-                    // Append the order card to the container on the page
                     ordersContainer.appendChild(orderCard);
                   });
                 } else {
-                  // If there are no orders, display a message
                   const noOrdersMessage = document.createElement('p');
                   noOrdersMessage.textContent = 'No orders found.';
                   ordersContainer.appendChild(noOrdersMessage);
                 }
               })
               .catch(error => {
-                // If there is an error fetching the orders, display an error message
                 console.error('Error fetching orders:', error);
                 const ordersContainer = document.querySelector('.container');
                 const errorMessage = document.createElement('p');
@@ -202,13 +215,28 @@
               });
     }
 
+    function searchOrders() {
+      const orderNumber = document.getElementById('searchOrderNumber').value.trim();
+      const userId = document.getElementById('searchUserId').value.trim();
+      const orderDate = document.getElementById('searchOrderDate').value;
+
+      loadAllOrders({ orderNumber, userId, orderDate });
+    }
   </script>
 
 </head>
 <body>
 
 <div class="container">
-  <h1>All Orders</h1>  <!-- Page title -->
+  <h1>All Orders</h1>
+
+  <div class="search-bar">
+    <input type="text" id="searchOrderNumber" placeholder="Search by Order Number">
+    <input type="text" id="searchUserId" placeholder="Search by User ID">
+    <input type="date" id="searchOrderDate" placeholder="Search by Date">
+    <button onclick="searchOrders()">Search</button>
+  </div>
+
 </div>
 
 </body>

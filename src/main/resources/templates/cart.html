@@ -131,6 +131,7 @@
 
   function loadCart() {
     fetch(`/api/cart?customerId=${window.userId}`)
+    console.log("id in cart is " + window.userId)
             .then(response => response.json())
             .then(cart => {
               const cartItemsContainer = document.getElementById('cartItems');
@@ -253,7 +254,7 @@
     window.location.href = "/user/home_user";
   }
 
-  window.onload = () => fetchCurrentUserId();
+  window.onload = () => window.userId();
 </script>
 
 </body>
