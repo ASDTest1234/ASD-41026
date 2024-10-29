@@ -223,18 +223,27 @@
     /**
      * Fetches the current logged-in user ID and assigns it to a global variable
      */
-    fetch('/user/currentUserId')
-        .then(response => response.json())
+    fetch('/user/userDetails/currentUserId')
+        .then(response => {
+            if (!response.ok) {
+                console.warn("User ID endpoint not found. Defaulting to '000'.");
+                return { userId: '000' }; // Return a default object
+            }
+            return response.json(); // Parse JSON if the response is OK
+        })
         .then(data => {
-            var userId = data.userId || 'Guest';
-            console.log("User ID retrieved from backend:", userId);
+            // Set userId to the retrieved value or to '000' if undefined
+            var userId = data.userId || '000';
+            console.log("User ID retrieved or defaulted to:", userId);
 
-            // Store the user ID globally for future reference
+            // Store the user ID globally
             window.userId = userId;
         })
         .catch(error => {
             console.error("Error fetching user ID:", error);
+            window.userId = '000'; // Set to '000' on any error
         });
+
 
     /**
      * Adds a product to the cart by sending a POST request with the product ID and quantity
