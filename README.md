@@ -113,7 +113,12 @@ The customer Registration feature is where the user goes to set up an account wi
 CRUD operations will take place to add the user to the system (provided they do not fail and validation).
 Once a customer submits all valid required data, they will be redirected to the login so they can access all other features.
 
+**R2 Update**
+No changes were required in the registration feature.
+
 ## F103 – User Account Management
 A User can view their current details in the system and change them if required. The Customer can select to update Data and input new data into all fields to Update (CRUD) their existing data. If the user wishes, they can also delete their account by selecting the option on the View Details page and then passing a confirmation check.
 
+**R2 Update**
+All address feilds (City, suburb, street, country, etc) were combined into 'Address' when displaying the users current account details, this was done to reduce the required space in the account page, and make it easier for the user to view.
 
